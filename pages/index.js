@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to Expo + Next.js 👋</Text>
+      <Text style={styles.text}>When Dark Sky is gone, Free-Sky.Net remains</Text>
     </View>
   );
 }
