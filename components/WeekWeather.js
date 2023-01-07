@@ -5,7 +5,7 @@ function WeekWeather({ daily }) {
   const { summary: dailySummary } = daily
   return (
     <View style={styles.container}>
-      <Text style={styles.daily_summary}>Next 7 days: {dailySummary}</Text>
+      <Text style={styles.daily_summary}>7 days: {dailySummary}</Text>
     </View>
   )
 }
@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
+    marginTop: '16px',
   },
   daily_summary: {
     fontSize: 22,

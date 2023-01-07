@@ -5,7 +5,7 @@ function DayWeather({ hourly }) {
   const { summary: hourlySummary } = hourly
   return (
     <View style={styles.container}>
-      <Text style={styles.hourly_summary}>Next 24 hours: {hourlySummary}</Text>
+      <Text style={styles.hourly_summary}>24 hours: {hourlySummary}</Text>
     </View>
   )
 }
@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
+    marginTop: '16px',
   },
   hourly_summary: {
     fontSize: 22,
