@@ -1,6 +1,9 @@
 import React from 'react'
-import { ScrollView } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import CurrentWeather from '../../components/CurrentWeather'
+import DayWeather from '../../components/DayWeather'
+import HourWeather from '../../components/HourWeather'
+import WeekWeather from '../../components/WeekWeather'
 import { getForecast } from '../../lib/darksky'
 import { getPlaceName } from '../../lib/mapbox'
 
@@ -16,10 +19,21 @@ export async function getServerSideProps({ query }) {
 }
 
 export default function App({ forecast, placeName }) {
-  const { currently, hourly, daily } = forecast
+  const { currently, minutely, hourly, daily } = forecast
   return (
     <ScrollView>
-      <CurrentWeather placeName={placeName} currently={currently} hourly={hourly} daily={daily} />
+      <View>
+        <CurrentWeather placeName={placeName} currently={currently} daily={daily} />
+      </View>
+      <View>
+        <HourWeather minutely={minutely} />
+      </View>
+      <View>
+        <DayWeather hourly={hourly} />
+      </View>
+      <View>
+        <WeekWeather daily={daily} />
+      </View>
     </ScrollView>
   )
 }

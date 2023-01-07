@@ -1,9 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
 
-function CurrentWeather({ placeName, currently, hourly, daily }) {
+function CurrentWeather({ placeName, currently, daily }) {
   const { temperature, summary: currentSummary, apparentTemperature, icon } = currently
-  const { summary: hourlySummary } = hourly
   const today = daily.data[0]
   const { temperatureLow, temperatureHigh } = today
   return (
@@ -25,7 +24,6 @@ function CurrentWeather({ placeName, currently, hourly, daily }) {
           </Text>
         </View>
       </View>
-      <Text style={styles.hourly_summary}>{hourlySummary}</Text>
     </View>
   )
 }
@@ -53,9 +51,10 @@ const styles = StyleSheet.create({
   icon: {
     flexGrow: 0,
     flexShrink: 0,
-    flexBasis: '84px',
-    width: 84,
-    height: 84,
+    flexBasis: '60px',
+    width: 60,
+    height: 60,
+    marginRight: '8px',
   },
   hourly_summary: {
     fontSize: 28,
