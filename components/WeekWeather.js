@@ -6,7 +6,7 @@ function WeekWeather({ daily }) {
   const { summary: dailySummary } = daily
 
   const dailyDetails = daily.data.map((dayDetail, index) => {
-    return <DayDetail id={index} day={dayDetail} index={index} />
+    return <DayDetail key={index} day={dayDetail} index={index} />
   })
 
   return (

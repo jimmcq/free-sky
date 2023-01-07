@@ -34,35 +34,25 @@ function DayWeather({ hourly }) {
     switch (hourData.icon.split('-')[0]) {
       case 'clear':
         return '#eeeef5'
-        break
       case 'rain':
         return '#4a80c7'
-        break
       case 'light':
         return '#80a5d6'
-        break
       case 'snow':
         return '#8c82ce'
-        break
       case 'sleet':
         return '#eeeef5'
-        break
       case 'wind':
         return '#eeeef5'
-        break
       case 'fog':
         return '#eeeef5'
-        break
       case 'partly':
         return '#d5dae2'
-        break
       case 'cloudy':
       case 'mostly':
         return '#b6bfcb'
-        break
       case 'overcast':
         return '#878f9a'
-        break
       default:
         return '#eeeef5'
     }
