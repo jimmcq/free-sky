@@ -1,5 +1,6 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
+import Alerts from '../../components/Alerts'
 import CurrentWeather from '../../components/CurrentWeather'
 import DayWeather from '../../components/DayWeather'
 import HourWeather from '../../components/HourWeather'
@@ -12,18 +13,21 @@ export async function getServerSideProps({ query }) {
   const latitude = parts[0]
   const longitude = parts[1]
   const forecast = await getForecast({ latitude, longitude })
-  const placeName = await getPlaceName({ latitude, longitude })
+  const placeName = await getPlaceName({ latitude: forecast.latitude, longitude: forecast.longitude })
   const props = { forecast, placeName }
 
   return { props }
 }
 
 export default function App({ forecast, placeName }) {
-  const { currently, minutely, hourly, daily } = forecast
+  const { currently, minutely, hourly, daily, alerts } = forecast
   return (
     <ScrollView>
       <View>
         <CurrentWeather placeName={placeName} currently={currently} daily={daily} />
+      </View>
+      <View>
+        <Alerts alerts={alerts} />
       </View>
       <View>
         <HourWeather minutely={minutely} />
