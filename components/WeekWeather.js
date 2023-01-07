@@ -1,11 +1,18 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import DayDetail from './DayDetail'
 
 function WeekWeather({ daily }) {
   const { summary: dailySummary } = daily
+
+  const dailyDetails = daily.data.map((dayDetail, index) => {
+    return <DayDetail id={index} day={dayDetail} index={index} />
+  })
+
   return (
     <View style={styles.container}>
-      <Text style={styles.daily_summary}>7 days: {dailySummary}</Text>
+      <Text style={styles.daily_summary}>{dailySummary}</Text>
+      {dailyDetails}
     </View>
   )
 }

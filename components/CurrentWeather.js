@@ -9,7 +9,7 @@ function CurrentWeather({ placeName, currently, daily }) {
     <View style={styles.container}>
       <Text style={styles.text}>Current weather for {placeName.split(',')[0]}</Text>
       <View style={styles.row_container}>
-        <Image style={styles.icon} source={{ uri: `https://darksky.net/images/weather-icons/${icon}.png` }} alt={icon}></Image>
+        <Image style={styles.icon} source={{ uri: `https://darksky.net/images/weather-icons/${icon}.png` }} alt={icon} />
 
         <View style={styles.ontainer}>
           <Text style={styles.summary}>

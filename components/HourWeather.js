@@ -1,9 +1,9 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js'
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, BarElement)
 
 export const options = {
   responsive: true,
@@ -12,6 +12,8 @@ export const options = {
 }
 
 function HourWeather({ minutely }) {
+  const { summary: minutelySummary } = minutely
+
   const labels = minutely.data.map(minuteData => {
     const date = new Date(minuteData.time * 1000)
     return date.getMinutes()
@@ -20,14 +22,13 @@ function HourWeather({ minutely }) {
   const dataset = minutely.data.map(minuteData => {
     return minuteData.precipIntensity
   })
-  const { summary: minutelySummary } = minutely
+
   const data = { labels }
-  data.datasets = [{ data: dataset, backgroundColor: 'rgba(53, 162, 235, 0.5)' }]
-  console.log(data)
+  data.datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor: 'rgba(53, 162, 235, 0.5)' }]
 
   return (
     <View style={styles.container}>
-      <Text style={styles.minutely_summary}>60 minutes: {minutelySummary}</Text>
+      <Text style={styles.minutely_summary}>{minutelySummary}</Text>
       <View style={styles.chart_container}>
         <Bar options={options} data={data} />
       </View>
