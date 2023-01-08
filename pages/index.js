@@ -3,7 +3,6 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { TextInput } from 'react-native-web'
-import { searchPlace } from '../lib/mapbox'
 
 function IndexPage() {
   const [linkList, setLinkList] = useState()
