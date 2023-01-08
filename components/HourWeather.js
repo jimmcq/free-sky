@@ -27,7 +27,8 @@ function HourWeather({ minutely }) {
           },
           label: function (context) {
             const index = context.dataIndex
-            return `${minuteData[index].precipIntensity.toFixed(2)} in. ${minuteData[index].precipType}`
+            const decimal = minuteData[index].precipIntensity >= 0.01 ? 2 : 3
+            return `${minuteData[index].precipIntensity.toFixed(decimal)} in. ${minuteData[index].precipType}`
           },
         },
       },
