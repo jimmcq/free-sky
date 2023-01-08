@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, View } from 'react-native'
+import { ScrollView, View, StyleSheet } from 'react-native'
 import Alerts from '../../components/Alerts'
 import CurrentWeather from '../../components/CurrentWeather'
 import DayWeather from '../../components/DayWeather'
@@ -19,10 +19,10 @@ export async function getServerSideProps({ query }) {
   return { props }
 }
 
-export default function App({ forecast, placeName }) {
+function ForecastPage({ forecast, placeName }) {
   const { currently, minutely, hourly, daily, alerts } = forecast
   return (
-    <ScrollView>
+    <ScrollView style={styles.container}>
       <View>
         <CurrentWeather placeName={placeName} currently={currently} daily={daily} />
       </View>
@@ -41,3 +41,9 @@ export default function App({ forecast, placeName }) {
     </ScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: { padding: '8px' },
+})
+
+export default ForecastPage

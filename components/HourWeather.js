@@ -5,27 +5,41 @@ import { Bar } from 'react-chartjs-2'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip)
 
-export const options = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-  },
-}
-
 function HourWeather({ minutely }) {
-  const { summary: minutelySummary } = minutely
+  const { summary: minutelySummary, data: minuteData } = minutely
 
-  const labels = minutely.data.map(minuteData => {
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: function (context) {
+            const index = context[0].dataIndex
+            const date = new Date(minuteData[index].time * 1000)
+            const hour = date.getHours()
+            return `${hour % 12 || 12}:${date.getMinutes()}${hour >= 12 ? 'pm' : 'am'}`
+          },
+          label: function (context) {
+            const index = context.dataIndex
+            return `${minuteData[index].precipIntensity.toFixed(2)} in. ${minuteData[index].precipType}`
+          },
+        },
+      },
+    },
+  }
+
+  const labels = minuteData.map(minuteData => {
     const date = new Date(minuteData.time * 1000)
     return date.getMinutes()
   })
 
-  const dataset = minutely.data.map(minuteData => {
+  const dataset = minuteData.map(minuteData => {
     return minuteData.precipIntensity
   })
 
-  const backgroundColor = minutely.data.map(minuteData => {
+  const backgroundColor = minuteData.map(minuteData => {
     return minuteData.precipIntensity >= 0.02 ? '#4a80c7' : '#80a5d6'
   })
 
@@ -36,7 +50,7 @@ function HourWeather({ minutely }) {
     <View style={styles.container}>
       <Text style={styles.minutely_summary}>{minutelySummary}</Text>
       <View style={styles.chart_container}>
-        <Bar options={options} data={data} />
+        <Bar options={options} data={data} height={100} />
       </View>
     </View>
   )

@@ -5,32 +5,43 @@ import { Bar } from 'react-chartjs-2'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement)
 
-export const options = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: { legend: { display: false } },
-  scales: {
-    y: {
-      display: false,
-    },
-    x: {
-      grid: {
-        display: false,
+function DayWeather({ hourly }) {
+  const { summary: hourlySummary, data: hourData } = hourly
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const index = context.dataIndex
+            return hourData[index].summary
+          },
+        },
       },
     },
-  },
-}
+    scales: {
+      y: {
+        display: false,
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+    },
+  }
 
-function DayWeather({ hourly }) {
-  const labels = hourly.data.map(hourData => {
+  const labels = hourData.map(hourData => {
     const date = new Date(hourData.time * 1000)
     const hour = date.getHours()
     return `${hour % 12 || 12}${hour >= 12 ? 'pm' : 'am'}`
   })
 
-  const dataset = Array(hourly.data.length).fill(1)
+  const dataset = Array(hourData.length).fill(1)
 
-  const backgroundColor = hourly.data.map(hourData => {
+  const backgroundColor = hourData.map(hourData => {
     switch (hourData.icon.split('-')[0]) {
       case 'clear':
         return '#eeeef5'
@@ -61,12 +72,11 @@ function DayWeather({ hourly }) {
   const data = { labels }
   data.datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor }]
 
-  const { summary: hourlySummary } = hourly
   return (
     <View style={styles.container}>
       <Text style={styles.hourly_summary}>{hourlySummary}</Text>
       <View style={styles.chart_container}>
-        <Bar options={options} data={data} />
+        <Bar options={options} data={data} height={100} />
       </View>
     </View>
   )
