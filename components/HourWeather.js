@@ -6,6 +6,9 @@ import { Bar } from 'react-chartjs-2'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip)
 
 function HourWeather({ minutely }) {
+  if (!minutely) {
+    return null
+  }
   const { summary: minutelySummary, data: minuteData } = minutely
 
   const options = {
@@ -19,7 +22,8 @@ function HourWeather({ minutely }) {
             const index = context[0].dataIndex
             const date = new Date(minuteData[index].time * 1000)
             const hour = date.getHours()
-            return `${hour % 12 || 12}:${date.getMinutes()}${hour >= 12 ? 'pm' : 'am'}`
+            const minute = date.getMinutes().toString()
+            return `${hour % 12 || 12}:${minute.padStart(2, '0')}${hour >= 12 ? 'pm' : 'am'}`
           },
           label: function (context) {
             const index = context.dataIndex

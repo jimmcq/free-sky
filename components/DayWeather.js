@@ -14,6 +14,13 @@ function DayWeather({ hourly }) {
       legend: { display: false },
       tooltip: {
         callbacks: {
+          title: function (context) {
+            const index = context[0].dataIndex
+            const date = new Date(hourData[index].time * 1000)
+            const hour = date.getHours()
+            const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+            return `${hour % 12 || 12}${hour >= 12 ? 'pm' : 'am'} ${weekday[date.getDay()]}`
+          },
           label: function (context) {
             const index = context.dataIndex
             return hourData[index].summary
