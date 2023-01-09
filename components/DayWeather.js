@@ -49,6 +49,21 @@ function DayWeather({ hourly }) {
   const dataset = Array(hourData.length).fill(1)
 
   const backgroundColor = hourData.map(hourData => {
+    switch (hourData.summary) {
+      case 'Drizzle':
+      case 'Possible Drizzle':
+        return '#8caeda'
+      case 'Light Rain':
+      case 'Possible Light Rain':
+        return '#80a5d6'
+      case 'Heavy Rain':
+        return '#305f9c'
+      case 'Mostly Cloudy':
+        return '#9fabba'
+      case 'Overcast':
+        return '#878f9a'
+    }
+
     switch (hourData.icon.split('-')[0]) {
       case 'clear':
         return '#eeeef5'
@@ -67,8 +82,9 @@ function DayWeather({ hourly }) {
       case 'partly':
         return '#d5dae2'
       case 'cloudy':
-      case 'mostly':
         return '#b6bfcb'
+      case 'mostly':
+        return '#9fabba'
       case 'overcast':
         return '#878f9a'
       default:
