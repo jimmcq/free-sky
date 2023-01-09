@@ -43,7 +43,7 @@ function ForecastPage({ forecast, placeName }) {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: '8px' },
+  container: { margin: '8px' },
 })
 
 export default ForecastPage

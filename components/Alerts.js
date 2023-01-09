@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   link_button: {
     backgroundColor: '#ffffc8',

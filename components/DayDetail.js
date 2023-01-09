@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
 
 function DayDetail({ day, index }) {
-  const { icon, time, temperatureLow, temperatureHigh, precipType, precipProbability, precipIntensity } = day
+  const { icon, time, temperatureLow, temperatureHigh, precipType, precipProbability, precipIntensity, summary } = day
   return (
     <View style={styles.row_container}>
       <Image style={styles.small_icon} source={{ uri: `https://darksky.net/images/weather-icons/${icon}.png` }} alt={icon} />
@@ -15,8 +15,14 @@ function DayDetail({ day, index }) {
       </Text>
       <Text style={[styles.text, styles.text150]}>
         {' '}
-        {precipType ? precipType.charAt(0).toUpperCase() + precipType.slice(1) : 'Rain'} {Math.round(precipProbability * 100)}%{' '}
-        {(precipIntensity * 24).toFixed(2)} in.
+        {precipProbability > 0 || precipIntensity > 0 ? (
+          <>
+            {precipType ? precipType.charAt(0).toUpperCase() + precipType.slice(1) : 'Rain'} {Math.round(precipProbability * 100)}%{' '}
+            {(precipIntensity * 24).toFixed(2)} in.
+          </>
+        ) : (
+          'No precipitation.'
+        )}
       </Text>
     </View>
   )

@@ -35,12 +35,17 @@ function HourWeather({ minutely }) {
     },
   }
 
+  let displayChart = false
+
   const labels = minuteData.map(minuteData => {
     const date = new Date(minuteData.time * 1000)
     return date.getMinutes()
   })
 
   const dataset = minuteData.map(minuteData => {
+    if (minuteData.precipIntensity > 0) {
+      displayChart = true
+    }
     return minuteData.precipIntensity
   })
 
@@ -54,9 +59,11 @@ function HourWeather({ minutely }) {
   return (
     <View style={styles.container}>
       <Text style={styles.minutely_summary}>{minutelySummary}</Text>
-      <View style={styles.chart_container}>
-        <Bar options={options} data={data} height={100} />
-      </View>
+      {displayChart === true && (
+        <View style={styles.chart_container}>
+          <Bar options={options} data={data} height={100} />
+        </View>
+      )}
     </View>
   )
 }

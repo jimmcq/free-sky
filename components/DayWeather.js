@@ -40,6 +40,8 @@ function DayWeather({ hourly }) {
     },
   }
 
+  let displayChart = false
+
   const labels = hourData.map(hourData => {
     const date = new Date(hourData.time * 1000)
     const hour = date.getHours()
@@ -49,6 +51,10 @@ function DayWeather({ hourly }) {
   const dataset = Array(hourData.length).fill(1)
 
   const backgroundColor = hourData.map(hourData => {
+    if (hourData.icon.split('-')[0] !== 'clear') {
+      displayChart = true
+    }
+
     switch (hourData.summary) {
       case 'Drizzle':
       case 'Possible Drizzle':
@@ -62,6 +68,9 @@ function DayWeather({ hourly }) {
         return '#9fabba'
       case 'Overcast':
         return '#878f9a'
+      case 'Light Snow':
+      case 'Possible Light Snow':
+        return '#a39ad7'
     }
 
     switch (hourData.icon.split('-')[0]) {
@@ -95,12 +104,18 @@ function DayWeather({ hourly }) {
   const data = { labels }
   data.datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor }]
 
+  if (hourlySummary === 'Clear throughout the day.') {
+    displayChart = false
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.hourly_summary}>{hourlySummary}</Text>
-      <View style={styles.chart_container}>
-        <Bar options={options} data={data} height={100} />
-      </View>
+      {displayChart === true && (
+        <View style={styles.chart_container}>
+          <Bar options={options} data={data} height={100} />
+        </View>
+      )}
     </View>
   )
 }
