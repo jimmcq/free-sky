@@ -10,11 +10,16 @@ import { getPlaceName } from '../../lib/mapbox'
 
 export async function getServerSideProps({ query }) {
   const parts = query.coords.split(',')
-  const latitude = parts[0]
-  const longitude = parts[1]
+  const latitude = parseFloat(parts[0])
+  const longitude = parseFloat(parts[1])
+  if (isNaN(latitude) || isNaN(longitude) || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+    throw new Error('Invalid location coordinates')
+  }
   const forecast = await getForecast({ latitude, longitude })
-  const placeName = await getPlaceName({ latitude: forecast.latitude, longitude: forecast.longitude })
-  const props = { forecast, placeName }
+  const placeName = (await getPlaceName({ latitude: forecast.latitude, longitude: forecast.longitude })) || `${latitude},${longitude}`
+
+  const pageMetadata = { title: `Weather for ${placeName}` }
+  const props = { forecast, placeName, pageMetadata }
 
   return { props }
 }

@@ -5,9 +5,13 @@ function CurrentWeather({ placeName, currently, daily }) {
   const { temperature, summary: currentSummary, apparentTemperature, icon } = currently
   const today = daily.data[0]
   const { temperatureLow, temperatureHigh } = today
+
+  const nameParts = placeName.split(',')
+  const location = nameParts.length <= 2 ? placeName : `${nameParts[0]}, ${nameParts[1]}`
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Current weather for {placeName.split(',')[0]}</Text>
+      <Text style={styles.text}>Current weather for {location}</Text>
       <View style={styles.row_container}>
         <Image style={styles.icon} source={{ uri: `https://darksky.net/images/weather-icons/${icon}.png` }} alt={icon} />
 
