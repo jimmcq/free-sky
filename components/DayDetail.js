@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
 
 function DayDetail({ day, index }) {
-  const { icon, time, temperatureLow, temperatureHigh, precipType, precipProbability, precipIntensity, summary } = day
+  const { icon, time, temperatureLow, temperatureHigh, precipType, precipProbability, precipIntensity } = day
   return (
     <View style={styles.row_container}>
       <Image style={styles.small_icon} source={{ uri: `https://darksky.net/images/weather-icons/${icon}.png` }} alt={icon} />
