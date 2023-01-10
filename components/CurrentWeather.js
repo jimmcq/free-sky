@@ -15,7 +15,7 @@ function CurrentWeather({ placeName, currently, daily }) {
       <View style={styles.row_container}>
         <Image style={styles.icon} source={{ uri: `https://darksky.net/images/weather-icons/${icon}.png` }} alt={icon} />
 
-        <View style={styles.ontainer}>
+        <View>
           <Text style={styles.summary}>
             {Math.round(temperature)}˚ {currentSummary}.
           </Text>

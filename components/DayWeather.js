@@ -34,7 +34,9 @@ function DayWeather({ hourly }) {
       },
       x: {
         grid: {
-          display: false,
+          display: true,
+          drawOnChartArea: false,
+          z: 1,
         },
       },
     },
@@ -42,9 +44,16 @@ function DayWeather({ hourly }) {
 
   let displayChart = false
 
-  const labels = hourData.map(hourData => {
+  const labels = hourData.map((hourData, index) => {
+    if (index === 0) {
+      return 'Now'
+    }
     const date = new Date(hourData.time * 1000)
     const hour = date.getHours()
+    if (hour === 0) {
+      const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      return weekday[date.getDay()]
+    }
     return `${hour % 12 || 12}${hour >= 12 ? 'pm' : 'am'}`
   })
 
@@ -71,6 +80,8 @@ function DayWeather({ hourly }) {
       case 'Light Snow':
       case 'Possible Light Snow':
         return '#a39ad7'
+      case 'Heavy Snow':
+        return '#7569c4'
     }
 
     switch (hourData.icon.split('-')[0]) {

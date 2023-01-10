@@ -10,6 +10,8 @@ async function handler(req, res) {
         return { place_name: place.place_name, center: place.center }
       })
       res.status(200).send(result)
+    } else {
+      res.status(200).send([])
     }
   } else {
     res.status(404).send([])

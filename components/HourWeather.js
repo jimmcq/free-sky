@@ -37,9 +37,15 @@ function HourWeather({ minutely }) {
 
   let displayChart = false
 
-  const labels = minuteData.map(minuteData => {
+  const labels = minuteData.map((minuteData, index) => {
+    if (index === 0) {
+      return 'Now'
+    }
     const date = new Date(minuteData.time * 1000)
-    return date.getMinutes()
+    const hour = date.getHours()
+
+    const minutes = date.getMinutes().toString()
+    return `${hour % 12 || 12}:${minutes.padStart(2, '0')}`
   })
 
   const dataset = minuteData.map(minuteData => {
@@ -50,7 +56,10 @@ function HourWeather({ minutely }) {
   })
 
   const backgroundColor = minuteData.map(minuteData => {
-    return minuteData.precipIntensity >= 0.02 ? '#4a80c7' : '#80a5d6'
+    if (minuteData.precipType === 'snow') {
+      return minuteData.precipIntensity > 0.05 ? '#8c82ce' : '#a39ad7'
+    }
+    return minuteData.precipIntensity > 0.05 ? '#4a80c7' : '#80a5d6'
   })
 
   const data = { labels }
