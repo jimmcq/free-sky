@@ -2,28 +2,23 @@ import React from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
 
 function DayDetail({ day, index }) {
-  const { icon, time, temperatureLow, temperatureHigh, precipType, precipProbability, precipIntensity } = day
+  const { icon, time, temperatureLow, temperatureHigh, summary } = day
   return (
     <View style={styles.row_container}>
-      <Image style={styles.small_icon} source={{ uri: `https://darksky.net/images/weather-icons/${icon}.png` }} alt={icon} />
-      <Text style={[styles.text, styles.text75]}>
+      <Image
+        title={summary}
+        style={styles.small_icon}
+        source={{ uri: `https://darksky.net/images/weather-icons/${icon}.png` }}
+        alt={icon}
+      />
+      <Text style={[styles.text, styles.text50]}>
         {index === 0 ? 'Today' : new Date(time * 1000).toLocaleDateString('en-US', { weekday: 'short' })}
       </Text>
-      <Text style={[styles.text, styles.text75]}>
+      <Text style={[styles.text, styles.text70]}>
         {' '}
         {Math.round(temperatureLow)}˚-{Math.round(temperatureHigh)}˚
       </Text>
-      <Text style={[styles.text, styles.text150]}>
-        {' '}
-        {precipProbability > 0 || precipIntensity > 0 ? (
-          <>
-            {precipType ? precipType.charAt(0).toUpperCase() + precipType.slice(1) : 'Rain'} {Math.round(precipProbability * 100)}%{' '}
-            {(precipIntensity * 24).toFixed(2)} in.
-          </>
-        ) : (
-          'No precipitation.'
-        )}
-      </Text>
+      <Text style={[styles.text, styles.text250]}>{summary}</Text>
     </View>
   )
 }
@@ -47,11 +42,14 @@ const styles = StyleSheet.create({
     fontSize: '16px',
     fontWeight: 400,
   },
-  text75: {
-    width: '75px',
+  text50: {
+    width: '50px',
   },
-  text150: {
-    width: '150px',
+  text70: {
+    width: '70px',
+  },
+  text250: {
+    width: '250px',
   },
 })
 

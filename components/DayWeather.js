@@ -25,6 +25,15 @@ function DayWeather({ hourly }) {
             const index = context.dataIndex
             return hourData[index].summary
           },
+          footer: function (context) {
+            const index = context[0].dataIndex
+            const { precipProbability, precipIntensity, precipType } = hourData[index]
+            if (precipProbability > 0 || precipIntensity > 0) {
+              return `${precipType ? precipType.charAt(0).toUpperCase() + precipType.slice(1) : 'Rain'} ${Math.round(
+                precipProbability * 100
+              )}% ${(precipIntensity * 24).toFixed(2)} in.`
+            }
+          },
         },
       },
     },
