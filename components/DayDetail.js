@@ -18,7 +18,7 @@ function DayDetail({ day, index }) {
         {' '}
         {Math.round(temperatureLow)}˚-{Math.round(temperatureHigh)}˚
       </Text>
-      <Text style={[styles.text, styles.text215]}>{summary}</Text>
+      <Text style={[styles.text, styles.text200]}>{summary}</Text>
     </View>
   )
 }
@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
   text70: {
     width: '70px',
   },
-  text215: {
-    width: '215px',
+  text200: {
+    width: '200px',
   },
 })
 
