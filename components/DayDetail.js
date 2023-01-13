@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    maxWidth: '390px',
   },
   small_icon: {
     flexGrow: 0,
