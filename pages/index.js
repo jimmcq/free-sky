@@ -92,8 +92,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   results: {
-    width: '390px',
-    height: '390px',
+    width: '380px',
+    height: '380px',
   },
 })
 
