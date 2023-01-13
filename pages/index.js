@@ -6,6 +6,7 @@ import Device from 'expo-device'
 import * as Location from 'expo-location'
 import { TextInput } from 'react-native-web'
 import { useDebouncedCallback } from 'use-debounce'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 function IndexPage() {
   const [linkList, setLinkList] = useState()
@@ -18,29 +19,47 @@ function IndexPage() {
 
   useEffect(() => {
     ;(async () => {
-      if (Platform.OS === 'android' && !Device.isDevice) {
-        return
-      }
-      let { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== 'granted') {
-        return
-      }
+      // Get from Storage
+      const storedLocationList = await AsyncStorage.getItem('locationList')
+      if (storedLocationList) {
+        const newList = JSON.parse(storedLocationList)
+        setLinkList(
+          newList.map((place, index) => {
+            const latitude = parseFloat(place.latitude).toFixed(4)
+            const longitude = parseFloat(place.longitude).toFixed(4)
+            return (
+              <Link key={index} href={`/forecast/${latitude},${longitude}`}>
+                <Text style={styles.link}>{place.placeName}</Text>
+              </Link>
+            )
+          })
+        )
+      } else {
+        // Get Location
+        if (Platform.OS === 'android' && !Device.isDevice) {
+          return
+        }
+        let { status } = await Location.requestForegroundPermissionsAsync()
+        if (status !== 'granted') {
+          return
+        }
 
-      let location = await Location.getCurrentPositionAsync({})
-      const latitude = parseFloat(location.coords.latitude).toFixed(4)
-      const longitude = parseFloat(location.coords.longitude).toFixed(4)
-      if (isNaN(latitude) || isNaN(longitude) || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
-        return
-      }
-      const url = `/api/getplacename?latitude=${latitude}&longitude=${longitude}`
-      const response = await fetch(url)
-      const placeName = await response.json()
+        let location = await Location.getCurrentPositionAsync({})
+        const latitude = parseFloat(location.coords.latitude).toFixed(4)
+        const longitude = parseFloat(location.coords.longitude).toFixed(4)
+        if (isNaN(latitude) || isNaN(longitude) || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+          return
+        }
+        const url = `/api/getplacename?latitude=${latitude}&longitude=${longitude}`
+        const response = await fetch(url)
+        const placeName = await response.json()
 
-      setLinkList([
-        <Link key={'loc'} href={`/forecast/${latitude},${longitude}`}>
-          <Text>{placeName}</Text>
-        </Link>,
-      ])
+        setLinkList([
+          <Link key={0} href={`/forecast/${latitude},${longitude}`}>
+            <Text style={styles.link}>{placeName}</Text>
+          </Link>,
+        ])
+      }
     })()
   }, [])
 
@@ -59,7 +78,7 @@ function IndexPage() {
           const longitude = parseFloat(place.center[0]).toFixed(4)
           return (
             <Link key={index} href={`/forecast/${latitude},${longitude}`}>
-              <Text>{place.place_name}</Text>
+              <Text style={styles.link}>{place.place_name}</Text>
             </Link>
           )
         })
@@ -71,6 +90,8 @@ function IndexPage() {
     <View style={styles.container}>
       <Text style={styles.text}>When Dark Sky is gone, Free-Sky.Net remains</Text>
       <TextInput style={styles.input} placeholder="Location Search" onChange={e => debounced(e.target.value)}></TextInput>
+      <Text>Enter an address above</Text>
+      <Text> {linkList && <Text>or select an address below</Text>} </Text>
       <View style={styles.results}>{linkList}</View>
     </View>
   )
@@ -92,8 +113,12 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   results: {
-    width: '380px',
-    height: '380px',
+    width: '368px',
+    height: '368px',
+    marginTop: '16px',
+  },
+  link: {
+    marginBottom: '8px',
   },
 })
 
