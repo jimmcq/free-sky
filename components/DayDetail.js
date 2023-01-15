@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     maxWidth: '368px',
+    marginTop: '8px',
   },
   small_icon: {
     flexGrow: 0,
