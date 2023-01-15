@@ -49,7 +49,7 @@ function HourWeather({ minutely }) {
 
   let displayChart = false
 
-  const labels = minuteData.map((minuteData, index) => {
+  const labels = minuteData.map(minuteData => {
     return new Date(minuteData.time * 1000)
   })
 

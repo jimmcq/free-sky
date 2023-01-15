@@ -58,7 +58,7 @@ function DayWeather({ hourly }) {
 
   let displayChart = false
 
-  const labels = hourData.map((hourData, index) => {
+  const labels = hourData.map(hourData => {
     return new Date(hourData.time * 1000)
   })
 
