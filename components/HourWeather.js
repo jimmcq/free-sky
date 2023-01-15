@@ -1,9 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip } from 'chart.js'
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, TimeScale } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
+import 'chartjs-adapter-date-fns'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip)
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, TimeScale)
 
 function HourWeather({ minutely }) {
   if (!minutely) {
@@ -34,18 +35,22 @@ function HourWeather({ minutely }) {
         },
       },
     },
+    scales: {
+      x: {
+        type: 'time',
+        ticks: {
+          major: {
+            enabled: true,
+          },
+        },
+      },
+    },
   }
 
   let displayChart = false
 
   const labels = minuteData.map((minuteData, index) => {
-    if (index === 0) {
-      return 'Now'
-    }
-    const date = new Date(minuteData.time * 1000)
-    const hour = date.getHours()
-    const minute = date.getMinutes().toString()
-    return `${hour % 12 || 12}:${minute.padStart(2, '0')}`
+    return new Date(minuteData.time * 1000)
   })
 
   const dataset = minuteData.map(minuteData => {

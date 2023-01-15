@@ -1,9 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement } from 'chart.js'
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, TimeScale } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
+import 'chartjs-adapter-date-fns'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement)
+ChartJS.register(CategoryScale, LinearScale, BarElement, TimeScale)
 
 function DayWeather({ hourly }) {
   const { summary: hourlySummary, data: hourData } = hourly
@@ -42,6 +43,10 @@ function DayWeather({ hourly }) {
         display: false,
       },
       x: {
+        type: 'time',
+        ticks: {
+          major: { enabled: true },
+        },
         grid: {
           display: true,
           drawOnChartArea: false,
@@ -54,16 +59,7 @@ function DayWeather({ hourly }) {
   let displayChart = false
 
   const labels = hourData.map((hourData, index) => {
-    if (index === 0) {
-      return 'Now'
-    }
-    const date = new Date(hourData.time * 1000)
-    const hour = date.getHours()
-    if (hour === 0) {
-      const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-      return weekday[date.getDay()]
-    }
-    return `${hour % 12 || 12}${hour >= 12 ? 'pm' : 'am'}`
+    return new Date(hourData.time * 1000)
   })
 
   const dataset = Array(hourData.length).fill(1)
