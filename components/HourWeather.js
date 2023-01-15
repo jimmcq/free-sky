@@ -44,9 +44,8 @@ function HourWeather({ minutely }) {
     }
     const date = new Date(minuteData.time * 1000)
     const hour = date.getHours()
-
-    const minutes = date.getMinutes().toString()
-    return `${hour % 12 || 12}:${minutes.padStart(2, '0')}`
+    const minute = date.getMinutes().toString()
+    return minute % 15 ? '' : `${hour % 12 || 12}:${minute.padStart(2, '0')}`
   })
 
   const dataset = minuteData.map(minuteData => {

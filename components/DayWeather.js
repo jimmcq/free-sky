@@ -63,7 +63,7 @@ function DayWeather({ hourly }) {
       const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
       return weekday[date.getDay()]
     }
-    return `${hour % 12 || 12}${hour >= 12 ? 'pm' : 'am'}`
+    return hour % 4 ? '' : `${hour % 12 || 12}${hour >= 12 ? 'pm' : 'am'}`
   })
 
   const dataset = Array(hourData.length).fill(1)
