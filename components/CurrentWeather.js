@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
+import { translateIcon } from '../lib/helpers'
 
 function CurrentWeather({ placeName, currently, daily }) {
   const { temperature, summary: currentSummary, apparentTemperature, icon } = currently
@@ -13,7 +14,7 @@ function CurrentWeather({ placeName, currently, daily }) {
     <View style={styles.container}>
       <Text style={styles.text}>Current weather for {location}</Text>
       <View style={styles.row_container}>
-        <Image style={styles.icon} source={{ uri: `https://darksky.net/images/weather-icons/${icon}.png` }} alt={icon} />
+        <Image style={styles.icon} source={`/icons/${translateIcon({ icon, summary: currentSummary })}.svg`} alt={icon} />
 
         <View>
           <Text style={styles.summary}>

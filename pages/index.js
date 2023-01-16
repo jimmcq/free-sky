@@ -1,10 +1,9 @@
 // @generated: @expo/next-adapter@2.1.52
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import { Platform, StyleSheet, Text, View, TextInput } from 'react-native'
 import Device from 'expo-device'
 import * as Location from 'expo-location'
-import { TextInput } from 'react-native-web'
 import { useDebouncedCallback } from 'use-debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
