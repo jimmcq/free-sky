@@ -38,6 +38,12 @@ function HourWeather({ minutely }) {
     scales: {
       x: {
         type: 'time',
+        time: {
+          displayFormats: {
+            minute: 'h:mm',
+            hour: 'h:mm',
+          },
+        },
         ticks: {
           major: {
             enabled: true,

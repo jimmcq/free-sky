@@ -44,8 +44,16 @@ function DayWeather({ hourly }) {
       },
       x: {
         type: 'time',
+        time: {
+          displayFormats: {
+            hour: 'haaa',
+            day: 'E',
+          },
+        },
         ticks: {
-          major: { enabled: true },
+          major: {
+            enabled: true,
+          },
         },
         grid: {
           display: true,

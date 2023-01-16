@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    maxWidth: '368px',
   },
   text: {
     fontSize: 16,
