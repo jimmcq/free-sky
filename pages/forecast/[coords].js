@@ -8,6 +8,7 @@ import WeekWeather from '../../components/WeekWeather'
 import { getForecast } from '../../lib/darksky'
 import { getPlaceName } from '../../lib/mapbox'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useRouter } from 'next/router'
 
 export async function getServerSideProps({ query }) {
   const parts = query.coords.split(',')
@@ -27,6 +28,17 @@ export async function getServerSideProps({ query }) {
 }
 
 function ForecastPage({ forecast, placeName }) {
+  const router = useRouter()
+
+  // Refresh server side props every 60 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      router.replace(router.asPath)
+    }, 6000)
+
+    return () => clearInterval(interval)
+  }, [])
+
   const { currently, minutely, hourly, daily, alerts, latitude, longitude } = forecast
 
   useEffect(() => {
