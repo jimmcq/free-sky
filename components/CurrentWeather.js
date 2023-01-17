@@ -10,11 +10,18 @@ function CurrentWeather({ placeName, currently, daily }) {
   const nameParts = placeName.split(',')
   const location = nameParts.length <= 2 ? placeName : `${nameParts[0]}, ${nameParts[1]}`
 
+  const currentTime = Math.floor(Date.now() / 1000)
+  const { sunriseTime, sunsetTime } = today
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Current weather for {location}</Text>
+      <Text style={[styles.text, styles.w368]}>Current weather for {location}</Text>
       <View style={styles.row_container}>
-        <Image style={styles.icon} source={`/icons/${translateIcon({ icon, summary: currentSummary })}.svg`} alt={icon} />
+        <Image
+          style={styles.icon}
+          source={`/icons/${translateIcon({ icon, summary: currentSummary, currentTime, sunriseTime, sunsetTime })}.svg`}
+          alt={icon}
+        />
 
         <View>
           <Text style={styles.summary}>
@@ -47,12 +54,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     maxWidth: '368px',
   },
+  w368: {
+    maxWidth: '368px',
+  },
   text: {
     fontSize: 16,
   },
   summary: {
     fontSize: 32,
     fontWeight: 600,
+    maxWidth: '300px',
   },
   icon: {
     flexGrow: 0,
