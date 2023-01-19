@@ -29,11 +29,13 @@ function CurrentWeather({ placeName, currently, hourly, daily }) {
           <Text style={styles.summary}>
             {Math.round(temperature)}˚<Text style={styles.temperature_arrow}>{temperatureDirection}</Text> {currentSummary}.
           </Text>
-
           <Text style={[styles.text, styles.w300]}>
-            <Text style={styles.label}>Feel: </Text> <Text style={styles.temperature}>{Math.round(apparentTemperature)}˚</Text>{' '}
+            <Text style={styles.label}>Feels like: </Text> <Text style={styles.temperature}>{Math.round(apparentTemperature)}˚</Text>{' '}
             <Text style={styles.label}>Low: </Text> <Text style={styles.temperature}>{Math.round(temperatureLow)}˚</Text>{' '}
-            <Text style={styles.label}>High: </Text> <Text style={styles.temperature}>{Math.round(temperatureHigh)}˚</Text>{' '}
+            <Text style={styles.label}>High: </Text> <Text style={styles.temperature}>{Math.round(temperatureHigh)}˚</Text>
+          </Text>
+          <Text>
+            <Text style={styles.label}>Wind: </Text>
             <Text style={styles.temperature}>{`${Math.round(windSpeed)} mph (${bearingToCardinal(windBearing)})`} </Text>
           </Text>
         </View>
