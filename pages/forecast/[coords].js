@@ -43,7 +43,11 @@ function ForecastPage({ forecast, placeName }) {
   // Refresh server side props every 10 minutes
   useEffect(() => {
     const interval = setInterval(() => {
-      router.replace(router.asPath)
+      try {
+        router.replace(router.asPath)
+      } catch (e) {
+        // Do nothing
+      }
     }, 60000)
 
     return () => clearInterval(interval)
