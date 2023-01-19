@@ -13,7 +13,7 @@ function CurrentWeather({ placeName, currently, hourly, daily }) {
   const currentTime = Math.floor(Date.now() / 1000)
   const { sunriseTime, sunsetTime } = today
 
-  const temperatureDirection = hourly.data[0].temperature < hourly.data[1].temperature ? '⬆' : '⬇'
+  const temperatureDirection = hourly.data[0].temperature < hourly.data[1].temperature ? '\u2191' : '\u2193'
 
   return (
     <View style={styles.container}>
@@ -27,14 +27,13 @@ function CurrentWeather({ placeName, currently, hourly, daily }) {
 
         <View>
           <Text style={styles.summary}>
-            {Math.round(temperature)}˚{temperatureDirection} {currentSummary}.
+            {Math.round(temperature)}˚<Text style={styles.temperature_arrow}>{temperatureDirection}</Text> {currentSummary}.
           </Text>
 
-          <Text style={styles.text}>
-            <Text style={styles.label}>Feels like: </Text> <Text style={styles.temperature}>{Math.round(apparentTemperature)}˚</Text>{' '}
+          <Text style={[styles.text, styles.w300]}>
+            <Text style={styles.label}>Feel: </Text> <Text style={styles.temperature}>{Math.round(apparentTemperature)}˚</Text>{' '}
             <Text style={styles.label}>Low: </Text> <Text style={styles.temperature}>{Math.round(temperatureLow)}˚</Text>{' '}
             <Text style={styles.label}>High: </Text> <Text style={styles.temperature}>{Math.round(temperatureHigh)}˚</Text>{' '}
-            <Text style={styles.label}>Wind: </Text>
             <Text style={styles.temperature}>{`${Math.round(windSpeed)} mph (${bearingToCardinal(windBearing)})`} </Text>
           </Text>
         </View>
@@ -67,6 +66,10 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 600,
     maxWidth: '300px',
+    textAlign: 'left',
+  },
+  w300: {
+    maxWidth: '300px',
   },
   icon: {
     flexGrow: 0,
@@ -85,6 +88,10 @@ const styles = StyleSheet.create({
   },
   temperature: {
     fontWeight: 300,
+  },
+  temperature_arrow: {
+    fontSize: '20px',
+    marginLeft: '-4px',
   },
 })
 

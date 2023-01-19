@@ -10,7 +10,10 @@ function Alerts({ alerts }) {
   const alertLinks = alerts.map((alert, index) => {
     return (
       <Link key={index} href={alert.uri}>
-        <Text style={styles.link_button}> ⚑ {alert.title} </Text>
+        <Text style={styles.link_button}>
+          {' '}
+          {'\u2691'} {alert.title}{' '}
+        </Text>
       </Link>
     )
   })
