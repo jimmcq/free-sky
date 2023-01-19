@@ -1,9 +1,9 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
-import { translateIcon } from '../lib/helpers'
+import { bearingToCardinal, translateIcon } from '../lib/helpers'
 
-function CurrentWeather({ placeName, currently, daily }) {
-  const { temperature, summary: currentSummary, apparentTemperature, icon } = currently
+function CurrentWeather({ placeName, currently, hourly, daily }) {
+  const { temperature, summary: currentSummary, apparentTemperature, icon, windSpeed, windBearing } = currently
   const today = daily.data[0]
   const { temperatureLow, temperatureHigh } = today
 
@@ -12,6 +12,8 @@ function CurrentWeather({ placeName, currently, daily }) {
 
   const currentTime = Math.floor(Date.now() / 1000)
   const { sunriseTime, sunsetTime } = today
+
+  const temperatureDirection = hourly.data[0].temperature < hourly.data[1].temperature ? '⬆' : '⬇'
 
   return (
     <View style={styles.container}>
@@ -25,14 +27,15 @@ function CurrentWeather({ placeName, currently, daily }) {
 
         <View>
           <Text style={styles.summary}>
-            {Math.round(temperature)}˚ {currentSummary}.
+            {Math.round(temperature)}˚{temperatureDirection} {currentSummary}.
           </Text>
 
           <Text style={styles.text}>
-            <Text style={styles.label}>Feels like: </Text>
-            <Text style={styles.temperature}>{Math.round(apparentTemperature)}˚</Text> <Text style={styles.label}>Low: </Text>
-            <Text style={styles.temperature}>{Math.round(temperatureLow)}˚</Text> <Text style={styles.label}>High: </Text>
-            <Text style={styles.temperature}>{Math.round(temperatureHigh)}˚</Text>
+            <Text style={styles.label}>Feels like: </Text> <Text style={styles.temperature}>{Math.round(apparentTemperature)}˚</Text>{' '}
+            <Text style={styles.label}>Low: </Text> <Text style={styles.temperature}>{Math.round(temperatureLow)}˚</Text>{' '}
+            <Text style={styles.label}>High: </Text> <Text style={styles.temperature}>{Math.round(temperatureHigh)}˚</Text>{' '}
+            <Text style={styles.label}>Wind: </Text>
+            <Text style={styles.temperature}>{`${Math.round(windSpeed)} mph (${bearingToCardinal(windBearing)})`} </Text>
           </Text>
         </View>
       </View>

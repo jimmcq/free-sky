@@ -30,11 +30,11 @@ export async function getServerSideProps({ query }) {
 function ForecastPage({ forecast, placeName }) {
   const router = useRouter()
 
-  // Refresh server side props every 60 seconds
+  // Refresh server side props every 10 minutes
   useEffect(() => {
     const interval = setInterval(() => {
       router.replace(router.asPath)
-    }, 6000)
+    }, 60000)
 
     return () => clearInterval(interval)
   }, [])
@@ -64,7 +64,7 @@ function ForecastPage({ forecast, placeName }) {
   return (
     <ScrollView style={styles.container}>
       <View>
-        <CurrentWeather placeName={placeName} currently={currently} daily={daily} />
+        <CurrentWeather placeName={placeName} currently={currently} hourly={hourly} daily={daily} />
       </View>
       <View>
         <Alerts alerts={alerts} />
