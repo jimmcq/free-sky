@@ -17,7 +17,7 @@ function CurrentWeather({ placeName, currently, hourly, daily }) {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.text, styles.w368]}>Current weather for {location}</Text>
+      <Text style={[styles.text, styles.w368]}>Weather for {location}</Text>
       <View style={styles.row_container}>
         <Image
           style={styles.icon}

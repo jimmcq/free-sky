@@ -18,7 +18,17 @@ export async function getServerSideProps({ query }) {
     throw new Error('Invalid location coordinates')
   }
 
-  const forecast = await getForecast({ latitude, longitude })
+  let forecast = {}
+  try {
+    forecast = await getForecast({ latitude, longitude })
+  } catch (e) {
+    throw new Error('Error retrieving forecast data')
+  }
+
+  if (forecast?.latitude === undefined || forecast?.longitude === undefined) {
+    throw new Error('Invalid forecast data')
+  }
+
   const placeName = (await getPlaceName({ latitude: forecast.latitude, longitude: forecast.longitude })) || `${latitude},${longitude}`
 
   const pageMetadata = { title: `Weather for ${placeName}` }
