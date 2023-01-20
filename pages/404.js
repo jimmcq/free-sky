@@ -1,4 +1,5 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import ColorSkycons from 'react-color-skycons'
+import { StyleSheet, Text, View } from 'react-native'
 
 function Custom404() {
   return (
@@ -6,7 +7,7 @@ function Custom404() {
       <Text>
         <Text style={styles.status_code}>404</Text> This page could not be found.
       </Text>
-      <Image style={styles.icon} source={'/icons/unknown.svg'} width={'380px'} />
+      <ColorSkycons style={styles.icon} type={'FOG'} animate={true} size={380} resizeClear={true} />
     </View>
   )
 }
@@ -28,9 +29,9 @@ const styles = StyleSheet.create({
   icon: {
     flexGrow: 0,
     flexShrink: 0,
-    flexBasis: '368px',
-    width: 368,
-    height: 368,
+    flexBasis: '380px',
+    width: 380,
+    height: 380,
   },
 })
 

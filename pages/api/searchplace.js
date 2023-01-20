@@ -1,6 +1,9 @@
+import setCacheControl from '../../lib/cache-control'
 import { searchPlace } from '../../lib/mapbox'
 
 async function handler(req, res) {
+  setCacheControl({ res, maxAge: 86400 })
+
   const { place } = req.query
   if (!place) {
     res.status(400).send('Error')

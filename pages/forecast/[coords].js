@@ -9,8 +9,10 @@ import { getForecast } from '../../lib/darksky'
 import { getPlaceName } from '../../lib/mapbox'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useRouter } from 'next/router'
+import setCacheControl from '../../lib/cache-control'
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ res, query }) {
+  setCacheControl({ res, maxAge: 300 })
   const parts = query.coords.split(',')
   const latitude = parseFloat(parts[0]).toFixed(4)
   const longitude = parseFloat(parts[1]).toFixed(4)

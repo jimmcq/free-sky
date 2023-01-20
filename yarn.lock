@@ -10260,6 +10260,13 @@ react-chartjs-2@^5.1.0:
   resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-5.2.0.tgz#43c1e3549071c00a1a083ecbd26c1ad34d385f5d"
   integrity sha512-98iN5aguJyVSxp5U3CblRLH67J8gkfyGNbiK3c+l1QI/G4irHMPQw44aEPmjVag+YKTyQ260NcF82GTQ3bdscA==
 
+react-color-skycons@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-color-skycons/-/react-color-skycons-0.1.0.tgz#565f11a5697cbfebebf960db26e396e9d854218b"
+  integrity sha512-JVm+a/AZxMX6ksocfw1rEUcGOgOwfGYUl6BkH6oGmrvgHMndG3M5mBjRmln2lKqZ8D0CIkDTiyQPhLD2JFMRkw==
+  dependencies:
+    skycons-color "^1.0.0"
+
 react-dev-utils@~11.0.1:
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-11.0.4.tgz#a7ccb60257a1ca2e0efe7a83e38e6700d17aa37a"
@@ -11082,6 +11089,11 @@ sisteransi@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
+
+skycons-color@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/skycons-color/-/skycons-color-1.0.0.tgz#f71e259da112c4425e0152ebd4323e5757b8667f"
+  integrity sha512-kJt3Gxb4IV1EwZBz3cUoFgCeTY4HiS75sc8Mm6DLn0uJhiZx5QCqBJZOMdGWnYw+XBj6/RbND1ZkL6+wmehx5g==
 
 slash@^3.0.0:
   version "3.0.0"

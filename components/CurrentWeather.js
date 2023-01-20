@@ -1,6 +1,7 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native'
-import { bearingToCardinal, translateIcon } from '../lib/helpers'
+import { StyleSheet, Text, View } from 'react-native'
+import { bearingToCardinal } from '../lib/helpers'
+import ColorSkycons from 'react-color-skycons'
 
 function CurrentWeather({ placeName, currently, hourly, daily }) {
   const { temperature, summary: currentSummary, apparentTemperature, icon, windSpeed, windBearing } = currently
@@ -10,21 +11,13 @@ function CurrentWeather({ placeName, currently, hourly, daily }) {
   const nameParts = placeName.split(',')
   const location = nameParts.length <= 2 ? placeName : `${nameParts[0]}, ${nameParts[1]}`
 
-  const currentTime = Math.floor(Date.now() / 1000)
-  const { sunriseTime, sunsetTime } = today
-
   const temperatureDirection = hourly.data[0].temperature < hourly.data[1].temperature ? '\u2191' : '\u2193'
 
   return (
     <View style={styles.container}>
       <Text style={[styles.text, styles.w368]}>Weather for {location}</Text>
       <View style={styles.row_container}>
-        <Image
-          style={styles.icon}
-          source={`/icons/${translateIcon({ icon, summary: currentSummary, currentTime, sunriseTime, sunsetTime })}.svg`}
-          alt={icon}
-        />
-
+        <ColorSkycons style={styles.icon} type={icon.toUpperCase().replaceAll('-', '_')} animate={true} size={60} resizeClear={true} />
         <View>
           <Text style={styles.summary}>
             {Math.round(temperature)}˚<Text style={styles.temperature_arrow}>{temperatureDirection}</Text> {currentSummary}.

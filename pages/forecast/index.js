@@ -3,8 +3,14 @@ import { Platform, Text, View, StyleSheet } from 'react-native'
 import Device from 'expo-device'
 import * as Location from 'expo-location'
 import { useRouter } from 'next/router'
+import setCacheControl from '../../lib/cache-control'
 
-export default function App() {
+export async function getServerSideProps({ res }) {
+  setCacheControl({ res, maxAge: 0 })
+  return { props: {} }
+}
+
+function App() {
   const router = useRouter()
   const [location, setLocation] = useState(null)
   const [errorMsg, setErrorMsg] = useState(null)
@@ -53,3 +59,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 })
+
+export default App

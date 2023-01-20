@@ -1,6 +1,9 @@
+import setCacheControl from '../../lib/cache-control'
 import { getPlaceName } from '../../lib/mapbox'
 
 async function handler(req, res) {
+  setCacheControl({ res, maxAge: 86400 })
+
   const { latitude: queryLat, longitude: queryLon } = req.query
   const latitude = parseFloat(queryLat.replace(/"/, '')).toFixed(4)
   const longitude = parseFloat(queryLon.replace(/"/, '')).toFixed(4)

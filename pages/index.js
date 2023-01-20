@@ -6,6 +6,12 @@ import Device from 'expo-device'
 import * as Location from 'expo-location'
 import { useDebouncedCallback } from 'use-debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import setCacheControl from '../lib/cache-control'
+
+export async function getServerSideProps({ res }) {
+  setCacheControl({ res, maxAge: 3600 })
+  return { props: {} }
+}
 
 function IndexPage() {
   const [linkList, setLinkList] = useState()

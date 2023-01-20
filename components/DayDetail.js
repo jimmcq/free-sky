@@ -1,12 +1,12 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native'
-import { translateIcon } from '../lib/helpers'
+import ColorSkycons from 'react-color-skycons'
+import { StyleSheet, Text, View } from 'react-native'
 
 function DayDetail({ day, index }) {
   const { icon, time, temperatureLow, temperatureHigh, summary } = day
   return (
     <View style={styles.row_container}>
-      <Image title={summary} style={styles.small_icon} source={`/icons/${translateIcon({ icon, summary })}.svg`} alt={icon} />
+      <ColorSkycons style={styles.small_icon} type={icon.toUpperCase().replaceAll('-', '_')} animate={true} size={40} resizeClear={true} />
       <Text style={[styles.text, styles.text50]}>
         {index === 0 ? 'Today' : new Date(time * 1000).toLocaleDateString('en-US', { weekday: 'short' })}
       </Text>

@@ -1,4 +1,5 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import ColorSkycons from 'react-color-skycons'
+import { StyleSheet, Text, View } from 'react-native'
 
 function Custom500() {
   return (
@@ -6,7 +7,7 @@ function Custom500() {
       <Text>
         <Text style={styles.status_code}>500</Text> Server-side error occurred.
       </Text>
-      <Image style={styles.icon} source={'/icons/chancetstorms.svg'} width={'380px'} />
+      <ColorSkycons style={styles.icon} type={'THUNDER'} animate={true} size={380} resizeClear={true} />
     </View>
   )
 }
@@ -28,9 +29,9 @@ const styles = StyleSheet.create({
   icon: {
     flexGrow: 0,
     flexShrink: 0,
-    flexBasis: '368px',
-    width: 368,
-    height: 368,
+    flexBasis: '380px',
+    width: 380,
+    height: 380,
   },
 })
 
