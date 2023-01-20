@@ -15,7 +15,7 @@
     "react-chartjs-2": "^5.1.0",
     "react-color-skycons": "^0.1.0",
     "react-dom": "18.1.0",
-    "react-native": "0.70.5",
+    "react-native": "0.70.6",
     "react-native-web": "~0.18.7",
     "use-debounce": "^9.0.2"
   },
