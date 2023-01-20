@@ -10,7 +10,7 @@
     "expo-location": "~15.0.1",
     "ioredis": "^5.2.5",
     "next": "^12.2.5",
-    "next-sitemap": "^3.1.45",
+    "next-sitemap": "^3.1.47",
     "react": "18.1.0",
     "react-chartjs-2": "^5.1.0",
     "react-color-skycons": "^0.1.0",
