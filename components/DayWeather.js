@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   hourly_summary: {
     fontSize: 22,
     fontWeight: 300,
-    maxWidth: '368px',
+    maxWidth: '361px',
   },
 })
 

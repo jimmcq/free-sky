@@ -7,7 +7,7 @@ function Custom404() {
       <Text>
         <Text style={styles.status_code}>404</Text> This page could not be found.
       </Text>
-      <ColorSkycons style={styles.icon} type={'FOG'} animate={true} size={380} resizeClear={true} />
+      <ColorSkycons style={styles.icon} type={'FOG'} animate={true} size={375} resizeClear={true} />
     </View>
   )
 }
@@ -29,9 +29,9 @@ const styles = StyleSheet.create({
   icon: {
     flexGrow: 0,
     flexShrink: 0,
-    flexBasis: '380px',
-    width: 380,
-    height: 380,
+    flexBasis: '375px',
+    width: 375,
+    height: 375,
   },
 })
 

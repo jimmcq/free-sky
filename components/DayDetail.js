@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    maxWidth: '368px',
+    maxWidth: '361px',
     marginTop: '8px',
   },
   small_icon: {

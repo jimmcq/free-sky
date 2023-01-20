@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   daily_summary: {
     fontSize: 22,
     fontWeight: 300,
-    maxWidth: '368px',
+    maxWidth: '361px',
   },
 })
 

@@ -15,7 +15,7 @@ function CurrentWeather({ placeName, currently, hourly, daily }) {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.text, styles.w368]}>Weather for {location}</Text>
+      <Text style={[styles.text, styles.w361]}>Weather for {location}</Text>
       <View style={styles.row_container}>
         <ColorSkycons style={styles.icon} type={icon.toUpperCase().replaceAll('-', '_')} animate={true} size={60} resizeClear={true} />
         <View>
@@ -49,10 +49,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    maxWidth: '368px',
+    maxWidth: '361px',
   },
-  w368: {
-    maxWidth: '368px',
+  w361: {
+    maxWidth: '361px',
   },
   text: {
     fontSize: 16,

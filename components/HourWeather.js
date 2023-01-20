@@ -76,6 +76,10 @@ function HourWeather({ minutely }) {
   const data = { labels }
   data.datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor }]
 
+  if (minutelySummary === 'Clear for the hour.') {
+    displayChart = false
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.minutely_summary}>{minutelySummary}</Text>
@@ -100,7 +104,7 @@ const styles = StyleSheet.create({
   minutely_summary: {
     fontSize: 22,
     fontWeight: 300,
-    maxWidth: '368px',
+    maxWidth: '361px',
   },
 })
 

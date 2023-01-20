@@ -118,8 +118,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   results: {
-    width: '368px',
-    height: '368px',
+    width: '361px',
+    height: '361px',
     marginTop: '16px',
   },
   link: {
