@@ -6,7 +6,7 @@ import 'chartjs-adapter-date-fns'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, TimeScale)
 
-function HourWeather({ minutely }) {
+function HourWeather({ minutely, hourly }) {
   if (!minutely) {
     return null
   }
@@ -76,13 +76,21 @@ function HourWeather({ minutely }) {
   const data = { labels }
   data.datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor }]
 
+  let displaySummary = true
   if (minutelySummary === 'Clear for the hour.') {
     displayChart = false
+    if (hourly.summary === 'Clear throughout the day.') {
+      displaySummary = false
+    }
+  }
+
+  if (!displaySummary && !displayChart) {
+    return null
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.minutely_summary}>{minutelySummary}</Text>
+      {displaySummary === true && <Text style={styles.minutely_summary}>{minutelySummary}</Text>}
       {displayChart === true && (
         <View style={styles.chart_container}>
           <Bar options={options} data={data} height={100} />

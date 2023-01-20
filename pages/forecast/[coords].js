@@ -86,7 +86,7 @@ function ForecastPage({ forecast, placeName }) {
         <Alerts alerts={alerts} />
       </View>
       <View>
-        <HourWeather minutely={minutely} />
+        <HourWeather minutely={minutely} hourly={hourly} />
       </View>
       <View>
         <DayWeather hourly={hourly} />
