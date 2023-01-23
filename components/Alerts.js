@@ -9,8 +9,8 @@ function Alerts({ alerts }) {
 
   const alertLinks = alerts.map((alert, index) => {
     return (
-      <Link key={index} href={alert.uri}>
-        <Text style={styles.link_button}>
+      <Link style={styles.link_button} key={index} href={alert.uri}>
+        <Text>
           {' '}
           {'\u2691'} {alert.title}{' '}
         </Text>

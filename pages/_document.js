@@ -29,6 +29,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -ms-overflow-style: scrollbar;
 }
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
 `
 
 export default class MyDocument extends Document {

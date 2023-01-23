@@ -33,8 +33,8 @@ function IndexPage() {
             const latitude = parseFloat(place.latitude).toFixed(4)
             const longitude = parseFloat(place.longitude).toFixed(4)
             return (
-              <Link key={index} href={`/forecast/${latitude},${longitude}`}>
-                <Text style={styles.link}>{place.placeName}</Text>
+              <Link style={styles.link} key={index} href={`/forecast/${latitude},${longitude}`}>
+                <Text>{place.placeName}</Text>
               </Link>
             )
           })
@@ -60,8 +60,8 @@ function IndexPage() {
         const placeName = await response.json()
 
         setLinkList([
-          <Link key={0} href={`/forecast/${latitude},${longitude}`}>
-            <Text style={styles.link}>{placeName}</Text>
+          <Link style={styles.link} key={0} href={`/forecast/${latitude},${longitude}`}>
+            <Text>{placeName}</Text>
           </Link>,
         ])
       }
@@ -82,8 +82,8 @@ function IndexPage() {
           const latitude = parseFloat(place.center[1]).toFixed(4)
           const longitude = parseFloat(place.center[0]).toFixed(4)
           return (
-            <Link key={index} href={`/forecast/${latitude},${longitude}`}>
-              <Text style={styles.link}>{place.place_name}</Text>
+            <Link style={styles.link} key={index} href={`/forecast/${latitude},${longitude}`}>
+              <Text>{place.place_name}</Text>
             </Link>
           )
         })
