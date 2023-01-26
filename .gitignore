@@ -50,3 +50,7 @@ coverage/
 
 # VS Code
 .vscode/
+
+# Local junk
+pages/local/
+components/local/
