@@ -51,6 +51,11 @@ coverage/
 # VS Code
 .vscode/
 
+# Robots and sitemap
+public/robots.txt
+public/sitemap-0.xml
+public/sitemap.xml
+
 # Local junk
 pages/local/
 components/local/

@@ -6,6 +6,19 @@ const withPlugins = require('next-compose-plugins')
 const withTM = require('next-transpile-modules')(['react-native-web'])
 
 module.exports = withPlugins([withTM, withExpo], {
+  projectRoot: __dirname,
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Important: return the modified config
+    return config
+  },
+  reactStrictMode: true,
+  swcMinify: true,
+  transpilePackages: [
+    'react-native',
+    'react-native-web',
+    'expo',
+    // Add more React Native / Expo packages here...
+  ],
   experimental: {
     forceSwcTransforms: true,
   },

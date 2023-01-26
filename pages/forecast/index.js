@@ -29,7 +29,9 @@ function App() {
 
       let location = await Location.getCurrentPositionAsync({})
       setLocation(location)
-      router.push(`/forecast/${location.coords.latitude},${location.coords.longitude}`)
+      const latitude = parseFloat(location.coords.latitude).toFixed(4)
+      const longitude = parseFloat(location.coords.longitude).toFixed(4)
+      router.push(`/forecast/${latitude},${longitude}`)
     })()
   }, [])
 
@@ -37,7 +39,9 @@ function App() {
   if (errorMsg) {
     text = errorMsg
   } else if (location) {
-    text = `Redirecting to /forecast/${location.coords.latitude},${location.coords.longitude}`
+    const latitude = parseFloat(location.coords.latitude).toFixed(4)
+    const longitude = parseFloat(location.coords.longitude).toFixed(4)
+    text = `Redirecting to /forecast/${latitude},${longitude}`
   }
 
   return (
