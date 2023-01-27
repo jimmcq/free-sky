@@ -7,7 +7,6 @@ import { useDebouncedCallback } from 'use-debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import setCacheControl from '../lib/cache-control'
 import { normalizeCoordinates } from '../lib/helpers'
-import { PermissionStatus, createPermissionHook, Platform } from 'expo-modules-core'
 
 export async function getServerSideProps({ res }) {
   setCacheControl({ res, maxAge: 3600 })
