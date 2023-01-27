@@ -1,3 +1,9 @@
+// This file sets a custom webpack configuration to use your Next.js app
+// with Sentry.
+// https://nextjs.org/docs/api-reference/next.config.js/introduction
+// https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+const { withSentryConfig } = require('@sentry/nextjs');
+
 // @generated: @expo/next-adapter@2.1.52
 // Learn more: https://docs.expo.io/guides/using-nextjs/
 
@@ -22,3 +28,9 @@ module.exports = withPlugins([withTM, withExpo], {
     forceSwcTransforms: true,
   },
 })
+
+module.exports = withSentryConfig(
+  module.exports,
+  { silent: true },
+  { hideSourcemaps: true },
+);

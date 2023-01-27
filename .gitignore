@@ -59,3 +59,9 @@ public/sitemap.xml
 # Local junk
 pages/local/
 components/local/
+
+# Sentry
+.sentryclirc
+
+# Sentry
+next.config.original.js
