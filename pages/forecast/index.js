@@ -4,6 +4,7 @@ import Device from 'expo-device'
 import * as Location from 'expo-location'
 import { useRouter } from 'next/router'
 import setCacheControl from '../../lib/cache-control'
+import { normalizeCoordinates } from '../../lib/helpers'
 
 export async function getServerSideProps({ res }) {
   setCacheControl({ res, maxAge: 0 })
@@ -29,8 +30,8 @@ function App() {
 
       let location = await Location.getCurrentPositionAsync({})
       setLocation(location)
-      const latitude = parseFloat(location.coords.latitude).toFixed(4)
-      const longitude = parseFloat(location.coords.longitude).toFixed(4)
+      const { latitude, longitude } = normalizeCoordinates({ latitude: location.coords.latitude, longitude: location.coords.longitude })
+
       router.push(`/forecast/${latitude},${longitude}`)
     })()
   }, [])
@@ -39,8 +40,7 @@ function App() {
   if (errorMsg) {
     text = errorMsg
   } else if (location) {
-    const latitude = parseFloat(location.coords.latitude).toFixed(4)
-    const longitude = parseFloat(location.coords.longitude).toFixed(4)
+    const { latitude, longitude } = normalizeCoordinates({ latitude: location.coords.latitude, longitude: location.coords.longitude })
     text = `Redirecting to /forecast/${latitude},${longitude}`
   }
 

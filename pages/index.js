@@ -7,6 +7,7 @@ import * as Location from 'expo-location'
 import { useDebouncedCallback } from 'use-debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import setCacheControl from '../lib/cache-control'
+import { normalizeCoordinates } from '../lib/helpers'
 
 export async function getServerSideProps({ res }) {
   setCacheControl({ res, maxAge: 3600 })
@@ -30,8 +31,8 @@ function IndexPage() {
         const newList = JSON.parse(storedLocationList)
         setLinkList(
           newList.map((place, index) => {
-            const latitude = parseFloat(place.latitude).toFixed(4)
-            const longitude = parseFloat(place.longitude).toFixed(4)
+            const { latitude, longitude } = normalizeCoordinates({ latitude: place.latitude, longitude: place.longitude })
+
             return (
               <Link style={styles.link} key={index} href={`/forecast/${latitude},${longitude}`}>
                 <Text>{place.placeName}</Text>
@@ -50,11 +51,14 @@ function IndexPage() {
         }
 
         let location = await Location.getCurrentPositionAsync({})
-        const latitude = parseFloat(location.coords.latitude).toFixed(4)
-        const longitude = parseFloat(location.coords.longitude).toFixed(4)
-        if (isNaN(latitude) || isNaN(longitude) || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+
+        let latitude, longitude
+        try {
+          const { latitude, longitude } = normalizeCoordinates({ latitude: location.coords.latitude, longitude: location.coords.longitude })
+        } catch (error) {
           return
         }
+
         const url = `/api/getplacename?latitude=${latitude}&longitude=${longitude}`
         const response = await fetch(url)
         const placeName = await response.json()
@@ -79,8 +83,8 @@ function IndexPage() {
     if (features.length) {
       setLinkList(
         features.map((place, index) => {
-          const latitude = parseFloat(place.center[1]).toFixed(4)
-          const longitude = parseFloat(place.center[0]).toFixed(4)
+          const { latitude, longitude } = normalizeCoordinates({ latitude: place.center[1], longitude: place.center[0] })
+
           return (
             <Link style={styles.link} key={index} href={`/forecast/${latitude},${longitude}`}>
               <Text>{place.place_name}</Text>

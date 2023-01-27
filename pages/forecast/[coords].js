@@ -10,15 +10,12 @@ import { getPlaceName } from '../../lib/mapbox'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useRouter } from 'next/router'
 import setCacheControl from '../../lib/cache-control'
+import { normalizeCoordinates } from '../../lib/helpers'
 
 export async function getServerSideProps({ res, query }) {
-  setCacheControl({ res, maxAge: 300 })
+  setCacheControl({ res, maxAge: 180 })
   const parts = query.coords.split(',')
-  const latitude = parseFloat(parts[0]).toFixed(4)
-  const longitude = parseFloat(parts[1]).toFixed(4)
-  if (isNaN(latitude) || isNaN(longitude) || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
-    throw new Error('Invalid location coordinates')
-  }
+  const { latitude, longitude } = normalizeCoordinates({ latitude: parts[0], longitude: parts[1] })
 
   let forecast = {}
   try {

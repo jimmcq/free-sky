@@ -1,14 +1,16 @@
 import setCacheControl from '../../lib/cache-control'
+import { normalizeCoordinates } from '../../lib/helpers'
 import { getPlaceName } from '../../lib/mapbox'
 
 async function handler(req, res) {
   setCacheControl({ res, maxAge: 86400 })
 
   const { latitude: queryLat, longitude: queryLon } = req.query
-  const latitude = parseFloat(queryLat.replace(/"/, '')).toFixed(4)
-  const longitude = parseFloat(queryLon.replace(/"/, '')).toFixed(4)
 
-  if (isNaN(latitude) || isNaN(longitude) || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+  let latitude, longitude
+  try {
+    const { latitude, longitude } = normalizeCoordinates({ latitude: queryLat.replace(/"/, ''), longitude: queryLon.replace(/"/, '') })
+  } catch (e) {
     res.status(500).send('Invalid location coordinates')
   }
 
