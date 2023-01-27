@@ -1,4 +1,8 @@
 {
+  "name": "free-sky",
+  "version": "1.0.0",
+  "private": true,
+  "license": "UNLICENSED",
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.11",
     "chart.js": "^4.2.0",
@@ -47,8 +51,5 @@
     "eslint": "eslint pages/** lib/** components/** tests/**",
     "prettier": "prettier -l pages/**/*.js lib/**/*.js components/**/*.js",
     "test": "TZ=America/Los_Angeles yarn jest -c tests/config/jest.config.js"
-  },
-  "version": "1.0.0",
-  "private": true,
-  "name": "free-sky"
+  }
 }
