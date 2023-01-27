@@ -54,7 +54,7 @@ function IndexPage() {
 
         let latitude, longitude
         try {
-          const { latitude, longitude } = normalizeCoordinates({ latitude: location.coords.latitude, longitude: location.coords.longitude })
+          ;({ latitude, longitude } = normalizeCoordinates({ latitude: location.coords.latitude, longitude: location.coords.longitude }))
         } catch (error) {
           return
         }

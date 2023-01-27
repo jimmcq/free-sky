@@ -9,7 +9,7 @@ async function handler(req, res) {
 
   let latitude, longitude
   try {
-    const { latitude, longitude } = normalizeCoordinates({ latitude: queryLat.replace(/"/, ''), longitude: queryLon.replace(/"/, '') })
+    ;({ latitude, longitude } = normalizeCoordinates({ latitude: queryLat.replace(/"/, ''), longitude: queryLon.replace(/"/, '') }))
   } catch (e) {
     res.status(500).send('Invalid location coordinates')
   }
