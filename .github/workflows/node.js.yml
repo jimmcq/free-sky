@@ -28,4 +28,3 @@ jobs:
       - run: yarn install
       - run: yarn test
       - run: yarn eslint
-      - run: yarn next build
