@@ -24,7 +24,8 @@ function DayWeather({ hourly }) {
           },
           label: function (context) {
             const index = context.dataIndex
-            return hourData[index].summary
+            const { summary, temperature } = hourData[index]
+            return `${summary} ${Math.round(temperature)}°`
           },
           footer: function (context) {
             const index = context[0].dataIndex
