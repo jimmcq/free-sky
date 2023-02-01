@@ -20,12 +20,12 @@ function CurrentWeather({ placeName, currently, hourly, daily }) {
         <ColorSkycons style={styles.icon} type={icon.toUpperCase().replaceAll('-', '_')} animate={true} size={60} resizeClear={true} />
         <View>
           <Text style={styles.summary}>
-            {Math.round(temperature)}˚<Text style={styles.temperature_arrow}>{temperatureDirection}</Text> {currentSummary}.
+            {Math.round(temperature)}°<Text style={styles.temperature_arrow}>{temperatureDirection}</Text> {currentSummary}.
           </Text>
           <Text style={[styles.text, styles.w300]}>
-            <Text style={styles.label}>Feels like: </Text> <Text style={styles.temperature}>{Math.round(apparentTemperature)}˚</Text>{' '}
-            <Text style={styles.label}>Low: </Text> <Text style={styles.temperature}>{Math.round(temperatureLow)}˚</Text>{' '}
-            <Text style={styles.label}>High: </Text> <Text style={styles.temperature}>{Math.round(temperatureHigh)}˚</Text>
+            <Text style={styles.label}>Feels like: </Text> <Text style={styles.temperature}>{Math.round(apparentTemperature)}°</Text>{' '}
+            <Text style={styles.label}>Low: </Text> <Text style={styles.temperature}>{Math.round(temperatureLow)}°</Text>{' '}
+            <Text style={styles.label}>High: </Text> <Text style={styles.temperature}>{Math.round(temperatureHigh)}°</Text>
           </Text>
           <Text>
             <Text style={styles.label}>Wind: </Text>

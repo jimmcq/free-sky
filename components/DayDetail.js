@@ -12,7 +12,7 @@ function DayDetail({ day, index }) {
       </Text>
       <Text style={[styles.text, styles.text70]}>
         {' '}
-        {Math.round(temperatureLow)}˚-{Math.round(temperatureHigh)}˚
+        {Math.round(temperatureLow)}°-{Math.round(temperatureHigh)}°
       </Text>
       <Text style={[styles.text, styles.text200]}>{summary}</Text>
     </View>
