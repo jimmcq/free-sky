@@ -57,11 +57,14 @@ public/sitemap-0.xml
 public/sitemap.xml
 
 # Local junk
-pages/local/
-components/local/
+src/pages/local/
+src/components/local/
 
 # Sentry
 .sentryclirc
 
 # Sentry
 next.config.original.js
+
+# TypeScript
+next-env.d.ts

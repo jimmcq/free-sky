@@ -1,5 +1,5 @@
 import md5 from 'crypto-js/md5'
-import { safeKey } from '../../lib/cache'
+import { safeKey } from '../../src/lib/cache'
 
 describe('safeKey', () => {
   it('should return the same key if it is safe', () => {

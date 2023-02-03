@@ -1,4 +1,4 @@
-import { bearingToCardinal, normalizeCoordinates } from '../../lib/helpers'
+import { bearingToCardinal, normalizeCoordinates } from '../../src/lib/helpers'
 
 describe('bearingToCardinal', () => {
   it('should return "N" for 0 and 360 degrees', () => {
