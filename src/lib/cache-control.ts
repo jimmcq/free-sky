@@ -1,4 +1,4 @@
-function setCacheControl({ res, maxAge = 120 }) {
+function setCacheControl({ res, maxAge = 120 }: { res: any; maxAge?: number }) {
   if (maxAge > 0) {
     res.setHeader('Cache-Control', `public, max-age=${maxAge}`)
   } else {
@@ -7,3 +7,5 @@ function setCacheControl({ res, maxAge = 120 }) {
 }
 
 module.exports = setCacheControl
+
+export {}
