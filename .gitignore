@@ -68,3 +68,4 @@ next.config.original.js
 
 # TypeScript
 next-env.d.ts
+tsconfig.tsbuildinfo
