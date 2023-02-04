@@ -1,7 +1,7 @@
 import { cacheGet, cacheSet, safeKey } from './cache'
 import { normalizeCoordinates } from './helpers'
 
-async function getForecast({ latitude: latitudeParam, longitude: longitudeParam }) {
+async function getForecast({ latitude: latitudeParam, longitude: longitudeParam }: { latitude: string; longitude: string }) {
   const { latitude, longitude } = normalizeCoordinates({ latitude: latitudeParam, longitude: longitudeParam })
 
   const url = `https://api.darksky.net/forecast/${process.env.DARKSKY_SECRET_KEY}/${latitude},${longitude}`
