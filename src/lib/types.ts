@@ -18,6 +18,11 @@ export type WeatherInfo = {
   data: WeatherData[]
 }
 
+export type WeatherAlert = {
+  title: string
+  uri: string
+}
+
 export type WeatherResponse = {
   latitude: number
   longitude: number
@@ -26,10 +31,5 @@ export type WeatherResponse = {
   minutely: WeatherInfo
   hourly: WeatherInfo
   daily: WeatherInfo
-  alerts: [
-    {
-      title: string
-      uri: string
-    }
-  ]
+  alerts: WeatherAlert[]
 }

@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import * as React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import type { WeatherAlert } from '../lib/types'
 
-function Alerts({ alerts }) {
+function Alerts({ alerts }: { alerts: WeatherAlert[] }) {
   if (!alerts?.length) {
     return null
   }
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffc8',
     margin: '8px',
     padding: '4px',
-    borderRadius: '8px',
+    borderRadius: 8,
     textAlign: 'center',
   },
 })
