@@ -66,5 +66,6 @@
     "eslint": "eslint src/pages/** src/lib/** src/components/** tests/**",
     "prettier": "prettier -l src/pages/**/*.js src/lib/**/*.js src/components/**/*.js",
     "test": "TZ=America/Los_Angeles yarn jest -c tests/config/jest.config.js"
-  }
+  },
+  "browserslist": ["last 1 version", "> 1%", "not dead"]
 }
