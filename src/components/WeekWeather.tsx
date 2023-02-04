@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import DayDetail from './DayDetail'
+import type { WeatherInfo } from '../lib/types'
 
-function WeekWeather({ daily }) {
+function WeekWeather({ daily }: { daily: WeatherInfo }) {
   const { summary: dailySummary } = daily
 
   const dailyDetails = daily.data.map((dayDetail, index) => {
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
   },
   daily_summary: {
     fontSize: 22,
-    fontWeight: 300,
+    fontWeight: '300',
     maxWidth: '361px',
   },
 })

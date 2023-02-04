@@ -1,12 +1,15 @@
 import * as React from 'react'
-import ColorSkycons from 'react-color-skycons'
+import ColorSkycons, { ColorSkyconsType } from 'react-color-skycons'
 import { StyleSheet, Text, View } from 'react-native'
+import type { WeatherData } from '../lib/types'
 
-function DayDetail({ day, index }) {
+function DayDetail({ day, index }: { day: WeatherData; index: number }) {
   const { icon, time, temperatureLow, temperatureHigh, summary } = day
+  const iconType = ColorSkyconsType[icon.replace(/-/g, '_').toUpperCase() as keyof typeof ColorSkyconsType]
+
   return (
     <View style={styles.row_container}>
-      <ColorSkycons style={styles.small_icon} type={icon.toUpperCase().replaceAll('-', '_')} animate={true} size={40} resizeClear={true} />
+      <ColorSkycons style={styles.small_icon} type={iconType} animate={true} size={40} resizeClear={true} />
       <Text style={[styles.text, styles.text50]}>
         {index === 0 ? 'Today' : new Date(time * 1000).toLocaleDateString('en-US', { weekday: 'short' })}
       </Text>
@@ -37,8 +40,8 @@ const styles = StyleSheet.create({
     marginRight: '8px',
   },
   text: {
-    fontSize: '16px',
-    fontWeight: 400,
+    fontSize: 16,
+    fontWeight: '400',
   },
   text50: {
     width: '50px',
