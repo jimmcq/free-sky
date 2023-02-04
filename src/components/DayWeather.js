@@ -3,10 +3,11 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, TimeScale } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns'
+import type { WeatherInfo } from '../lib/types'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, TimeScale)
 
-function DayWeather({ hourly }) {
+function DayWeather({ hourly }: { hourly: WeatherInfo }) {
   const { summary: hourlySummary, data: hourData } = hourly
   const options = {
     responsive: true,

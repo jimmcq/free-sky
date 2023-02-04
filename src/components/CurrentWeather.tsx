@@ -1,9 +1,20 @@
 import * as React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { bearingToCardinal } from '../lib/helpers'
-import ColorSkycons from 'react-color-skycons'
+import ColorSkycons, { ColorSkyconsType } from 'react-color-skycons'
+import type { WeatherData, WeatherInfo } from '../lib/types'
 
-function CurrentWeather({ placeName, currently, hourly, daily }) {
+function CurrentWeather({
+  placeName,
+  currently,
+  hourly,
+  daily,
+}: {
+  placeName: string
+  currently: WeatherData
+  hourly: WeatherInfo
+  daily: WeatherInfo
+}) {
   const { temperature, summary: currentSummary, apparentTemperature, icon, windSpeed, windBearing } = currently
   const today = daily.data[0]
   const { temperatureLow, temperatureHigh } = today
@@ -13,11 +24,13 @@ function CurrentWeather({ placeName, currently, hourly, daily }) {
 
   const temperatureDirection = hourly.data[0].temperature < hourly.data[1].temperature ? '\u2191' : '\u2193'
 
+  const iconType = ColorSkyconsType[icon.replace(/-/g, '_').toUpperCase() as keyof typeof ColorSkyconsType]
+
   return (
     <View style={styles.container}>
       <Text style={[styles.text, styles.w361]}>Weather for {location}</Text>
       <View style={styles.row_container}>
-        <ColorSkycons style={styles.icon} type={icon.toUpperCase().replaceAll('-', '_')} animate={true} size={60} resizeClear={true} />
+        <ColorSkycons style={styles.icon} type={iconType} animate={true} size={60} resizeClear={true} />
         <View>
           <Text style={styles.summary}>
             {Math.round(temperature)}°<Text style={styles.temperature_arrow}>{temperatureDirection}</Text> {currentSummary}.
@@ -59,7 +72,7 @@ const styles = StyleSheet.create({
   },
   summary: {
     fontSize: 32,
-    fontWeight: 600,
+    fontWeight: '600',
     maxWidth: '300px',
     textAlign: 'left',
   },
@@ -76,16 +89,16 @@ const styles = StyleSheet.create({
   },
   hourly_summary: {
     fontSize: 28,
-    fontWeight: 300,
+    fontWeight: '300',
   },
   label: {
-    fontWeight: 400,
+    fontWeight: '400',
   },
   temperature: {
-    fontWeight: 300,
+    fontWeight: '300',
   },
   temperature_arrow: {
-    fontSize: '20px',
+    fontSize: 20,
     marginLeft: '-4px',
   },
 })

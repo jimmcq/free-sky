@@ -4,6 +4,7 @@ export type WeatherData = {
   icon: string
   precipIntensity: number
   precipProbability: number
+  precipType: string
   temperature: number
   temperatureLow: number
   temperatureHigh: number

@@ -3,10 +3,11 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, TimeScale } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns'
+import type { WeatherInfo } from '../lib/types'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, TimeScale)
 
-function HourWeather({ minutely, hourly }) {
+function HourWeather({ minutely, hourly }: { minutely: WeatherInfo, hourly: WeatherInfo }) {
   if (!minutely) {
     return null
   }
