@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, TimeScale } from 'chart.js'
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, TimeScale, ChartOptions, ChartData } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns'
 import type { WeatherInfo } from '../lib/types'
@@ -9,7 +9,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, TimeScale)
 
 function DayWeather({ hourly }: { hourly: WeatherInfo }) {
   const { summary: hourlySummary, data: hourData } = hourly
-  const options = {
+  const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -127,8 +127,8 @@ function DayWeather({ hourly }: { hourly: WeatherInfo }) {
     }
   })
 
-  const data = { labels }
-  data.datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor }]
+  const datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor }]
+  const data: ChartData<'bar'> = { labels, datasets }
 
   if (hourlySummary === 'Clear throughout the day.') {
     displayChart = false
@@ -137,7 +137,7 @@ function DayWeather({ hourly }: { hourly: WeatherInfo }) {
   return (
     <View style={styles.container}>
       <Text style={styles.hourly_summary}>{hourlySummary}</Text>
-      {displayChart === true && (
+      {displayChart && (
         <View style={styles.chart_container}>
           <Bar options={options} data={data} height={100} />
         </View>
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   chart_container: { height: '100px', width: '100%' },
   hourly_summary: {
     fontSize: 22,
-    fontWeight: 300,
+    fontWeight: '300',
     maxWidth: '361px',
   },
 })

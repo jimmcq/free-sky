@@ -1,33 +1,43 @@
 import * as React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, TimeScale } from 'chart.js'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  TimeScale,
+  ChartOptions,
+  ChartData,
+  TooltipItem,
+} from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns'
 import type { WeatherInfo } from '../lib/types'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, TimeScale)
 
-function HourWeather({ minutely, hourly }: { minutely: WeatherInfo, hourly: WeatherInfo }) {
+function HourWeather({ minutely, hourly }: { minutely: WeatherInfo; hourly: WeatherInfo }) {
   if (!minutely) {
     return null
   }
   const { summary: minutelySummary, data: minuteData } = minutely
 
-  const options = {
+  const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
       tooltip: {
         callbacks: {
-          title: function (context) {
+          title: function (context: Array<TooltipItem<'bar'>>): string {
             const index = context[0].dataIndex
             const date = new Date(minuteData[index].time * 1000)
             const hour = date.getHours()
             const minute = date.getMinutes().toString()
             return `${hour % 12 || 12}:${minute.padStart(2, '0')}${hour >= 12 ? 'pm' : 'am'}`
           },
-          label: function (context) {
+          label: function (context: TooltipItem<'bar'>): string {
             const index = context.dataIndex
             const { precipIntensity, precipType } = minuteData[index]
             const decimal = precipIntensity >= 0.01 ? 2 : 3
@@ -74,8 +84,8 @@ function HourWeather({ minutely, hourly }: { minutely: WeatherInfo, hourly: Weat
     return minuteData.precipIntensity > 0.05 ? '#4a80c7' : '#80a5d6'
   })
 
-  const data = { labels }
-  data.datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor }]
+  const datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor }]
+  const data: ChartData<'bar'> = { labels, datasets }
 
   let displaySummary = true
   if (minutelySummary === 'Clear for the hour.') {
@@ -91,10 +101,10 @@ function HourWeather({ minutely, hourly }: { minutely: WeatherInfo, hourly: Weat
 
   return (
     <View style={styles.container}>
-      {displaySummary === true && <Text style={styles.minutely_summary}>{minutelySummary}</Text>}
-      {displayChart === true && (
+      {displaySummary && <Text style={styles.minutely_summary}>{minutelySummary}</Text>}
+      {displayChart && (
         <View style={styles.chart_container}>
-          <Bar options={options} data={data} height={100} />
+          <Bar data={data} options={options} height={100} />
         </View>
       )}
     </View>
@@ -112,7 +122,7 @@ const styles = StyleSheet.create({
   chart_container: { height: '100px', width: '100%' },
   minutely_summary: {
     fontSize: 22,
-    fontWeight: 300,
+    fontWeight: '300',
     maxWidth: '361px',
   },
 })
