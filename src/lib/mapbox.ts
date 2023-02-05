@@ -51,4 +51,4 @@ async function searchPlace(place: string) {
   return result
 }
 
-module.exports = { getPlaceName, searchPlace }
+export { getPlaceName, searchPlace }

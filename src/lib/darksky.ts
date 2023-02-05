@@ -26,4 +26,4 @@ async function getForecast({ latitude: latitudeParam, longitude: longitudeParam 
   return result
 }
 
-module.exports = { getForecast }
+export { getForecast }

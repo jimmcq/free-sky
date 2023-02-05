@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import * as Location from 'expo-location'
 import { useRouter } from 'next/router'
-import setCacheControl from '../../lib/cache-control'
+import { setCacheControl } from '../../lib/cache-control'
 import { normalizeCoordinates } from '../../lib/helpers'
 
 export async function getServerSideProps({ res }) {
