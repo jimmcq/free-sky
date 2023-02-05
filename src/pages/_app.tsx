@@ -1,9 +1,10 @@
 import { ErrorBoundary } from '@sentry/nextjs'
+import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import FallbackComponent from '../components/FallbackComponent'
 import PageMetadata from '../components/pageMetadata'
 
-function FreeSky({ Component, pageProps }) {
+function FreeSky({ Component, pageProps }: AppProps) {
   const { pageMetadata } = pageProps
   return (
     <>
