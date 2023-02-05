@@ -34,3 +34,14 @@ export type WeatherResponse = {
   daily: WeatherInfo
   alerts: WeatherAlert[]
 }
+
+export type MapBoxPlace = {
+  place_name: string
+  center: [number, number]
+}
+
+export type Place = {
+  placeName: string
+  latitude: string
+  longitude: string
+}

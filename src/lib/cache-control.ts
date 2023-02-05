@@ -1,10 +1,6 @@
 import type { NextApiResponse } from 'next'
 
-type ResponseData = {
-  message: string
-}
-
-function setCacheControl({ res, maxAge = 120 }: { res: NextApiResponse<ResponseData>; maxAge?: number }) {
+function setCacheControl({ res, maxAge = 120 }: { res: NextApiResponse<Response>; maxAge?: number }) {
   if (maxAge > 0) {
     res.setHeader('Cache-Control', `public, max-age=${maxAge}`)
   } else {
@@ -12,6 +8,4 @@ function setCacheControl({ res, maxAge = 120 }: { res: NextApiResponse<ResponseD
   }
 }
 
-module.exports = setCacheControl
-
-export {}
+export { setCacheControl }

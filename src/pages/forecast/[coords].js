@@ -9,7 +9,7 @@ import { getForecast } from '../../lib/darksky'
 import { getPlaceName } from '../../lib/mapbox'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useRouter } from 'next/router'
-import setCacheControl from '../../lib/cache-control'
+import { setCacheControl } from '../../lib/cache-control'
 import { normalizeCoordinates } from '../../lib/helpers'
 
 export async function getServerSideProps({ res, query }) {

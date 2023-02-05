@@ -5,18 +5,21 @@ import { StyleSheet, Text, View, TextInput } from 'react-native'
 import * as Location from 'expo-location'
 import { useDebouncedCallback } from 'use-debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import setCacheControl from '../lib/cache-control'
+import { setCacheControl } from '../lib/cache-control'
 import { normalizeCoordinates } from '../lib/helpers'
+import type { NextApiResponse } from 'next'
+import type { MapBoxPlace, Place } from '../lib/types'
 
-export async function getServerSideProps({ res }) {
+export async function getServerSideProps({ res }: { res: NextApiResponse<Response> }) {
   setCacheControl({ res, maxAge: 3600 })
   return { props: {} }
 }
 
 function IndexPage() {
-  const [linkList, setLinkList] = useState()
+  const [linkList, setLinkList] = useState<JSX.Element[]>([])
 
   const debounced = useDebouncedCallback(value => {
+    console.log(value)
     if (value.length >= 3) {
       search(value)
     }
@@ -29,7 +32,7 @@ function IndexPage() {
       if (storedLocationList) {
         const newList = JSON.parse(storedLocationList)
         setLinkList(
-          newList.map((place, index) => {
+          newList.map((place: Place, index: number) => {
             const { latitude, longitude } = normalizeCoordinates({ latitude: place.latitude, longitude: place.longitude })
 
             return (
@@ -41,16 +44,19 @@ function IndexPage() {
         )
       } else {
         // Get Location
-        let { status } = await Location.requestForegroundPermissionsAsync()
+        const { status } = await Location.requestForegroundPermissionsAsync()
         if (status !== 'granted') {
           return
         }
 
-        let location = await Location.getCurrentPositionAsync({})
+        const location = await Location.getCurrentPositionAsync({})
 
         let latitude, longitude
         try {
-          ;({ latitude, longitude } = normalizeCoordinates({ latitude: location.coords.latitude, longitude: location.coords.longitude }))
+          ;({ latitude, longitude } = normalizeCoordinates({
+            latitude: location.coords.latitude.toString(),
+            longitude: location.coords.longitude.toString(),
+          }))
         } catch (error) {
           return
         }
@@ -68,7 +74,7 @@ function IndexPage() {
     })()
   }, [])
 
-  async function search(text) {
+  async function search(text: string) {
     if (!text) {
       return null
     }
@@ -78,8 +84,11 @@ function IndexPage() {
 
     if (features.length) {
       setLinkList(
-        features.map((place, index) => {
-          const { latitude, longitude } = normalizeCoordinates({ latitude: place.center[1], longitude: place.center[0] })
+        features.map((place: MapBoxPlace, index: number) => {
+          const { latitude, longitude } = normalizeCoordinates({
+            latitude: place.center[1].toString(),
+            longitude: place.center[0].toString(),
+          })
 
           return (
             <Link style={styles.link} key={index} href={`/forecast/${latitude},${longitude}`}>
@@ -94,7 +103,7 @@ function IndexPage() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>When Dark Sky is gone, Free-Sky.Net remains</Text>
-      <TextInput style={styles.input} placeholder="Location Search" onChange={e => debounced(e.target.value)}></TextInput>
+      <TextInput style={styles.input} placeholder="Location Search" onChangeText={text => debounced(text)}></TextInput>
       <Text>Enter an address above</Text>
       <Text> {linkList && <Text>or select an address below</Text>} </Text>
       <View style={styles.results}>{linkList}</View>

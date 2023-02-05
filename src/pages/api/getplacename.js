@@ -1,4 +1,4 @@
-import setCacheControl from '../../lib/cache-control'
+import { setCacheControl } from '../../lib/cache-control'
 import { normalizeCoordinates } from '../../lib/helpers'
 import { getPlaceName } from '../../lib/mapbox'
 

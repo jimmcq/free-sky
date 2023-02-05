@@ -1,4 +1,4 @@
-import setCacheControl from '../../lib/cache-control'
+import { setCacheControl } from '../../lib/cache-control'
 import { searchPlace } from '../../lib/mapbox'
 
 async function handler(req, res) {
