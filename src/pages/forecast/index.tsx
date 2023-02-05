@@ -4,28 +4,33 @@ import * as Location from 'expo-location'
 import { useRouter } from 'next/router'
 import { setCacheControl } from '../../lib/cache-control'
 import { normalizeCoordinates } from '../../lib/helpers'
+import { NextApiResponse } from 'next'
+import { LocationObject } from 'expo-location'
 
-export async function getServerSideProps({ res }) {
+export async function getServerSideProps({ res }: { res: NextApiResponse }) {
   setCacheControl({ res, maxAge: 0 })
   return { props: {} }
 }
 
 function App() {
   const router = useRouter()
-  const [location, setLocation] = useState(null)
-  const [errorMsg, setErrorMsg] = useState(null)
+  const [location, setLocation] = useState<LocationObject>()
+  const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
     ;(async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync()
+      const { status } = await Location.requestForegroundPermissionsAsync()
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied')
         return
       }
 
-      let location = await Location.getCurrentPositionAsync({})
+      const location = await Location.getCurrentPositionAsync({})
       setLocation(location)
-      const { latitude, longitude } = normalizeCoordinates({ latitude: location.coords.latitude, longitude: location.coords.longitude })
+      const { latitude, longitude } = normalizeCoordinates({
+        latitude: location.coords.latitude.toString(),
+        longitude: location.coords.longitude.toString(),
+      })
 
       router.push(`/forecast/${latitude},${longitude}`)
     })()
@@ -35,7 +40,10 @@ function App() {
   if (errorMsg) {
     text = errorMsg
   } else if (location) {
-    const { latitude, longitude } = normalizeCoordinates({ latitude: location.coords.latitude, longitude: location.coords.longitude })
+    const { latitude, longitude } = normalizeCoordinates({
+      latitude: location.coords.latitude.toString(),
+      longitude: location.coords.longitude.toString(),
+    })
     text = `Redirecting to /forecast/${latitude},${longitude}`
   }
 

@@ -11,13 +11,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useRouter } from 'next/router'
 import { setCacheControl } from '../../lib/cache-control'
 import { normalizeCoordinates } from '../../lib/helpers'
+import type { NextApiResponse } from 'next'
+import { emptyWeatherResponse, Place, WeatherResponse } from '../../lib/types'
 
-export async function getServerSideProps({ res, query }) {
+export async function getServerSideProps({ res, query }: { res: NextApiResponse; query: { coords: string } }) {
   setCacheControl({ res, maxAge: 180 })
   const parts = query.coords.split(',')
   const { latitude, longitude } = normalizeCoordinates({ latitude: parts[0], longitude: parts[1] })
 
-  let forecast = {}
+  let forecast: WeatherResponse = emptyWeatherResponse
+
   try {
     forecast = await getForecast({ latitude, longitude })
   } catch (e) {
@@ -28,7 +31,8 @@ export async function getServerSideProps({ res, query }) {
     throw new Error('Invalid forecast data')
   }
 
-  const placeName = (await getPlaceName({ latitude: forecast.latitude, longitude: forecast.longitude })) || `${latitude},${longitude}`
+  const placeName =
+    (await getPlaceName({ latitude: forecast.latitude.toString(), longitude: forecast.longitude.toString() })) || `${latitude},${longitude}`
 
   const pageMetadata = { title: `Weather for ${placeName}` }
   const props = { forecast, placeName, pageMetadata }
@@ -36,7 +40,7 @@ export async function getServerSideProps({ res, query }) {
   return { props }
 }
 
-function ForecastPage({ forecast, placeName }) {
+function ForecastPage({ forecast, placeName }: { forecast: WeatherResponse; placeName: string }) {
   const router = useRouter()
 
   // Refresh server side props every 10 minutes
@@ -61,7 +65,7 @@ function ForecastPage({ forecast, placeName }) {
       const newList = JSON.parse(storedLocationList)
 
       let found = false
-      newList.forEach(item => {
+      newList.forEach((item: Place) => {
         if (item.placeName === placeName) {
           found = true
         }
