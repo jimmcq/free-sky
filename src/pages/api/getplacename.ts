@@ -1,13 +1,16 @@
+import { NextApiRequest, NextApiResponse } from 'next'
 import { setCacheControl } from '../../lib/cache-control'
 import { normalizeCoordinates } from '../../lib/helpers'
 import { getPlaceName } from '../../lib/mapbox'
 
-async function handler(req, res) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   setCacheControl({ res, maxAge: 86400 })
 
-  const { latitude: queryLat, longitude: queryLon } = req.query
+  const queryLat = req.query.latitude?.toString() || ''
+  const queryLon = req.query.longitude?.toString() || ''
 
-  let latitude, longitude
+  let latitude = ''
+  let longitude = ''
   try {
     ;({ latitude, longitude } = normalizeCoordinates({ latitude: queryLat.replace(/"/, ''), longitude: queryLon.replace(/"/, '') }))
   } catch (e) {

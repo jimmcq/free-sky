@@ -30,7 +30,7 @@ async function getPlaceName({ latitude, longitude }: { latitude: string; longitu
 async function searchPlace(place: string) {
   const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${place}.json?access_token=${process.env.MAPBOX_ACCESS_TOKEN}`
   const cacheKey = safeKey(url)
-  let result = {}
+  let result = []
 
   // Check the cache
   result = await cacheGet(cacheKey)

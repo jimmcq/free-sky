@@ -1,6 +1,6 @@
 import type { NextApiResponse } from 'next'
 
-function setCacheControl({ res, maxAge = 120 }: { res: NextApiResponse<Response>; maxAge?: number }) {
+function setCacheControl({ res, maxAge = 120 }: { res: NextApiResponse; maxAge?: number }) {
   if (maxAge > 0) {
     res.setHeader('Cache-Control', `public, max-age=${maxAge}`)
   } else {

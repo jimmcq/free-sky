@@ -10,7 +10,7 @@ import { normalizeCoordinates } from '../lib/helpers'
 import type { NextApiResponse } from 'next'
 import type { MapBoxPlace, Place } from '../lib/types'
 
-export async function getServerSideProps({ res }: { res: NextApiResponse<Response> }) {
+export async function getServerSideProps({ res }: { res: NextApiResponse }) {
   setCacheControl({ res, maxAge: 3600 })
   return { props: {} }
 }

@@ -1,15 +1,18 @@
+import { NextApiRequest, NextApiResponse } from 'next'
 import { setCacheControl } from '../../lib/cache-control'
 import { searchPlace } from '../../lib/mapbox'
+import { MapBoxPlace } from '../../lib/types'
 
-async function handler(req, res) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   setCacheControl({ res, maxAge: 86400 })
 
-  const { place } = req.query
+  const { place } = req.query as { place: string }
   if (!place) {
     res.status(400).send('Error')
   }
 
-  let features = []
+  let features: MapBoxPlace[] = []
+
   if (req.method === 'GET' && place) {
     try {
       features = await searchPlace(place)
