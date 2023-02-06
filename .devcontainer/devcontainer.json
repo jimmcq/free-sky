@@ -4,7 +4,7 @@
     "ghcr.io/devcontainers/features/node:1": {
       "version":"16"}
   },
-  "postCreateCommand": "yarn install",
+  "postStartCommand": "nvm use 16 && yarn install",
   "extensions": [
     "esbenp.prettier-vscode",
   ]
