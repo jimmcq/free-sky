@@ -26,7 +26,7 @@
     "react-color-skycons": "^0.1.0",
     "react-dom": "18.2.0",
     "react-error-boundary": "^3.1.4",
-    "react-native": "0.71.1",
+    "react-native": "0.71.2",
     "react-native-web": "~0.18.12",
     "use-debounce": "^9.0.3"
   },
@@ -41,7 +41,7 @@
     "@types/node": "^18.11.18",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
-    "@types/react-native": "^0.71.1",
+    "@types/react-native": "^0.71.2",
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
