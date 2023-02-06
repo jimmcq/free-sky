@@ -33,7 +33,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/eslint-parser": "^7.19.1",
-    "@expo/next-adapter": "4.0.13",
+    "@expo/next-adapter": "5.0.1",
     "@tsconfig/react-native": "^2.0.3",
     "@types/crypto-js": "^4.1.1",
     "@types/ioredis": "^5.0.0",
@@ -71,9 +71,5 @@
     "prettier": "prettier -l src/pages/**/*.js src/lib/**/*.js src/components/**/*.js",
     "test": "TZ=America/Los_Angeles yarn jest -c tests/config/jest.config.js"
   },
-  "browserslist": [
-    "last 1 version",
-    "> 1%",
-    "not dead"
-  ]
+  "browserslist": ["last 1 version", "> 1%", "not dead"]
 }

@@ -1,5 +1,5 @@
 import { Children } from 'react'
-import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document'
+import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { AppRegistry } from 'react-native'
 
 // Follows the setup for react-native-web:
@@ -38,7 +38,7 @@ a:hover {
 `
 
 export default class MyDocument extends Document {
-  static async getInitialProps({ renderPage }: DocumentContext) {
+  static async getInitialProps({ renderPage }) {
     AppRegistry.registerComponent('main', () => Main)
     const { getStyleElement } = AppRegistry.getApplication('main')
     const page = await renderPage()
