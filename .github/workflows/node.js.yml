@@ -19,7 +19,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
-      - run: yarn install
+      - run: yarn install --prefer-offline
       - run: yarn test
       - run: yarn eslint
       - run: yarn tsc
