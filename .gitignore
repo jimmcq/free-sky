@@ -69,3 +69,9 @@ next.config.original.js
 # TypeScript
 next-env.d.ts
 tsconfig.tsbuildinfo
+
+# Yarn 2+
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+.pnp.*

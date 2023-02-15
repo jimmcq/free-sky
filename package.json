@@ -51,6 +51,7 @@
     "eslint-plugin-jest": "^27.2.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
+    "husky": "^8.0.3",
     "jest": "^29.4.2",
     "jest-environment-jsdom": "^29.4.2",
     "next-compose-plugins": "^2.2.1",
@@ -69,11 +70,13 @@
     "dev": "next dev",
     "eslint": "eslint src/pages/** src/lib/** src/components/** tests/**",
     "prettier": "prettier -l src/pages/**/*.js src/lib/**/*.js src/components/**/*.js",
-    "test": "TZ=America/Los_Angeles yarn jest -c tests/config/jest.config.js"
+    "test": "TZ=America/Los_Angeles yarn jest -c tests/config/jest.config.js",
+    "postinstall": "husky install"
   },
   "browserslist": [
     "last 1 version",
     "> 1%",
     "not dead"
-  ]
+  ],
+  "packageManager": "yarn@3.4.1"
 }
