@@ -1,18 +1,21 @@
 FROM node:lts
 ENV NODE_ENV=production
 
-WORKDIR /app
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY ["package.json", "yarn.lock", "./"]
+COPY package.json /usr/src/app/
+COPY yarn.lock /usr/src/app/
 RUN yarn install
 
 # Bundle app source
-COPY . .
+COPY . /usr/src/app/
 
 # Build
-# RUN yarn build
+RUN yarn build
 
-# EXPOSE 3000
+EXPOSE 3000
 
 CMD [ "yarn", "start" ]

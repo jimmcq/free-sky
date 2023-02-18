@@ -4,7 +4,7 @@ import md5 from 'crypto-js/md5'
 let cacheBuilder: Redis
 
 function createCache() {
-  if (process.env.REDIS_HOST) {
+  if (process.env.REDIS_HOST !== undefined) {
     return new Redis({
       host: process.env.REDIS_HOST,
     })
