@@ -21,6 +21,9 @@ module.exports = withPlugins([withExpo], {
     'react-native',
     'react-native-web',
     'expo',
+    'expo-device',
+    'expo-location',
+    'expo-modules-core',
     // Add more React Native / Expo packages here...
   ],
   experimental: {

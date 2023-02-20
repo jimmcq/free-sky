@@ -1,8 +1,7 @@
-// @generated: @expo/next-adapter@2.1.52
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, TextInput } from 'react-native'
-//import * as Location from 'expo-location'
+import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import { useDebouncedCallback } from 'use-debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { setCacheControl } from '../lib/cache-control'
@@ -42,16 +41,14 @@ function IndexPage() {
             )
           })
         )
-      }
-      /*
-      else {
+      } else {
         // Get Location
-        const { status } = await Location.requestForegroundPermissionsAsync()
+        const { status } = await requestForegroundPermissionsAsync()
         if (status !== 'granted') {
           return
         }
 
-        const location = await Location.getCurrentPositionAsync({})
+        const location = await getCurrentPositionAsync({})
 
         let latitude, longitude
         try {
@@ -73,7 +70,6 @@ function IndexPage() {
           </Link>,
         ])
       }
-      */
     })()
   }, [])
 

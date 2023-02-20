@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
-//import * as Location from 'expo-location'
+import { LocationObject, requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import { useRouter } from 'next/router'
 import { setCacheControl } from '../../lib/cache-control'
-//import { normalizeCoordinates } from '../../lib/helpers'
+import { normalizeCoordinates } from '../../lib/helpers'
 import { NextApiResponse } from 'next'
-//import { LocationObject } from 'expo-location'
 
 export async function getServerSideProps({ res }: { res: NextApiResponse }) {
   setCacheControl({ res, maxAge: 0 })
@@ -14,20 +13,18 @@ export async function getServerSideProps({ res }: { res: NextApiResponse }) {
 
 function App() {
   const router = useRouter()
-  // const [location, setLocation] = useState<LocationObject>()
-  // const [errorMsg, setErrorMsg] = useState('')
+  const [location, setLocation] = useState<LocationObject>()
+  const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
-    router.push('/')
-    /*
     ;(async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync()
+      const { status } = await requestForegroundPermissionsAsync()
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied')
         return
       }
 
-      const location = await Location.getCurrentPositionAsync({})
+      const location = await getCurrentPositionAsync({})
       setLocation(location)
       const { latitude, longitude } = normalizeCoordinates({
         latitude: location.coords.latitude.toString(),
@@ -36,11 +33,8 @@ function App() {
 
       router.push(`/forecast/${latitude},${longitude}`)
     })()
-    */
   }, [])
 
-  const text = 'Redirecting...'
-  /*
   let text = 'Waiting..'
 
   if (errorMsg) {
@@ -52,7 +46,7 @@ function App() {
     })
     text = `Redirecting to /forecast/${latitude},${longitude}`
   }
-*/
+
   return (
     <View style={styles.container}>
       <Text style={styles.paragraph}>{text}</Text>
