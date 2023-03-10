@@ -5,7 +5,14 @@ import type { WeatherData } from '../lib/types'
 
 function DayDetail({ day, index }: { day: WeatherData; index: number }) {
   const { icon, time, temperatureLow, temperatureHigh, summary } = day
-  const iconType = ColorSkyconsType[icon.replace(/-/g, '_').toUpperCase() as keyof typeof ColorSkyconsType]
+  const iconType =
+    ColorSkyconsType[
+      icon
+        .replace(/([^ ])([A-Z])/g, '$1 $2')
+        .trim()
+        .replace(/[- ]/g, '_')
+        .toUpperCase() as keyof typeof ColorSkyconsType
+    ]
 
   return (
     <View style={styles.row_container}>
@@ -17,7 +24,7 @@ function DayDetail({ day, index }: { day: WeatherData; index: number }) {
         {' '}
         {Math.round(temperatureLow)}°-{Math.round(temperatureHigh)}°
       </Text>
-      <Text style={[styles.text, styles.text200]}>{summary}</Text>
+      <Text style={[styles.text, styles.text200]}>{summary.replace(/([^ ])([A-Z])/g, '$1 $2').trim()}</Text>
     </View>
   )
 }

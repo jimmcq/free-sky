@@ -18,7 +18,6 @@ function IndexPage() {
   const [linkList, setLinkList] = useState<JSX.Element[]>([])
 
   const debounced = useDebouncedCallback(value => {
-    console.log(value)
     if (value.length >= 3) {
       search(value)
     }

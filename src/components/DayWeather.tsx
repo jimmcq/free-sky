@@ -26,7 +26,7 @@ function DayWeather({ hourly }: { hourly: WeatherInfo }) {
           label: function (context) {
             const index = context.dataIndex
             const { summary, temperature } = hourData[index]
-            return `${summary} ${Math.round(temperature)}°`
+            return `${summary.replace(/([^ ])([A-Z])/g, '$1 $2').trim()} ${Math.round(temperature)}°`
           },
           footer: function (context) {
             const index = context[0].dataIndex
@@ -79,27 +79,32 @@ function DayWeather({ hourly }: { hourly: WeatherInfo }) {
       displayChart = true
     }
 
-    switch (hourData.summary) {
+    switch (hourData.summary.replace(/\s+/g, '')) {
       case 'Drizzle':
-      case 'Possible Drizzle':
+      case 'PossibleDrizzle':
         return '#8caeda'
-      case 'Light Rain':
-      case 'Possible Light Rain':
+      case 'LightRain':
+      case 'PossibleLightRain':
         return '#80a5d6'
       case 'Heavy Rain':
         return '#305f9c'
-      case 'Mostly Cloudy':
+      case 'PartlyCloudy':
+      case 'MostlyClear':
+        return '#d5dae2'
+      case 'Cloudy':
+        return '#b6bfcb'
+      case 'MostlyCloudy':
         return '#9fabba'
       case 'Overcast':
         return '#878f9a'
-      case 'Light Snow':
-      case 'Possible Light Snow':
+      case 'LightSnow':
+      case 'PossibleLightSnow':
         return '#a39ad7'
-      case 'Heavy Snow':
+      case 'HeavySnow':
         return '#7569c4'
     }
 
-    switch (hourData.icon.split('-')[0]) {
+    switch (hourData.icon.split('-')[0].toLocaleLowerCase()) {
       case 'clear':
         return '#eeeef5'
       case 'rain':

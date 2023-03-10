@@ -24,7 +24,14 @@ function CurrentWeather({
 
   const temperatureDirection = hourly.data[0].temperature < hourly.data[1].temperature ? '\u2191' : '\u2193'
 
-  const iconType = ColorSkyconsType[icon.replace(/-/g, '_').toUpperCase() as keyof typeof ColorSkyconsType]
+  const iconType =
+    ColorSkyconsType[
+      icon
+        .replace(/([^ ])([A-Z])/g, '$1 $2')
+        .trim()
+        .replace(/[- ]/g, '_')
+        .toUpperCase() as keyof typeof ColorSkyconsType
+    ]
 
   return (
     <View style={styles.container}>
@@ -33,7 +40,8 @@ function CurrentWeather({
         <ColorSkycons style={styles.icon} type={iconType} animate={true} size={60} resizeClear={true} />
         <View>
           <Text style={styles.summary}>
-            {Math.round(temperature)}°<Text style={styles.temperature_arrow}>{temperatureDirection}</Text> {currentSummary}.
+            {Math.round(temperature)}°<Text style={styles.temperature_arrow}>{temperatureDirection}</Text>{' '}
+            {currentSummary.replace(/([^ ])([A-Z])/g, '$1 $2').trim()}.
           </Text>
           <Text style={[styles.text, styles.w300]}>
             <Text style={styles.label}>Feels like: </Text> <Text style={styles.temperature}>{Math.round(apparentTemperature)}°</Text>{' '}

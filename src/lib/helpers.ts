@@ -25,4 +25,16 @@ function normalizeCoordinates({ latitude, longitude }: { latitude: string; longi
   return { latitude: normalizedLatitude, longitude: normalizedLongitude }
 }
 
-export { bearingToCardinal, normalizeCoordinates }
+function celciusToFahrenheit(celcius: number) {
+  return celcius * 1.8 + 32
+}
+
+function kilometersToMiles(kilometers: number) {
+  return kilometers * 0.621371
+}
+
+function millimetersToInches(millimeters: number) {
+  return millimeters * 0.0393701
+}
+
+export { bearingToCardinal, normalizeCoordinates, celciusToFahrenheit, kilometersToMiles, millimetersToInches }
