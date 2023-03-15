@@ -1,18 +1,12 @@
 import * as React from 'react'
 import ColorSkycons, { ColorSkyconsType } from 'react-color-skycons'
 import { StyleSheet, Text, View } from 'react-native'
+import { normalizeIcon } from '../lib/helpers'
 import type { WeatherData } from '../lib/types'
 
 function DayDetail({ day, index }: { day: WeatherData; index: number }) {
   const { icon, time, temperatureLow, temperatureHigh, summary } = day
-  const iconType =
-    ColorSkyconsType[
-      icon
-        .replace(/([^ ])([A-Z])/g, '$1 $2')
-        .trim()
-        .replace(/[- ]/g, '_')
-        .toUpperCase() as keyof typeof ColorSkyconsType
-    ]
+  const iconType = ColorSkyconsType[normalizeIcon(icon)]
 
   return (
     <View style={styles.row_container}>

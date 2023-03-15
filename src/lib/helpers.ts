@@ -1,8 +1,4 @@
-function bearingToCardinal(bearing: number) {
-  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
-  const index = Math.floor((bearing + 22.5) / 45)
-  return directions[index % 8]
-}
+import { ColorSkyconsType } from 'react-color-skycons'
 
 function normalizeCoordinates({ latitude, longitude }: { latitude: string; longitude: string }) {
   const floatLatitude: number = parseFloat(latitude)
@@ -25,6 +21,48 @@ function normalizeCoordinates({ latitude, longitude }: { latitude: string; longi
   return { latitude: normalizedLatitude, longitude: normalizedLongitude }
 }
 
+function normalizeIcon(icon: string) {
+  const iconType = icon
+    .replace(/([^ ])([A-Z])/g, '$1 $2')
+    .trim()
+    .replace(/[- ]/g, '_')
+    .toUpperCase() as keyof typeof ColorSkyconsType
+
+  if (Object.keys(ColorSkyconsType).includes(iconType)) {
+    return iconType
+  }
+
+  switch (icon.replace(/\s+/g, '')) {
+    case 'Clear':
+    case 'Clear,Sunny':
+    case 'MostlyClear':
+      return 'CLEAR_DAY'
+    case 'PartlyCloudy':
+    case 'MostlyCloudy':
+      return 'PARTLY_CLOUDY_DAY'
+    case 'Haze':
+      return 'FOG'
+    case 'Drizzle':
+    case 'LightRain':
+      return 'RAIN'
+    case 'Flurries':
+      return 'SNOW'
+    case 'Windy':
+      return 'WIND'
+    case 'Thunderstorms':
+      return 'THUNDER'
+    default:
+      console.log(icon, iconType)
+      return 'FOG'
+  }
+}
+
+function bearingToCardinal(bearing: number) {
+  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
+  const index = Math.floor((bearing + 22.5) / 45)
+  return directions[index % 8]
+}
+
 function celciusToFahrenheit(celcius: number) {
   return celcius * 1.8 + 32
 }
@@ -37,4 +75,4 @@ function millimetersToInches(millimeters: number) {
   return millimeters * 0.0393701
 }
 
-export { bearingToCardinal, normalizeCoordinates, celciusToFahrenheit, kilometersToMiles, millimetersToInches }
+export { normalizeCoordinates, normalizeIcon, bearingToCardinal, celciusToFahrenheit, kilometersToMiles, millimetersToInches }

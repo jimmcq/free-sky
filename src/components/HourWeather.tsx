@@ -78,7 +78,7 @@ function HourWeather({ minutely, hourly }: { minutely: WeatherInfo; hourly: Weat
   })
 
   const backgroundColor = minuteData.map(minuteData => {
-    if (minuteData.precipType === 'snow') {
+    if (minuteData.precipType.toLowerCase() === 'snow') {
       return minuteData.precipIntensity > 0.05 ? '#8c82ce' : '#a39ad7'
     }
     return minuteData.precipIntensity > 0.05 ? '#4a80c7' : '#80a5d6'

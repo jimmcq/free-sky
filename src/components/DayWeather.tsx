@@ -86,7 +86,10 @@ function DayWeather({ hourly }: { hourly: WeatherInfo }) {
       case 'LightRain':
       case 'PossibleLightRain':
         return '#80a5d6'
+      case 'Rain':
+        return '#4a80c7'
       case 'Heavy Rain':
+      case 'Thunderstorms':
         return '#305f9c'
       case 'PartlyCloudy':
       case 'MostlyClear':

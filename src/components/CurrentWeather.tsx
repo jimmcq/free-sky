@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { bearingToCardinal } from '../lib/helpers'
+import { bearingToCardinal, normalizeIcon } from '../lib/helpers'
 import ColorSkycons, { ColorSkyconsType } from 'react-color-skycons'
 import type { WeatherData, WeatherInfo } from '../lib/types'
 
@@ -23,15 +23,7 @@ function CurrentWeather({
   const location = nameParts.length <= 2 ? placeName : `${nameParts[0]}, ${nameParts[1]}`
 
   const temperatureDirection = hourly.data[0].temperature < hourly.data[1].temperature ? '\u2191' : '\u2193'
-
-  const iconType =
-    ColorSkyconsType[
-      icon
-        .replace(/([^ ])([A-Z])/g, '$1 $2')
-        .trim()
-        .replace(/[- ]/g, '_')
-        .toUpperCase() as keyof typeof ColorSkyconsType
-    ]
+  const iconType = ColorSkyconsType[normalizeIcon(icon)]
 
   return (
     <View style={styles.container}>
