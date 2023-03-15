@@ -11,12 +11,12 @@
     "@expo/next-adapter": "5.0.2",
     "@expo/webpack-config": "^18.0.1",
     "@react-native-async-storage/async-storage": "^1.17.11",
-    "@sentry/nextjs": "^7.42.0",
+    "@sentry/nextjs": "^7.43.0",
     "chart.js": "^4.2.1",
     "chartjs-adapter-date-fns": "^3.0.0",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.29.3",
-    "expo": "^48.0.6",
+    "expo": "^48.0.7",
     "expo-device": "~5.2.1",
     "expo-location": "~15.1.1",
     "find-babel-config": "^2.0.0",
@@ -37,18 +37,18 @@
     "use-debounce": "^9.0.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.0",
-    "@babel/eslint-parser": "^7.19.1",
+    "@babel/core": "^7.21.3",
+    "@babel/eslint-parser": "^7.21.3",
     "@tsconfig/react-native": "^2.0.3",
     "@types/crypto-js": "^4.1.1",
-    "@types/jest": "^29.4.0",
-    "@types/node": "^18.15.1",
+    "@types/jest": "^29.4.1",
+    "@types/node": "^18.15.3",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-native": "^0.71.3",
     "@types/react-test-renderer": "^18.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.54.1",
-    "@typescript-eslint/parser": "^5.54.1",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
     "eslint": "^8.36.0",
     "eslint-config-next": "^13.2.4",
     "eslint-config-prettier": "^8.7.0",
@@ -74,5 +74,9 @@
     "test": "TZ=America/Los_Angeles yarn jest -c tests/config/jest.config.js",
     "postinstall": "husky install"
   },
-  "browserslist": ["last 1 version", "> 1%", "not dead"]
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "not dead"
+  ]
 }
