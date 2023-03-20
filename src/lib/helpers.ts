@@ -46,6 +46,7 @@ function normalizeIcon(icon: string) {
     case 'LightRain':
       return 'RAIN'
     case 'Flurries':
+    case 'LightSnow':
       return 'SNOW'
     case 'Windy':
       return 'WIND'
