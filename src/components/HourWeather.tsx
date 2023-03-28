@@ -61,6 +61,16 @@ function HourWeather({ minutely, hourly }: { minutely: WeatherInfo; hourly: Weat
           },
         },
       },
+      y: {
+        min: 0,
+        max: 0.1,
+        afterBuildTicks: axis => (axis.ticks = [0, 0.05, 0.1].map(v => ({ value: v }))),
+        grid: {
+          display: true,
+          drawOnChartArea: true,
+          z: 1,
+        },
+      },
     },
   }
 
@@ -81,7 +91,7 @@ function HourWeather({ minutely, hourly }: { minutely: WeatherInfo; hourly: Weat
     if (minuteData.precipType?.toLowerCase() === 'snow') {
       return minuteData.precipIntensity > 0.05 ? '#8c82ce' : '#a39ad7'
     }
-    return minuteData.precipIntensity > 0.05 ? '#4a80c7' : '#80a5d6'
+    return minuteData.precipIntensity > 0.05 ? (minuteData.precipIntensity >= 0.1 ? '#305f9c' : '#4a80c7') : '#80a5d6'
   })
 
   const datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor }]
