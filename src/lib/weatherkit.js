@@ -29,33 +29,44 @@ function translateToDarkSky(weatherkit) {
       }
     }) || []
 
+  const now = new Date()
+  const startOfHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours()).getTime()
+  const aDayFromNow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, now.getHours()).getTime()
+
   darkSky.hourly.data =
-    weatherkit.forecastHourly?.hours.slice(0, 48).map(hour => {
-      return {
-        ...emptyData,
-        time: Date.parse(hour.forecastStart || '') / 1000,
-        summary: hour.conditionCode || '',
-        precipIntensity: millimetersToInches(hour.precipitationIntensity || 0),
-        precipProbability: hour.precipitationChance || 0,
-        temperature: celciusToFahrenheit(hour.temperature || 0),
-      }
-    }) || []
+    weatherkit.forecastHourly.hours
+      .filter(hour => Date.parse(hour.forecastStart) >= startOfHour && Date.parse(hour.forecastStart) <= aDayFromNow)
+      .map(hour => {
+        return {
+          ...emptyData,
+          time: Date.parse(hour.forecastStart || '') / 1000,
+          summary: hour.conditionCode || '',
+          precipIntensity: millimetersToInches(hour.precipitationIntensity || 0),
+          precipProbability: hour.precipitationChance || 0,
+          temperature: celciusToFahrenheit(hour.temperature || 0),
+        }
+      }) || []
 
   darkSky.daily.data =
-    weatherkit.forecastDaily?.days.map(day => {
-      return {
-        ...emptyData,
-        time: Date.parse(day.forecastStart || '') / 1000,
-        icon: day.conditionCode || '',
-        summary: day.daytimeForecast.conditionCode || '' + ' ' + day.overnightForecast.conditionCode || '',
-        precipIntensity: millimetersToInches(day.precipitationAmount || 0),
-        precipProbability: day.precipitationChance || 0,
-        temperatureLow: celciusToFahrenheit(day.temperatureMin || 0),
-        temperatureHigh: celciusToFahrenheit(day.temperatureMax || 0),
-      }
-    }) || []
+    weatherkit.forecastDaily?.days
+      .filter(day => Date.parse(day.forecastStart) >= new Date().setUTCHours(0))
+      .map(day => {
+        let summary = `${day.conditionCode} throughout the day.`
+        if (day.daytimeForecast.conditionCode != day.overnightForecast.conditionCode) {
+          summary = `${day.daytimeForecast.conditionCode}, then ${day.overnightForecast.conditionCode} overnight.`
+        }
+        return {
+          ...emptyData,
+          time: Date.parse(day.forecastStart || '') / 1000,
+          icon: day.conditionCode || '',
+          summary,
+          precipIntensity: millimetersToInches(day.precipitationAmount || 0),
+          precipProbability: day.precipitationChance || 0,
+          temperatureLow: celciusToFahrenheit(day.temperatureMin || 0),
+          temperatureHigh: celciusToFahrenheit(day.temperatureMax || 0),
+        }
+      }) || []
 
-  /*
   darkSky.alerts =
     weatherkit.weatherAlerts?.map(alert => {
       return {
@@ -65,7 +76,6 @@ function translateToDarkSky(weatherkit) {
         expires: Date.parse(alert.expires || '') / 1000,
       }
     }) || []
-  */
 
   return darkSky
 }
