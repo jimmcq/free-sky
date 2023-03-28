@@ -52,7 +52,7 @@ function translateToDarkSky(weatherkit) {
       .filter(day => Date.parse(day.forecastStart) >= new Date().setUTCHours(0))
       .map(day => {
         let summary = `${day.conditionCode} throughout the day.`
-        if (day.daytimeForecast.conditionCode != day.overnightForecast.conditionCode) {
+        if (day.daytimeForecast.conditionCode !== day.overnightForecast.conditionCode) {
           summary = `${day.daytimeForecast.conditionCode}, then ${day.overnightForecast.conditionCode} overnight.`
         }
         return {
