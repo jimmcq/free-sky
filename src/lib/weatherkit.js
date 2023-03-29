@@ -47,9 +47,11 @@ function translateToDarkSky(weatherkit) {
         }
       }) || []
 
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+
   darkSky.daily.data =
     weatherkit.forecastDaily?.days
-      .filter(day => Date.parse(day.forecastStart) >= new Date().setUTCHours(0))
+      .filter(day => Date.parse(day.forecastStart) >= startOfDay)
       .map(day => {
         let summary = `${day.conditionCode} throughout the day.`
         if (day.daytimeForecast.conditionCode !== day.overnightForecast.conditionCode) {
