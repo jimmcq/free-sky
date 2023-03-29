@@ -40,7 +40,7 @@ function translateToDarkSky(weatherkit) {
         return {
           ...emptyData,
           time: Date.parse(hour.forecastStart || '') / 1000,
-          summary: hour.conditionCode || '',
+          summary: hour?.conditionCode || '',
           precipIntensity: millimetersToInches(hour.precipitationIntensity || 0),
           precipProbability: hour.precipitationChance || 0,
           temperature: celciusToFahrenheit(hour.temperature || 0),
@@ -53,14 +53,14 @@ function translateToDarkSky(weatherkit) {
     weatherkit.forecastDaily?.days
       .filter(day => Date.parse(day.forecastStart) >= startOfDay)
       .map(day => {
-        let summary = `${day.conditionCode} throughout the day.`
-        if (day.daytimeForecast.conditionCode !== day.overnightForecast.conditionCode) {
-          summary = `${day.daytimeForecast.conditionCode}, then ${day.overnightForecast.conditionCode} overnight.`
+        let summary = `${day?.conditionCode} throughout the day.`
+        if (day.overnightForecast?.conditionCode && day.daytimeForecast?.conditionCode !== day.overnightForecast?.conditionCode) {
+          summary = `${day.daytimeForecast?.conditionCode}, then ${day.overnightForecast?.conditionCode} overnight.`
         }
         return {
           ...emptyData,
           time: Date.parse(day.forecastStart || '') / 1000,
-          icon: day.conditionCode || '',
+          icon: day?.conditionCode || '',
           summary,
           precipIntensity: millimetersToInches(day.precipitationAmount || 0),
           precipProbability: day.precipitationChance || 0,

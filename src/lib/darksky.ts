@@ -21,6 +21,11 @@ async function getForecast({ latitude: latitudeParam, longitude: longitudeParam 
   })
   result = (await apiResponse.json()) || {}
 
+  const now = new Date()
+  const startOfHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours()).getTime() / 1000
+  const aDayFromNow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, now.getHours()).getTime() / 1000
+
+  result.hourly.data = result.hourly.data.filter(hour => hour.time >= startOfHour && hour.time <= aDayFromNow)
   // Store the result in the cache for one minute
   cacheSet({ key: cacheKey, value: result, expire: 60 })
 
