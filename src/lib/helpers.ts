@@ -47,6 +47,7 @@ function normalizeIcon(icon: string) {
       return 'RAIN'
     case 'Flurries':
     case 'LightSnow':
+    case 'HeavySnow':
       return 'SNOW'
     case 'Windy':
       return 'WIND'
@@ -56,6 +57,10 @@ function normalizeIcon(icon: string) {
       console.log(icon, iconType)
       return 'FOG'
   }
+}
+
+function normalizeSummary(summary: string) {
+  return summary.replace(/([^ ])([A-Z])/g, '$1 $2').trim()
 }
 
 function bearingToCardinal(bearing: number) {
@@ -76,4 +81,12 @@ function millimetersToInches(millimeters: number) {
   return millimeters * 0.0393701
 }
 
-export { normalizeCoordinates, normalizeIcon, bearingToCardinal, celciusToFahrenheit, kilometersToMiles, millimetersToInches }
+export {
+  normalizeCoordinates,
+  normalizeIcon,
+  normalizeSummary,
+  bearingToCardinal,
+  celciusToFahrenheit,
+  kilometersToMiles,
+  millimetersToInches,
+}

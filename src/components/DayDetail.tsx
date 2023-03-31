@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ColorSkycons, { ColorSkyconsType } from 'react-color-skycons'
 import { StyleSheet, Text, View } from 'react-native'
-import { normalizeIcon } from '../lib/helpers'
+import { normalizeIcon, normalizeSummary } from '../lib/helpers'
 import type { WeatherData } from '../lib/types'
 
 function DayDetail({ day, index }: { day: WeatherData; index: number }) {
@@ -18,7 +18,7 @@ function DayDetail({ day, index }: { day: WeatherData; index: number }) {
         {' '}
         {Math.round(temperatureLow)}°-{Math.round(temperatureHigh)}°
       </Text>
-      <Text style={[styles.text, styles.text200]}>{summary.replace(/([^ ])([A-Z])/g, '$1 $2').trim()}</Text>
+      <Text style={[styles.text, styles.text200]}>{normalizeSummary(summary)}</Text>
     </View>
   )
 }
