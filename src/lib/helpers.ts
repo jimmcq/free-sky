@@ -21,7 +21,7 @@ function normalizeCoordinates({ latitude, longitude }: { latitude: string; longi
   return { latitude: normalizedLatitude, longitude: normalizedLongitude }
 }
 
-function normalizeIcon(icon: string) {
+function normalizeIcon(icon: string): keyof typeof ColorSkyconsType {
   const iconType = icon
     .replace(/([^ ])([A-Z])/g, '$1 $2')
     .trim()
@@ -59,25 +59,25 @@ function normalizeIcon(icon: string) {
   }
 }
 
-function normalizeSummary(summary: string) {
+function normalizeSummary(summary: string): string {
   return summary.replace(/([^ ])([A-Z])/g, '$1 $2').trim()
 }
 
-function bearingToCardinal(bearing: number) {
+function bearingToCardinal(bearing: number): string {
   const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
   const index = Math.floor((bearing + 22.5) / 45)
   return directions[index % 8]
 }
 
-function celciusToFahrenheit(celcius: number) {
-  return celcius * 1.8 + 32
+function celsiusToFahrenheit(celsius: number): number {
+  return celsius * 1.8 + 32
 }
 
-function kilometersToMiles(kilometers: number) {
+function kilometersToMiles(kilometers: number): number {
   return kilometers * 0.621371
 }
 
-function millimetersToInches(millimeters: number) {
+function millimetersToInches(millimeters: number): number {
   return millimeters * 0.0393701
 }
 
@@ -86,7 +86,7 @@ export {
   normalizeIcon,
   normalizeSummary,
   bearingToCardinal,
-  celciusToFahrenheit,
+  celsiusToFahrenheit,
   kilometersToMiles,
   millimetersToInches,
 }

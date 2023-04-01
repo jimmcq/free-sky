@@ -4,6 +4,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, TimeScale, Ch
 import { Bar } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns'
 import type { WeatherInfo } from '../lib/types'
+import { normalizeSummary } from '../lib/helpers'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, TimeScale)
 
@@ -26,7 +27,7 @@ function DayWeather({ hourly }: { hourly: WeatherInfo }) {
           label: function (context) {
             const index = context.dataIndex
             const { summary, temperature } = hourData[index]
-            return `${summary.replace(/([^ ])([A-Z])/g, '$1 $2').trim()} ${Math.round(temperature)}°`
+            return `${normalizeSummary(summary)} ${Math.round(temperature)}°`
           },
           footer: function (context) {
             const index = context[0].dataIndex

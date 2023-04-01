@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import WeatherKit, { isErr } from 'node-apple-weatherkit'
 import { cacheGet, cacheSet, safeKey } from './cache'
-import { celciusToFahrenheit, kilometersToMiles, millimetersToInches, normalizeCoordinates } from './helpers'
+import { celsiusToFahrenheit, kilometersToMiles, millimetersToInches, normalizeCoordinates, normalizeSummary } from './helpers'
 import { emptyData, emptyWeatherResponse } from './types'
 
 function translateToDarkSky(weatherkit) {
@@ -14,8 +14,8 @@ function translateToDarkSky(weatherkit) {
   darkSky.currently.icon = weatherkit.currentWeather?.conditionCode || ''
   darkSky.currently.summary = weatherkit.currentWeather?.conditionCode || ''
   darkSky.currently.precipIntensity = millimetersToInches(weatherkit.currentWeather?.precipitationIntensity || 0)
-  darkSky.currently.temperature = celciusToFahrenheit(weatherkit.currentWeather?.temperature || 0)
-  darkSky.currently.apparentTemperature = celciusToFahrenheit(weatherkit.currentWeather?.temperatureApparent || 0)
+  darkSky.currently.temperature = celsiusToFahrenheit(weatherkit.currentWeather?.temperature || 0)
+  darkSky.currently.apparentTemperature = celsiusToFahrenheit(weatherkit.currentWeather?.temperatureApparent || 0)
   darkSky.currently.windSpeed = kilometersToMiles(weatherkit.currentWeather?.windSpeed || 0)
   darkSky.currently.windBearing = weatherkit.currentWeather?.windDirection || 0
 
@@ -43,7 +43,7 @@ function translateToDarkSky(weatherkit) {
           summary: hour?.conditionCode || '',
           precipIntensity: millimetersToInches(hour.precipitationIntensity || 0),
           precipProbability: hour.precipitationChance || 0,
-          temperature: celciusToFahrenheit(hour.temperature || 0),
+          temperature: celsiusToFahrenheit(hour.temperature || 0),
         }
       }) || []
 
@@ -64,8 +64,8 @@ function translateToDarkSky(weatherkit) {
           summary,
           precipIntensity: millimetersToInches(day.precipitationAmount || 0),
           precipProbability: day.precipitationChance || 0,
-          temperatureLow: celciusToFahrenheit(day.temperatureMin || 0),
-          temperatureHigh: celciusToFahrenheit(day.temperatureMax || 0),
+          temperatureLow: celsiusToFahrenheit(day.temperatureMin || 0),
+          temperatureHigh: celsiusToFahrenheit(day.temperatureMax || 0),
         }
       }) || []
 
@@ -78,6 +78,39 @@ function translateToDarkSky(weatherkit) {
         expires: Date.parse(alert.expires || '') / 1000,
       }
     }) || []
+
+  // Calculate the minutely summary
+  if (darkSky.minutely.data.length > 0) {
+    const rainStarts = darkSky.minutely.data.find(minute => minute.precipProbability > 0)
+    const rainStops = darkSky.minutely.data.find(minute => minute.precipProbability === 0)
+    let minutesUntilRainStarts = 0
+    let minutesUntilRainStops = 0
+    if (rainStarts) {
+      minutesUntilRainStarts = Math.round((rainStarts.time - now.getTime() / 1000) / 60)
+    }
+    if (rainStops) {
+      minutesUntilRainStops = Math.round((rainStops.time - now.getTime() / 1000) / 60)
+    }
+    if (minutesUntilRainStarts > 0 && minutesUntilRainStops > 0 && minutesUntilRainStarts < minutesUntilRainStops) {
+      darkSky.minutely.summary = `Rain starts in ${minutesUntilRainStarts} minutes and stops in ${minutesUntilRainStops} minutes.`
+    } else if (minutesUntilRainStarts > 0 && minutesUntilRainStops > 0 && minutesUntilRainStarts > minutesUntilRainStops) {
+      darkSky.minutely.summary = `Rain stops in ${minutesUntilRainStops} minutes and starts in ${minutesUntilRainStarts} minutes.`
+    } else if (minutesUntilRainStarts > 0) {
+      darkSky.minutely.summary = `Rain starts in ${minutesUntilRainStarts} minutes.`
+    } else if (minutesUntilRainStops > 0) {
+      darkSky.minutely.summary = `Rain stops in ${minutesUntilRainStops} minutes.`
+    }
+  }
+
+  // If there is no minutely summary, use the hourly summary
+  if (!darkSky.minutely.summary) {
+    darkSky.minutely.summary = `${normalizeSummary(darkSky.hourly.data[0]?.summary)} for the hour.` || ''
+  }
+
+  // If there is no hourly summary, use the daily summary
+  if (!darkSky.hourly.summary) {
+    darkSky.hourly.summary = normalizeSummary(darkSky.daily.data[0]?.summary) || ''
+  }
 
   return darkSky
 }

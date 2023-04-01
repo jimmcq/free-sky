@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { bearingToCardinal, normalizeIcon } from '../lib/helpers'
+import { bearingToCardinal, normalizeIcon, normalizeSummary } from '../lib/helpers'
 import ColorSkycons, { ColorSkyconsType } from 'react-color-skycons'
 import type { WeatherData, WeatherInfo } from '../lib/types'
 
@@ -33,7 +33,7 @@ function CurrentWeather({
         <View>
           <Text style={styles.summary}>
             {Math.round(temperature)}°<Text style={styles.temperature_arrow}>{temperatureDirection}</Text>{' '}
-            {currentSummary.replace(/([^ ])([A-Z])/g, '$1 $2').trim()}.
+            {normalizeSummary(currentSummary)}.
           </Text>
           <Text style={[styles.text, styles.w300]}>
             <Text style={styles.label}>Feels like: </Text> <Text style={styles.temperature}>{Math.round(apparentTemperature)}°</Text>{' '}
