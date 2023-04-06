@@ -7,12 +7,16 @@ import { emptyData, emptyWeatherResponse } from './types'
 function translateToDarkSky(weatherkit) {
   const darkSky = emptyWeatherResponse
 
+  darkSky.minutely.summary = ''
+  darkSky.hourly.summary = ''
+  darkSky.daily.summary = ''
+
   darkSky.latitude = weatherkit.currentWeather?.metadata.latitude || 0
   darkSky.longitude = weatherkit.currentWeather?.metadata.longitude || 0
 
   darkSky.currently.time = Date.parse(weatherkit.currentWeather?.metadata.readTime || '') / 1000
   darkSky.currently.icon = weatherkit.currentWeather?.conditionCode || ''
-  darkSky.currently.summary = weatherkit.currentWeather?.conditionCode || ''
+  darkSky.currently.summary = weatherkit.currentWeather?.summary || weatherkit.currentWeather?.conditionCode || ''
   darkSky.currently.precipIntensity = millimetersToInches(weatherkit.currentWeather?.precipitationIntensity || 0)
   darkSky.currently.temperature = celsiusToFahrenheit(weatherkit.currentWeather?.temperature || 0)
   darkSky.currently.apparentTemperature = celsiusToFahrenheit(weatherkit.currentWeather?.temperatureApparent || 0)
@@ -40,7 +44,7 @@ function translateToDarkSky(weatherkit) {
         return {
           ...emptyData,
           time: Date.parse(hour.forecastStart || '') / 1000,
-          summary: hour?.conditionCode || '',
+          summary: hour?.summary || hour?.conditionCode || '',
           precipIntensity: millimetersToInches(hour.precipitationIntensity || 0),
           precipProbability: hour.precipitationChance || 0,
           temperature: celsiusToFahrenheit(hour.temperature || 0),
@@ -53,9 +57,12 @@ function translateToDarkSky(weatherkit) {
     weatherkit.forecastDaily?.days
       .filter(day => Date.parse(day.forecastStart) >= startOfDay)
       .map(day => {
-        let summary = `${day?.conditionCode} throughout the day.`
-        if (day.overnightForecast?.conditionCode && day.daytimeForecast?.conditionCode !== day.overnightForecast?.conditionCode) {
-          summary = `${day.daytimeForecast?.conditionCode}, then ${day.overnightForecast?.conditionCode} overnight.`
+        let summary = day?.summary
+        if (!summary) {
+          summary = `${day?.conditionCode} throughout the day.`
+          if (day.overnightForecast?.conditionCode && day.daytimeForecast?.conditionCode !== day.overnightForecast?.conditionCode) {
+            summary = `${day.daytimeForecast?.conditionCode}, then ${day.overnightForecast?.conditionCode} overnight.`
+          }
         }
         return {
           ...emptyData,
@@ -110,6 +117,38 @@ function translateToDarkSky(weatherkit) {
   // If there is no hourly summary, use the daily summary
   if (!darkSky.hourly.summary) {
     darkSky.hourly.summary = normalizeSummary(darkSky.daily.data[0]?.summary) || ''
+  }
+
+  /* Calculate darkSky.daily.summary
+    If every day has a rain icon, it should say "Rain throughout the week."
+
+    If every day has a snow icon, it should say "Snow throughout the week."
+
+    If no day has a rain or snow icon, it should say "No precipitation throughout the week."
+
+    If the first day has rain, it should find the first day without rain and say "Rain until Tuesday."
+
+    If the first day has no rain, it should find the first day with rain and say "Rain starting Tuesday."
+*/
+  darkSky.daily.summary = ''
+  const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  const firstRainIndex = darkSky.daily.data.slice(0, 7).findIndex(day => day.icon === 'Rain' || day.icon === 'Drizzle')
+  const firstNoRainIndex = darkSky.daily.data.slice(0.7).findIndex(day => day.icon !== 'Rain' && day.icon !== 'Drizzle')
+  if (firstRainIndex === 0) {
+    // If every day has a rain icon, it should say "Rain throughout the week."
+    if (firstNoRainIndex === -1) {
+      darkSky.daily.summary = 'Rain throughout the week.'
+    } else {
+      const firstNoRainWeekday = weekday[new Date(darkSky.daily.data[firstNoRainIndex].time * 1000).getDay()]
+      darkSky.daily.summary = `Rain until ${firstNoRainWeekday}.`
+    }
+  } else if (firstNoRainIndex === 0) {
+    if (firstRainIndex === -1) {
+      darkSky.daily.summary = 'No precipitation throughout the week.'
+    } else {
+      const firstRainWeekday = weekday[new Date(darkSky.daily.data[firstRainIndex].time * 1000).getDay()]
+      darkSky.daily.summary = `Rain starting ${firstRainWeekday}.`
+    }
   }
 
   return darkSky

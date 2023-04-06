@@ -1,4 +1,4 @@
-import { bearingToCardinal, normalizeCoordinates } from '../../src/lib/helpers'
+import { bearingToCardinal, normalizeCoordinates, normalizeIcon } from '../../src/lib/helpers'
 
 describe('bearingToCardinal', () => {
   it('should return "N" for 0 and 360 degrees', () => {
@@ -54,5 +54,23 @@ describe('normalizeCoordinates', () => {
   it('should throw an error for invalid coordinates', () => {
     expect.assertions(1)
     expect(() => normalizeCoordinates({ latitude: 0, longitude: 200 })).toThrow('Invalid location coordinates')
+  })
+
+  it('should work with string input', () => {
+    expect.assertions(2)
+    let { latitude, longitude } = normalizeCoordinates({ latitude: '52.520008', longitude: '13.404954' })
+    expect(latitude).toEqual('52.5200')
+    expect(longitude).toEqual('13.4050')
+  })
+})
+
+describe('normalizeIcon', () => {
+  it('should return a normalized string for valid icons', () => {
+    expect.assertions(1)
+    expect(normalizeIcon('clear-day')).toBe('CLEAR_DAY')
+  })
+  it('should return the default icon for invalid icons', () => {
+    expect.assertions(1)
+    expect(normalizeIcon('invalid-icon')).toBe('FOG')
   })
 })
