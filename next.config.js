@@ -26,9 +26,6 @@ module.exports = withPlugins([withExpo], {
     'expo-modules-core',
     // Add more React Native / Expo packages here...
   ],
-  experimental: {
-    forceSwcTransforms: true,
-  },
 })
 
 module.exports = withSentryConfig(module.exports, { silent: true }, { hideSourcemaps: true })
