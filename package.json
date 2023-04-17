@@ -21,7 +21,7 @@
     "expo-location": "~15.1.1",
     "find-babel-config": "^2.0.0",
     "husky": "^8.0.3",
-    "ioredis": "^5.3.1",
+    "ioredis": "^5.3.2",
     "json5": "^2.2.3",
     "next": "13.3.0",
     "next-compose-plugins": "^2.2.1",
