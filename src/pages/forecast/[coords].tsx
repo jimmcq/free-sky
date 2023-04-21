@@ -31,8 +31,7 @@ export async function getServerSideProps({ res, query }: { res: NextApiResponse;
     throw new Error('Invalid forecast data')
   }
 
-  const placeName =
-    (await getPlaceName({ latitude: forecast.latitude.toString(), longitude: forecast.longitude.toString() })) || `${latitude},${longitude}`
+  const placeName = (await getPlaceName({ latitude: latitude, longitude: longitude })) || `${latitude},${longitude}`
 
   const pageMetadata = { title: `Weather for ${placeName}` }
   const props = { forecast, placeName, pageMetadata }
