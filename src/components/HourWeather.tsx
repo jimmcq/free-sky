@@ -87,7 +87,14 @@ function HourWeather({ minutely, hourly }: { minutely: WeatherInfo; hourly: Weat
     return minuteData.precipIntensity
   })
 
+  let summaryPrefix = ''
+  if (minutelySummary.includes('Rain') || minutelySummary.includes('Drizzle')) {
+    summaryPrefix = 'Possible'
+  }
   const backgroundColor = minuteData.map(minuteData => {
+    if (minuteData.precipProbability > 0.5) {
+      summaryPrefix = ''
+    }
     if (minuteData.precipType?.toLowerCase() === 'snow') {
       return minuteData.precipIntensity > 0.05 ? '#8c82ce' : '#a39ad7'
     }
@@ -111,7 +118,11 @@ function HourWeather({ minutely, hourly }: { minutely: WeatherInfo; hourly: Weat
 
   return (
     <View style={styles.container}>
-      {displaySummary && <Text style={styles.minutely_summary}>{minutelySummary}</Text>}
+      {displaySummary && (
+        <Text style={styles.minutely_summary}>
+          {summaryPrefix} {minutelySummary}
+        </Text>
+      )}
       {displayChart && (
         <View style={styles.chart_container}>
           <Bar data={data} options={options} height={100} />
