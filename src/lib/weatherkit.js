@@ -1,7 +1,14 @@
 import * as fs from 'fs'
 import WeatherKit, { isErr } from 'node-apple-weatherkit'
 import { cacheGet, cacheSet, safeKey } from './cache'
-import { celsiusToFahrenheit, kilometersToMiles, millimetersToInches, normalizeCoordinates, normalizeSummary } from './helpers'
+import {
+  celsiusToFahrenheit,
+  kilometersToMiles,
+  millimetersToInches,
+  normalizeCoordinates,
+  normalizeIcon,
+  normalizeSummary,
+} from './helpers'
 import { emptyData, emptyWeatherResponse } from './types'
 
 function translateToDarkSky(weatherkit) {
@@ -99,13 +106,17 @@ function translateToDarkSky(weatherkit) {
       minutesUntilRainStops = Math.round((rainStops.time - now.getTime() / 1000) / 60)
     }
     if (minutesUntilRainStarts > 0 && minutesUntilRainStops > 0 && minutesUntilRainStarts < minutesUntilRainStops) {
-      darkSky.minutely.summary = `Rain starts in ${minutesUntilRainStarts} minutes and stops in ${minutesUntilRainStops} minutes.`
+      darkSky.minutely.summary = `Rain starts in ${minutesUntilRainStarts} minutes and stops in ${minutesUntilRainStops} minute${
+        minutesUntilRainStops > 1 ? 's' : ''
+      }.`
     } else if (minutesUntilRainStarts > 0 && minutesUntilRainStops > 0 && minutesUntilRainStarts > minutesUntilRainStops) {
-      darkSky.minutely.summary = `Rain stops in ${minutesUntilRainStops} minutes and starts in ${minutesUntilRainStarts} minutes.`
+      darkSky.minutely.summary = `Rain stops in ${minutesUntilRainStops} minutes and starts in ${minutesUntilRainStarts} minute${
+        minutesUntilRainStarts > 1 ? 's' : ''
+      }.`
     } else if (minutesUntilRainStarts > 0) {
-      darkSky.minutely.summary = `Rain starts in ${minutesUntilRainStarts} minutes.`
+      darkSky.minutely.summary = `Rain starts in ${minutesUntilRainStarts} minute${minutesUntilRainStarts > 1 ? 's' : ''}.`
     } else if (minutesUntilRainStops > 0) {
-      darkSky.minutely.summary = `Rain stops in ${minutesUntilRainStops} minutes.`
+      darkSky.minutely.summary = `Rain stops in ${minutesUntilRainStops} minute${minutesUntilRainStops > 1 ? 's' : ''}.`
     }
   }
 
@@ -119,35 +130,35 @@ function translateToDarkSky(weatherkit) {
     darkSky.hourly.summary = normalizeSummary(darkSky.daily.data[0]?.summary) || ''
   }
 
-  /* Calculate darkSky.daily.summary
-    If every day has a rain icon, it should say "Rain throughout the week."
+  /*
+    Calculate darkSky.daily.summary
+  */
 
-    If every day has a snow icon, it should say "Snow throughout the week."
-
-    If no day has a rain or snow icon, it should say "No precipitation throughout the week."
-
-    If the first day has rain, it should find the first day without rain and say "Rain until Tuesday."
-
-    If the first day has no rain, it should find the first day with rain and say "Rain starting Tuesday."
-*/
-  darkSky.daily.summary = ''
-  const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-  const firstRainIndex = darkSky.daily.data.slice(0, 7).findIndex(day => day.icon === 'Rain' || day.icon === 'Drizzle')
-  const firstNoRainIndex = darkSky.daily.data.slice(0.7).findIndex(day => day.icon !== 'Rain' && day.icon !== 'Drizzle')
-  if (firstRainIndex === 0) {
-    // If every day has a rain icon, it should say "Rain throughout the week."
-    if (firstNoRainIndex === -1) {
-      darkSky.daily.summary = 'Rain throughout the week.'
-    } else {
-      const firstNoRainWeekday = weekday[new Date(darkSky.daily.data[firstNoRainIndex].time * 1000).getDay()]
-      darkSky.daily.summary = `Rain until ${firstNoRainWeekday}.`
-    }
-  } else if (firstNoRainIndex === 0) {
-    if (firstRainIndex === -1) {
-      darkSky.daily.summary = 'No precipitation throughout the week.'
-    } else {
-      const firstRainWeekday = weekday[new Date(darkSky.daily.data[firstRainIndex].time * 1000).getDay()]
-      darkSky.daily.summary = `Rain starting ${firstRainWeekday}.`
+  const firstDifferentIconIndex = darkSky.daily.data
+    .slice(0, 7)
+    .findIndex(day => normalizeIcon(day.icon) !== normalizeIcon(darkSky.daily.data[0].icon))
+  if (firstDifferentIconIndex === -1) {
+    darkSky.daily.summary = `${normalizeSummary(darkSky.daily.data[0]?.icon)} throughout the week.`
+  } else {
+    darkSky.daily.summary = ''
+    const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const firstRainIndex = darkSky.daily.data.slice(0, 7).findIndex(day => day.icon === 'Rain' || day.icon === 'Drizzle')
+    const firstNoRainIndex = darkSky.daily.data.slice(0.7).findIndex(day => day.icon !== 'Rain' && day.icon !== 'Drizzle')
+    if (firstRainIndex === 0) {
+      // If every day has a rain icon, it should say "Rain throughout the week."
+      if (firstNoRainIndex === -1) {
+        darkSky.daily.summary = 'Rain throughout the week.'
+      } else {
+        const firstNoRainWeekday = weekday[new Date(darkSky.daily.data[firstNoRainIndex].time * 1000).getDay()]
+        darkSky.daily.summary = `Rain until ${firstNoRainWeekday}.`
+      }
+    } else if (firstNoRainIndex === 0) {
+      if (firstRainIndex === -1) {
+        darkSky.daily.summary = 'No precipitation throughout the week.'
+      } else {
+        const firstRainWeekday = weekday[new Date(darkSky.daily.data[firstRainIndex].time * 1000).getDay()]
+        darkSky.daily.summary = `Rain starting ${firstRainWeekday}.`
+      }
     }
   }
 
