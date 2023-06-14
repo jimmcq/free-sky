@@ -34,12 +34,22 @@ export async function getServerSideProps({ res, query }: { res: NextApiResponse;
   const placeName = (await getPlaceName({ latitude: latitude, longitude: longitude })) || `${latitude},${longitude}`
 
   const pageMetadata = { title: `Weather for ${placeName}` }
-  const props = { forecast, placeName, pageMetadata }
+  const props = { forecast, placeName, latitude, longitude, pageMetadata }
 
   return { props }
 }
 
-function ForecastPage({ forecast, placeName }: { forecast: WeatherResponse; placeName: string }) {
+function ForecastPage({
+  forecast,
+  placeName,
+  latitude,
+  longitude,
+}: {
+  forecast: WeatherResponse
+  placeName: string
+  latitude: string
+  longitude: string
+}) {
   const router = useRouter()
 
   // Refresh server side props every 10 minutes
@@ -55,7 +65,7 @@ function ForecastPage({ forecast, placeName }: { forecast: WeatherResponse; plac
     return () => clearInterval(interval)
   }, [])
 
-  const { currently, minutely, hourly, daily, alerts, latitude, longitude } = forecast
+  const { currently, minutely, hourly, daily, alerts } = forecast
 
   useEffect(() => {
     ;(async () => {
