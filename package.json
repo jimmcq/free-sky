@@ -33,7 +33,7 @@
     "react-dom": "18.2.0",
     "react-error-boundary": "^4.0.10",
     "react-native": "0.71.11",
-    "react-native-web": "~0.19.4",
+    "react-native-web": "~0.19.5",
     "use-debounce": "^9.0.4"
   },
   "devDependencies": {
