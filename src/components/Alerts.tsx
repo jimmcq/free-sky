@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
   },
   link_button: {
     backgroundColor: '#ffffc8',
-    margin: '8px',
-    padding: '4px',
+    margin: 8,
+    padding: 4,
     borderRadius: 8,
     textAlign: 'center',
   },

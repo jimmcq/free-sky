@@ -29,29 +29,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    maxWidth: '361px',
-    marginTop: '8px',
+    maxWidth: 361,
+    marginTop: 8,
   },
   small_icon: {
     flexGrow: 0,
     flexShrink: 0,
-    flexBasis: '40px',
+    flexBasis: 40,
     width: 40,
     height: 40,
-    marginRight: '8px',
+    marginRight: 8,
   },
   text: {
     fontSize: 16,
     fontWeight: '400',
   },
   text50: {
-    width: '50px',
+    width: 50,
   },
   text70: {
-    width: '70px',
+    width: 70,
   },
   text200: {
-    width: '200px',
+    width: 200,
   },
 })
 

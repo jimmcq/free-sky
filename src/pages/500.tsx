@@ -24,12 +24,12 @@ const styles = StyleSheet.create({
   status_code: {
     fontSize: 24,
     fontWeight: '500',
-    marginRight: '20px',
+    marginRight: 20,
   },
   icon: {
     flexGrow: 0,
     flexShrink: 0,
-    flexBasis: '375px',
+    flexBasis: 375,
     width: 375,
     height: 375,
   },

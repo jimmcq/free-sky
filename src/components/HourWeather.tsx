@@ -138,13 +138,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    marginTop: '16px',
+    marginTop: 16,
   },
-  chart_container: { height: '100px', width: '100%' },
+  chart_container: { height: 100, width: '100%' },
   minutely_summary: {
     fontSize: 22,
     fontWeight: '300',
-    maxWidth: '361px',
+    maxWidth: 361,
   },
 })
 

@@ -26,7 +26,13 @@ function IndexPage() {
   useEffect(() => {
     ;(async () => {
       // Get from Storage
-      const storedLocationList = await AsyncStorage.getItem('locationList')
+      let storedLocationList
+      try {
+        storedLocationList = await AsyncStorage.getItem('locationList')
+      } catch (error) {
+        console.error('Error retrieving location list:', error)
+        storedLocationList = null
+      }
       if (storedLocationList) {
         const newList = JSON.parse(storedLocationList)
         setLinkList(
@@ -125,12 +131,12 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   results: {
-    width: '361px',
-    height: '361px',
-    marginTop: '16px',
+    width: 361,
+    height: 361,
+    marginTop: 16,
   },
   link: {
-    marginBottom: '8px',
+    marginBottom: 8,
   },
 })
 

@@ -62,10 +62,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    maxWidth: '361px',
+    maxWidth: 361,
   },
   w361: {
-    maxWidth: '361px',
+    maxWidth: 361,
   },
   text: {
     fontSize: 16,
@@ -73,19 +73,19 @@ const styles = StyleSheet.create({
   summary: {
     fontSize: 32,
     fontWeight: '600',
-    maxWidth: '300px',
+    maxWidth: 300,
     textAlign: 'left',
   },
   w300: {
-    maxWidth: '300px',
+    maxWidth: 300,
   },
   icon: {
     flexGrow: 0,
     flexShrink: 0,
-    flexBasis: '60px',
+    flexBasis: 60,
     width: 60,
     height: 60,
-    marginRight: '8px',
+    marginRight: 8,
   },
   hourly_summary: {
     fontSize: 28,
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   temperature_arrow: {
     fontSize: 20,
-    marginLeft: '-4px',
+    marginLeft: -4,
   },
 })
 

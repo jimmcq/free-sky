@@ -109,7 +109,7 @@ function ForecastPage({
 }
 
 const styles = StyleSheet.create({
-  container: { margin: '8px' },
+  container: { margin: 8 },
 })
 
 export default ForecastPage
