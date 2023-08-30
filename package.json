@@ -61,7 +61,8 @@
     "jest-environment-jsdom": "^29.6.4",
     "prettier": "^3.0.2",
     "ts-jest": "^29.1.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "yarn-deduplicate": "^6.0.2"
   },
   "scripts": {
     "start": "next start",
@@ -76,9 +77,13 @@
     "test": "TZ=America/Los_Angeles yarn jest -c tests/config/jest.config.js",
     "postinstall": "husky install"
   },
-  "browserslist": [
-    "last 1 version",
-    "> 1%",
-    "not dead"
-  ]
+  "browserslist": ["last 1 version", "> 1%", "not dead"],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "yarn.lock": ["yarn-deduplicate --strategy fewer", "git add"]
+  }
 }
