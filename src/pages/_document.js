@@ -38,23 +38,23 @@ a:hover {
 `
 
 export default class MyDocument extends Document {
-  static async getInitialProps({ renderPage }) {
-    AppRegistry.registerComponent('main', () => Main)
-    const { getStyleElement } = AppRegistry.getApplication('main')
-    const page = await renderPage()
-    const styles = [<style key="react-native-style" dangerouslySetInnerHTML={{ __html: style }} />, getStyleElement()]
-    return { ...page, styles: Children.toArray(styles) }
-  }
+    static async getInitialProps({ renderPage }) {
+        AppRegistry.registerComponent('main', () => Main)
+        const { getStyleElement } = AppRegistry.getApplication('main')
+        const page = await renderPage()
+        const styles = [<style key="react-native-style" dangerouslySetInnerHTML={{ __html: style }} />, getStyleElement()]
+        return { ...page, styles: Children.toArray(styles) }
+    }
 
-  render() {
-    return (
-      <Html style={{ height: '100%' }}>
-        <Head />
-        <body style={{ height: '100%', overflow: 'hidden' }}>
-          <Main />
-          <NextScript />
-        </body>
-      </Html>
-    )
-  }
+    render() {
+        return (
+            <Html style={{ height: '100%' }}>
+                <Head />
+                <body style={{ height: '100%', overflow: 'hidden' }}>
+                    <Main />
+                    <NextScript />
+                </body>
+            </Html>
+        )
+    }
 }

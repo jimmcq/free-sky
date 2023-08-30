@@ -15,101 +15,101 @@ import type { NextApiResponse } from 'next'
 import { emptyWeatherResponse, Place, WeatherResponse } from '../../lib/types'
 
 export async function getServerSideProps({ res, query }: { res: NextApiResponse; query: { coords: string } }) {
-  setCacheControl({ res, maxAge: 180 })
-  const parts = query.coords.split(',')
-  const { latitude, longitude } = normalizeCoordinates({ latitude: parts[0], longitude: parts[1] })
+    setCacheControl({ res, maxAge: 180 })
+    const parts = query.coords.split(',')
+    const { latitude, longitude } = normalizeCoordinates({ latitude: parts[0], longitude: parts[1] })
 
-  let forecast: WeatherResponse = emptyWeatherResponse
+    let forecast: WeatherResponse = emptyWeatherResponse
 
-  try {
-    forecast = await getForecast({ latitude, longitude })
-  } catch (e) {
-    throw new Error('Error retrieving forecast data')
-  }
+    try {
+        forecast = await getForecast({ latitude, longitude })
+    } catch (e) {
+        throw new Error('Error retrieving forecast data')
+    }
 
-  if (forecast?.latitude === undefined || forecast?.longitude === undefined) {
-    throw new Error('Invalid forecast data')
-  }
+    if (forecast?.latitude === undefined || forecast?.longitude === undefined) {
+        throw new Error('Invalid forecast data')
+    }
 
-  const placeName = (await getPlaceName({ latitude: latitude, longitude: longitude })) || `${latitude},${longitude}`
+    const placeName = (await getPlaceName({ latitude: latitude, longitude: longitude })) || `${latitude},${longitude}`
 
-  const pageMetadata = { title: `Weather for ${placeName}` }
-  const props = { forecast, placeName, latitude, longitude, pageMetadata }
+    const pageMetadata = { title: `Weather for ${placeName}` }
+    const props = { forecast, placeName, latitude, longitude, pageMetadata }
 
-  return { props }
+    return { props }
 }
 
 function ForecastPage({
-  forecast,
-  placeName,
-  latitude,
-  longitude,
+    forecast,
+    placeName,
+    latitude,
+    longitude,
 }: {
-  forecast: WeatherResponse
-  placeName: string
-  latitude: string
-  longitude: string
+    forecast: WeatherResponse
+    placeName: string
+    latitude: string
+    longitude: string
 }) {
-  const router = useRouter()
+    const router = useRouter()
 
-  // Refresh server side props every 10 minutes
-  useEffect(() => {
-    const interval = setInterval(() => {
-      try {
-        router.replace(router.asPath)
-      } catch (e) {
-        // Do nothing
-      }
-    }, 60000)
+    // Refresh server side props every 10 minutes
+    useEffect(() => {
+        const interval = setInterval(() => {
+            try {
+                router.replace(router.asPath)
+            } catch (e) {
+                // Do nothing
+            }
+        }, 60000)
 
-    return () => clearInterval(interval)
-  }, [])
+        return () => clearInterval(interval)
+    }, [])
 
-  const { currently, minutely, hourly, daily, alerts } = forecast
+    const { currently, minutely, hourly, daily, alerts } = forecast
 
-  useEffect(() => {
-    ;(async () => {
-      const storedLocationList = (await AsyncStorage.getItem('locationList')) || '[]'
+    useEffect(() => {
+        ;(async () => {
+            const storedLocationList = (await AsyncStorage.getItem('locationList')) || '[]'
 
-      const newList = JSON.parse(storedLocationList)
+            const newList = JSON.parse(storedLocationList)
 
-      let found = false
-      newList.forEach((item: Place) => {
-        if (item.placeName === placeName) {
-          found = true
-        }
-      })
+            let found = false
+            newList.forEach((item: Place) => {
+                if (item.placeName === placeName) {
+                    found = true
+                }
+            })
 
-      if (!found) {
-        newList.unshift({ placeName, latitude, longitude })
-        AsyncStorage.setItem('locationList', JSON.stringify(newList.slice(0, 5)))
-      }
-    })()
-  }, [])
+            if (!found) {
+                newList.unshift({ placeName, latitude, longitude })
+                AsyncStorage.setItem('locationList', JSON.stringify(newList.slice(0, 5)))
+            }
+        })()
+    }, [])
 
-  return (
-    <ScrollView style={styles.container}>
-      <View>
-        <CurrentWeather placeName={placeName} currently={currently} hourly={hourly} daily={daily} />
-      </View>
-      <View>
-        <Alerts alerts={alerts} />
-      </View>
-      <View>
-        <HourWeather minutely={minutely} hourly={hourly} />
-      </View>
-      <View>
-        <DayWeather hourly={hourly} />
-      </View>
-      <View>
-        <WeekWeather daily={daily} />
-      </View>
-    </ScrollView>
-  )
+    return (
+        <ScrollView style={styles.container}>
+            <View>
+                <CurrentWeather placeName={placeName} currently={currently} hourly={hourly} daily={daily} />
+            </View>
+            <View>
+                <Alerts alerts={alerts} />
+            </View>
+            <View>
+                <HourWeather minutely={minutely} hourly={hourly} />
+            </View>
+            <View>
+                <DayWeather hourly={hourly} />
+            </View>
+            <View>
+                <WeekWeather daily={daily} />
+            </View>
+        </ScrollView>
+    )
 }
 
 const styles = StyleSheet.create({
-  container: { margin: 8 },
+    container: { margin: 8 },
 })
 
 export default ForecastPage
