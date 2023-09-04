@@ -11,7 +11,7 @@
     "@expo/next-adapter": "5.0.2",
     "@expo/webpack-config": "^19.0.0",
     "@react-native-async-storage/async-storage": "^1.19.3",
-    "@sentry/nextjs": "^7.64.0",
+    "@sentry/nextjs": "^7.66.0",
     "chart.js": "^4.4.0",
     "chartjs-adapter-date-fns": "^3.0.0",
     "crypto-js": "^4.1.1",
