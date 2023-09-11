@@ -16,7 +16,7 @@
     "chartjs-adapter-date-fns": "^3.0.0",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.30.0",
-    "expo": "^49.0.8",
+    "expo": "^49.0.10",
     "expo-device": "~5.4.0",
     "expo-location": "~16.1.0",
     "find-babel-config": "^2.0.0",
