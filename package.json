@@ -10,7 +10,7 @@
   "dependencies": {
     "@expo/next-adapter": "5.0.2",
     "@expo/webpack-config": "^19.0.0",
-    "@react-native-async-storage/async-storage": "^1.19.3",
+    "@react-native-async-storage/async-storage": "^1.21.0",
     "@sentry/nextjs": "^7.91.0",
     "chart.js": "^4.4.0",
     "chartjs-adapter-date-fns": "^3.0.0",
