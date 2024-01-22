@@ -11,21 +11,27 @@ const { withExpo } = require('@expo/next-adapter')
 const withPlugins = require('next-compose-plugins')
 
 module.exports = withPlugins([withExpo], {
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Important: return the modified config
-    return config
-  },
-  reactStrictMode: true,
-  swcMinify: true,
-  transpilePackages: [
-    'react-native',
-    'react-native-web',
-    'expo',
-    'expo-device',
-    'expo-location',
-    'expo-modules-core',
-    // Add more React Native / Expo packages here...
-  ],
+    sentry: {
+        hideSourceMaps: false,
+    },
+    experimental: {
+        forceSwcTransforms: true,
+    },
+    webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+        // Important: return the modified config
+        return config
+    },
+    reactStrictMode: true,
+    swcMinify: true,
+    transpilePackages: [
+        'react-native',
+        'react-native-web',
+        'expo',
+        'expo-device',
+        'expo-location',
+        'expo-modules-core',
+        // Add more React Native / Expo packages here...
+    ],
 })
 
 module.exports = withSentryConfig(module.exports, { silent: true }, { hideSourcemaps: true })
