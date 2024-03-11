@@ -18,7 +18,7 @@
     "date-fns": "^3.3.1",
     "expo": "^50.0.8",
     "expo-device": "~5.9.3",
-    "expo-location": "~16.3.0",
+    "expo-location": "~16.5.5",
     "find-babel-config": "^2.0.0",
     "husky": "^8.0.3",
     "ioredis": "^5.3.2",
