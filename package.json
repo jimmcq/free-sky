@@ -17,7 +17,7 @@
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "expo": "^50.0.19",
-    "expo-device": "~5.9.3",
+    "expo-device": "~6.0.2",
     "expo-location": "~16.5.5",
     "find-babel-config": "^2.0.0",
     "husky": "^9.0.11",
