@@ -15,7 +15,7 @@
     "chart.js": "^4.4.5",
     "chartjs-adapter-date-fns": "^3.0.0",
     "crypto-js": "^4.2.0",
-    "date-fns": "^3.6.0",
+    "date-fns": "^4.1.0",
     "expo": "^50.0.21",
     "expo-device": "~6.0.2",
     "expo-location": "~17.0.1",
