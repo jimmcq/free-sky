@@ -29,3 +29,25 @@ export async function register() {
     })
   }
 }
+
+export async function onRequestError(
+  err: unknown, 
+  request: { url: string; method?: string; headers?: Record<string, string>; path?: string }, 
+  context?: { routeKind?: string; routePath?: string; routeType?: string }
+) {
+  const Sentry = await import('@sentry/nextjs')
+  // Create a proper RequestInfo object
+  const requestInfo = {
+    url: request.url,
+    method: request.method || 'GET',
+    headers: request.headers || {},
+    path: request.path || new URL(request.url).pathname
+  }
+  // Create proper ErrorContext
+  const errorContext = {
+    routerKind: context?.routeKind || 'unknown',
+    routePath: context?.routePath || request.path || new URL(request.url).pathname,
+    routeType: context?.routeType || 'unknown'
+  }
+  Sentry.captureRequestError(err, requestInfo, errorContext)
+}

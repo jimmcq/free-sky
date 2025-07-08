@@ -23,7 +23,7 @@ export async function getServerSideProps({ res, query }: { res: NextApiResponse;
 
     try {
         forecast = await getForecast({ latitude, longitude })
-    } catch (e) {
+    } catch (_e) {
         throw new Error('Error retrieving forecast data')
     }
 
@@ -57,7 +57,7 @@ function ForecastPage({
         const interval = setInterval(() => {
             try {
                 router.replace(router.asPath)
-            } catch (e) {
+            } catch (_e) {
                 // Do nothing
             }
         }, 60000)

@@ -13,7 +13,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     let longitude = ''
     try {
         ;({ latitude, longitude } = normalizeCoordinates({ latitude: queryLat.replace(/"/, ''), longitude: queryLon.replace(/"/, '') }))
-    } catch (e) {
+    } catch (_e) {
         return res.status(500).send('Invalid location coordinates')
     }
 

@@ -35,7 +35,7 @@ export function cacheSet({ key, value, expire = 60 }: { key: string; value: any;
     if (cacheBuilder && key && Number.isInteger(expire)) {
         try {
             cacheBuilder.set(key, JSON.stringify(value), 'EX', expire)
-        } catch (error) {
+        } catch (_error) {
             //
         }
     }
@@ -47,7 +47,7 @@ export async function cacheGet(key: string) {
         try {
             const result = await cacheBuilder.get(key)
             return JSON.parse(result || '')
-        } catch (error) {
+        } catch (_error) {
             //
         }
     }
