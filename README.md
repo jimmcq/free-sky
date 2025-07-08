@@ -17,7 +17,7 @@ A modern weather application built with Next.js and React Native Web, providing 
 - Node.js 18+ and Yarn
 - Apple Developer Account (for WeatherKit API access)
 - MapBox API key (for location services)
-- Redis instance (for caching)
+- Redis instance (optional - for caching, see development options below)
 
 ## Environment Variables
 
@@ -55,15 +55,64 @@ yarn install
 3. Configure environment variables (see above)
 
 4. Start the development server:
+
+**Option A: Basic development (no caching)**
 ```bash
 yarn dev
 ```
 
+**Option B: With Redis for caching**
+```bash
+# Requires Redis installed locally
+yarn dev:with-redis
+
+# Or use the smart script that auto-detects Redis
+yarn dev:smart
+
+# Or use Docker Compose (recommended)
+yarn dev:docker
+```
+
+## Redis Setup Options
+
+The application works without Redis but benefits from caching for better performance:
+
+### Option 1: No Redis (Default)
+Simply run `yarn dev` - the app will work without caching.
+
+### Option 2: Local Redis Installation
+```bash
+# macOS with Homebrew
+brew install redis
+brew services start redis
+
+# Ubuntu/Debian
+sudo apt install redis-server
+sudo systemctl start redis-server
+
+# Then use: yarn dev:with-redis or yarn dev:smart
+```
+
+### Option 3: Docker Redis (Recommended)
+```bash
+# Just run this - Redis will be automatically started
+yarn dev:docker
+```
+
 ## Available Scripts
 
-- `yarn dev` - Start development server
+### Development
+- `yarn dev` - Start development server (no caching)
+- `yarn dev:with-redis` - Start with Redis caching (concurrent)
+- `yarn dev:smart` - Intelligent start with Redis auto-detection
+- `yarn dev:docker` - Start with Docker Compose (Redis included)
+- `yarn dev:docker:down` - Stop Docker Compose services
+
+### Production
 - `yarn build` - Build production application
 - `yarn start` - Start production server
+
+### Code Quality
 - `yarn test` - Run test suite
 - `yarn eslint` - Run ESLint code analysis
 - `yarn prettier` - Check code formatting
