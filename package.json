@@ -92,8 +92,7 @@
   ],
   "lint-staged": {
     "yarn.lock": [
-      "yarn-deduplicate --strategy fewer",
-      "git add"
+      "yarn-deduplicate --strategy fewer"
     ],
     "src/**/*.{js,jsx,ts,tsx}": [
       "eslint --fix",
