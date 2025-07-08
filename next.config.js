@@ -13,6 +13,11 @@ const nextConfig = {
         return config
     },
     reactStrictMode: true,
+    
+    // Environment-specific configurations
+    env: {
+        VERCEL_ENV: process.env.VERCEL_ENV || 'development',
+    },
 }
 
 module.exports = withSentryConfig(nextConfig, { 
