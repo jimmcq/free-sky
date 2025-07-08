@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, TimeScale, ChartOptions, ChartData } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns'
 import type { WeatherInfo } from '../lib/types'
 import { normalizeSummary } from '../lib/helpers'
+import styles from './DayWeather.module.css'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, TimeScale)
 
@@ -144,31 +144,15 @@ function DayWeather({ hourly }: { hourly: WeatherInfo }) {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.hourly_summary}>{hourlySummary}</Text>
+        <div className={styles.container}>
+            <p className={styles.hourlySummary}>{hourlySummary}</p>
             {displayChart && (
-                <View style={styles.chart_container}>
+                <div className={styles.chartContainer}>
                     <Bar options={options} data={data} height={100} />
-                </View>
+                </div>
             )}
-        </View>
+        </div>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        marginTop: 16,
-    },
-    chart_container: { height: 100, width: '100%' },
-    hourly_summary: {
-        fontSize: 22,
-        fontWeight: '300',
-        maxWidth: 361,
-    },
-})
 
 export default DayWeather

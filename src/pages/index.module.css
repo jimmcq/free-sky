@@ -9,47 +9,51 @@
 }
 
 .text {
-  font-size: 16px;
+  font-size: 20px;
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  font-weight: 400;
 }
 
 .input {
   height: 40px;
   margin: 12px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 4px;
+  border: 1px solid #000;
+  padding: 8px 12px;
+  border-radius: 0;
   font-size: 16px;
   min-width: 250px;
+  background: white;
 }
 
 .input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: #000;
 }
 
 .results {
-  width: 361px;
-  height: 361px;
+  width: 100%;
+  max-width: 400px;
   margin-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: flex-start;
 }
 
 .link {
-  margin-bottom: 8px;
-  padding: 8px;
-  background-color: #f8f9fa;
-  border-radius: 4px;
+  margin-bottom: 12px;
   text-decoration: none;
-  color: #007bff;
-  transition: background-color 0.2s;
+  color: #000;
+  font-size: 16px;
+  line-height: 1.4;
 }
 
 .link:hover {
-  background-color: #e9ecef;
   text-decoration: underline;
+}
+
+.instructionText {
+  margin: 0;
+  font-size: 16px;
+  text-align: center;
 }

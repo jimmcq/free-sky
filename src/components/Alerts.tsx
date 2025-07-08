@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import * as React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
 import type { WeatherAlert } from '../lib/types'
+import styles from './Alerts.module.css'
 
 function Alerts({ alerts }: { alerts: WeatherAlert[] }) {
     if (!alerts?.length) {
@@ -10,33 +10,13 @@ function Alerts({ alerts }: { alerts: WeatherAlert[] }) {
 
     const alertLinks = alerts.map((alert, index) => {
         return (
-            <Link style={styles.link_button} key={index} href={alert.uri}>
-                <Text>
-                    {' '}
-                    {'\u2691'} {alert.title}{' '}
-                </Text>
+            <Link key={index} href={alert.uri} className={styles.linkButton}>
+                🚩 {alert.title}
             </Link>
         )
     })
 
-    return <View style={styles.row_container}>{alertLinks}</View>
+    return <div className={styles.rowContainer}>{alertLinks}</div>
 }
-
-const styles = StyleSheet.create({
-    row_container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-    },
-    link_button: {
-        backgroundColor: '#ffffc8',
-        margin: 8,
-        padding: 4,
-        borderRadius: 8,
-        textAlign: 'center',
-    },
-})
 
 export default Alerts

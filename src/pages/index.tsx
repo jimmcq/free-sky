@@ -108,8 +108,8 @@ function IndexPage() {
         <div className={styles.container}>
             <h1 className={styles.text}>When Dark Sky is gone, Free-Sky.Net remains</h1>
             <input className={styles.input} placeholder="Location Search" onChange={e => debounced(e.target.value)} />
-            <p>Enter an address above</p>
-            {linkList.length > 0 && <p>or select an address below</p>}
+            <p className={styles.instructionText}>Enter an address above</p>
+            {linkList.length > 0 && <p className={styles.instructionText}>or select an address below</p>}
             <div className={styles.results}>{linkList}</div>
         </div>
     )

@@ -24,26 +24,28 @@ function CurrentWeather({ placeName, currently, hourly, daily }: CurrentWeatherP
 
     return (
         <div className={styles.container}>
-            <p className={`${styles.text} ${styles.w361}`}>Weather for {location}</p>
+            <p className={styles.text}>Weather for {location}</p>
             <div className={styles.rowContainer}>
-                <ColorSkycons className={styles.icon} type={iconType} animate={true} size={60} resizeClear={true} />
-                <div>
-                    <p className={styles.summary}>
+                <ColorSkycons className={styles.icon} type={iconType} animate={true} size={80} resizeClear={true} />
+                <div className={styles.weatherInfo}>
+                    <div className={styles.summary}>
                         {Math.round(temperature)}°<span className={styles.temperatureArrow}>{temperatureDirection}</span>{' '}
                         {normalizeSummary(currentSummary)}.
-                    </p>
-                    <p className={`${styles.text} ${styles.w300}`}>
+                    </div>
+                    <div className={styles.detailsText}>
                         <span className={styles.label}>Feels like: </span>
                         <span className={styles.temperature}>{Math.round(apparentTemperature)}°</span>{' '}
                         <span className={styles.label}>Low: </span>
                         <span className={styles.temperature}>{Math.round(temperatureLow)}°</span>{' '}
                         <span className={styles.label}>High: </span>
                         <span className={styles.temperature}>{Math.round(temperatureHigh)}°</span>
-                    </p>
-                    <p>
+                    </div>
+                    <div className={styles.detailsText}>
                         <span className={styles.label}>Wind: </span>
-                        <span className={styles.temperature}>{`${Math.round(windSpeed)} mph (${bearingToCardinal(windBearing)})`}</span>
-                    </p>
+                        <span className={styles.temperature}>
+                            {Math.round(windSpeed)} mph ({bearingToCardinal(windBearing)})
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>

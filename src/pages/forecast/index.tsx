@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
-import { LocationObject, requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import { useRouter } from 'next/router'
 import { setCacheControl } from '../../lib/cache-control'
 import { normalizeCoordinates } from '../../lib/helpers'
+import { requestLocationPermission, getCurrentPosition, LocationResult } from '../../lib/location'
 import { NextApiResponse } from 'next'
+import styles from './index.module.css'
 
 export async function getServerSideProps({ res }: { res: NextApiResponse }) {
     setCacheControl({ res, maxAge: 0 })
@@ -13,18 +13,18 @@ export async function getServerSideProps({ res }: { res: NextApiResponse }) {
 
 function App() {
     const router = useRouter()
-    const [location, setLocation] = useState<LocationObject>()
+    const [location, setLocation] = useState<LocationResult>()
     const [errorMsg, setErrorMsg] = useState('')
 
     useEffect(() => {
         ;(async () => {
-            const { status } = await requestForegroundPermissionsAsync()
-            if (status !== 'granted') {
+            const permission = await requestLocationPermission()
+            if (permission !== 'granted') {
                 setErrorMsg('Permission to access location was denied')
                 return
             }
 
-            const location = await getCurrentPositionAsync({})
+            const location = await getCurrentPosition()
             setLocation(location)
             const { latitude, longitude } = normalizeCoordinates({
                 latitude: location.coords.latitude.toString(),
@@ -48,23 +48,10 @@ function App() {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.paragraph}>{text}</Text>
-        </View>
+        <div className={styles.container}>
+            <p className={styles.paragraph}>{text}</p>
+        </div>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-    },
-    paragraph: {
-        fontSize: 18,
-        textAlign: 'center',
-    },
-})
 
 export default App
