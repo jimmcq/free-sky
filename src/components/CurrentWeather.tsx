@@ -1,20 +1,17 @@
 import * as React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
 import { bearingToCardinal, normalizeIcon, normalizeSummary } from '../lib/helpers'
 import ColorSkycons, { ColorSkyconsType } from 'react-color-skycons'
 import type { WeatherData, WeatherInfo } from '../lib/types'
+import styles from './CurrentWeather.module.css'
 
-function CurrentWeather({
-    placeName,
-    currently,
-    hourly,
-    daily,
-}: {
+interface CurrentWeatherProps {
     placeName: string
     currently: WeatherData
     hourly: WeatherInfo
     daily: WeatherInfo
-}) {
+}
+
+function CurrentWeather({ placeName, currently, hourly, daily }: CurrentWeatherProps) {
     const { temperature, summary: currentSummary, apparentTemperature, icon, windSpeed, windBearing } = currently
     const today = daily.data[0]
     const { temperatureLow, temperatureHigh } = today
@@ -26,82 +23,31 @@ function CurrentWeather({
     const iconType = ColorSkyconsType[normalizeIcon(icon)]
 
     return (
-        <View style={styles.container}>
-            <Text style={[styles.text, styles.w361]}>Weather for {location}</Text>
-            <View style={styles.row_container}>
-                <ColorSkycons style={styles.icon} type={iconType} animate={true} size={60} resizeClear={true} />
-                <View>
-                    <Text style={styles.summary}>
-                        {Math.round(temperature)}°<Text style={styles.temperature_arrow}>{temperatureDirection}</Text>{' '}
+        <div className={styles.container}>
+            <p className={`${styles.text} ${styles.w361}`}>Weather for {location}</p>
+            <div className={styles.rowContainer}>
+                <ColorSkycons className={styles.icon} type={iconType} animate={true} size={60} resizeClear={true} />
+                <div>
+                    <p className={styles.summary}>
+                        {Math.round(temperature)}°<span className={styles.temperatureArrow}>{temperatureDirection}</span>{' '}
                         {normalizeSummary(currentSummary)}.
-                    </Text>
-                    <Text style={[styles.text, styles.w300]}>
-                        <Text style={styles.label}>Feels like: </Text>{' '}
-                        <Text style={styles.temperature}>{Math.round(apparentTemperature)}°</Text> <Text style={styles.label}>Low: </Text>{' '}
-                        <Text style={styles.temperature}>{Math.round(temperatureLow)}°</Text> <Text style={styles.label}>High: </Text>{' '}
-                        <Text style={styles.temperature}>{Math.round(temperatureHigh)}°</Text>
-                    </Text>
-                    <Text>
-                        <Text style={styles.label}>Wind: </Text>
-                        <Text style={styles.temperature}>{`${Math.round(windSpeed)} mph (${bearingToCardinal(windBearing)})`} </Text>
-                    </Text>
-                </View>
-            </View>
-        </View>
+                    </p>
+                    <p className={`${styles.text} ${styles.w300}`}>
+                        <span className={styles.label}>Feels like: </span>
+                        <span className={styles.temperature}>{Math.round(apparentTemperature)}°</span>{' '}
+                        <span className={styles.label}>Low: </span>
+                        <span className={styles.temperature}>{Math.round(temperatureLow)}°</span>{' '}
+                        <span className={styles.label}>High: </span>
+                        <span className={styles.temperature}>{Math.round(temperatureHigh)}°</span>
+                    </p>
+                    <p>
+                        <span className={styles.label}>Wind: </span>
+                        <span className={styles.temperature}>{`${Math.round(windSpeed)} mph (${bearingToCardinal(windBearing)})`}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-    },
-    row_container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        maxWidth: 361,
-    },
-    w361: {
-        maxWidth: 361,
-    },
-    text: {
-        fontSize: 16,
-    },
-    summary: {
-        fontSize: 32,
-        fontWeight: '600',
-        maxWidth: 300,
-        textAlign: 'left',
-    },
-    w300: {
-        maxWidth: 300,
-    },
-    icon: {
-        flexGrow: 0,
-        flexShrink: 0,
-        flexBasis: 60,
-        width: 60,
-        height: 60,
-        marginRight: 8,
-    },
-    hourly_summary: {
-        fontSize: 28,
-        fontWeight: '300',
-    },
-    label: {
-        fontWeight: '400',
-    },
-    temperature: {
-        fontWeight: '300',
-    },
-    temperature_arrow: {
-        fontSize: 20,
-        marginLeft: -4,
-    },
-})
 
 export default CurrentWeather

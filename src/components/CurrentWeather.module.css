@@ -1,0 +1,55 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.rowContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  max-width: 361px;
+}
+
+.text {
+  font-size: 16px;
+}
+
+.w361 {
+  max-width: 361px;
+}
+
+.w300 {
+  max-width: 300px;
+}
+
+.summary {
+  font-size: 32px;
+  font-weight: 600;
+  max-width: 300px;
+  text-align: left;
+}
+
+.icon {
+  flex: 0 0 60px;
+  width: 60px;
+  height: 60px;
+  margin-right: 8px;
+}
+
+.label {
+  font-weight: 400;
+}
+
+.temperature {
+  font-weight: 300;
+}
+
+.temperatureArrow {
+  font-size: 20px;
+  margin-left: -4px;
+}
