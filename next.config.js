@@ -11,9 +11,6 @@ const { withExpo } = require('@expo/next-adapter')
 const withPlugins = require('next-compose-plugins')
 
 module.exports = withPlugins([withExpo], {
-    sentry: {
-        hideSourceMaps: false,
-    },
     experimental: {
         forceSwcTransforms: true,
     },
@@ -22,7 +19,6 @@ module.exports = withPlugins([withExpo], {
         return config
     },
     reactStrictMode: true,
-    swcMinify: true,
     transpilePackages: [
         'react-native',
         'react-native-web',

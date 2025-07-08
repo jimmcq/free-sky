@@ -54,7 +54,6 @@ function normalizeIcon(icon: string): keyof typeof ColorSkyconsType {
         case 'Thunderstorms':
             return 'THUNDER'
         default:
-            console.log(icon, iconType)
             return 'FOG'
     }
 }

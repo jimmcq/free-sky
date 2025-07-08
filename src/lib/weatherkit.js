@@ -178,7 +178,8 @@ async function getForecast({ latitude: latitudeParam, longitude: longitudeParam 
         return result
     }
 
-    const key = fs.readFileSync(`AuthKey_${process.env.APPLEKEYID}.p8`, 'utf8')
+    const keyPath = process.env.APPLE_WEATHERKIT_KEY_PATH || `AuthKey_${process.env.APPLEKEYID}.p8`
+    const key = fs.readFileSync(keyPath, 'utf8')
     const defaultAuth = {
         teamId: process.env.APPLETEAMID || '',
         serviceId: 'net.free-sky.weatherkit',
