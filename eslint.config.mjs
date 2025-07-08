@@ -48,6 +48,8 @@ export default [
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
       ...jest.configs.recommended.rules,
+      ...next.configs.recommended.rules,
+      ...next.configs['core-web-vitals'].rules,
       'prettier/prettier': 'warn',
       'react/display-name': 'off',
       'react/prop-types': 'off',
