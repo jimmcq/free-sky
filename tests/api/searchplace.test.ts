@@ -77,7 +77,31 @@ describe('/api/searchplace', () => {
         await handler(req, res)
 
         expect(res._getStatusCode()).toBe(400)
-        expect(res._getData()).toBe('Error')
+        expect(JSON.parse(res._getData())).toEqual({ error: 'Place parameter is required' })
+    })
+
+    it('should handle empty place parameter', async () => {
+        const { req, res } = createMocks({
+            method: 'GET',
+            query: { place: '   ' },
+        })
+
+        await handler(req, res)
+
+        expect(res._getStatusCode()).toBe(400)
+        expect(JSON.parse(res._getData())).toEqual({ error: 'Place parameter must be a non-empty string' })
+    })
+
+    it('should handle overly long place parameter', async () => {
+        const { req, res } = createMocks({
+            method: 'GET',
+            query: { place: 'a'.repeat(201) },
+        })
+
+        await handler(req, res)
+
+        expect(res._getStatusCode()).toBe(400)
+        expect(JSON.parse(res._getData())).toEqual({ error: 'Place parameter must be less than 200 characters' })
     })
 
     it('should handle search place error', async () => {
@@ -91,7 +115,7 @@ describe('/api/searchplace', () => {
         await handler(req, res)
 
         expect(res._getStatusCode()).toBe(500)
-        expect(res._getData()).toBe('Error')
+        expect(JSON.parse(res._getData())).toEqual({ error: 'Unable to search for places at this time' })
     })
 
     it('should handle null search results', async () => {
@@ -105,7 +129,7 @@ describe('/api/searchplace', () => {
         await handler(req, res)
 
         expect(res._getStatusCode()).toBe(500)
-        expect(res._getData()).toBe('Error')
+        expect(JSON.parse(res._getData())).toEqual({ error: 'Invalid response from location service' })
     })
 
     it('should handle non-GET requests', async () => {
@@ -116,8 +140,8 @@ describe('/api/searchplace', () => {
 
         await handler(req, res)
 
-        expect(res._getStatusCode()).toBe(404)
-        expect(JSON.parse(res._getData())).toEqual([])
+        expect(res._getStatusCode()).toBe(405)
+        expect(JSON.parse(res._getData())).toEqual({ error: 'Method not allowed' })
     })
 
     it('should set cache control header', async () => {

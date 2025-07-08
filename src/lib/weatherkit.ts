@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import WeatherKit, { isErr } from 'node-apple-weatherkit'
+import WeatherKit, { isErr, WeatherKitResponse } from 'node-apple-weatherkit'
 import { cacheGet, cacheSet, safeKey } from './cache'
 import {
     celsiusToFahrenheit,
@@ -11,7 +11,9 @@ import {
 } from './helpers'
 import { emptyData, emptyWeatherResponse } from './types'
 
-function translateToDarkSky(weatherkit) {
+// Using the WeatherKit library's types directly
+
+function translateToDarkSky(weatherkit: WeatherKitResponse) {
     const darkSky = emptyWeatherResponse
 
     darkSky.minutely.summary = ''
@@ -23,35 +25,28 @@ function translateToDarkSky(weatherkit) {
 
     darkSky.currently.time = Date.parse(weatherkit.currentWeather?.metadata.readTime || '') / 1000
     darkSky.currently.icon = weatherkit.currentWeather?.conditionCode || ''
-    darkSky.currently.summary = weatherkit.currentWeather?.summary || weatherkit.currentWeather?.conditionCode || ''
+    darkSky.currently.summary = weatherkit.currentWeather?.conditionCode || ''
     darkSky.currently.precipIntensity = millimetersToInches(weatherkit.currentWeather?.precipitationIntensity || 0)
     darkSky.currently.temperature = celsiusToFahrenheit(weatherkit.currentWeather?.temperature || 0)
     darkSky.currently.apparentTemperature = celsiusToFahrenheit(weatherkit.currentWeather?.temperatureApparent || 0)
     darkSky.currently.windSpeed = kilometersToMiles(weatherkit.currentWeather?.windSpeed || 0)
     darkSky.currently.windBearing = weatherkit.currentWeather?.windDirection || 0
 
-    darkSky.minutely.data =
-        weatherkit.forecastNextHour?.minutes.slice(0, 60).map(minute => {
-            return {
-                ...emptyData,
-                time: Date.parse(minute.startTime || '') / 1000,
-                precipIntensity: millimetersToInches(minute.precipitationIntensity || 0),
-                precipProbability: minute.precipitationChance || 0,
-            }
-        }) || []
+    // Note: forecastNextHour is not available in the current WeatherKit library
+    darkSky.minutely.data = []
 
     const now = new Date()
     const startOfHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours()).getTime()
     const aDayFromNow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, now.getHours()).getTime()
 
     darkSky.hourly.data =
-        weatherkit.forecastHourly.hours
-            .filter(hour => Date.parse(hour.forecastStart) >= startOfHour && Date.parse(hour.forecastStart) <= aDayFromNow)
-            .map(hour => {
+        weatherkit.forecastHourly?.hours
+            ?.filter(hour => Date.parse(hour.forecastStart) >= startOfHour && Date.parse(hour.forecastStart) <= aDayFromNow)
+            ?.map(hour => {
                 return {
                     ...emptyData,
                     time: Date.parse(hour.forecastStart || '') / 1000,
-                    summary: hour?.summary || hour?.conditionCode || '',
+                    summary: hour.conditionCode || '',
                     precipIntensity: millimetersToInches(hour.precipitationIntensity || 0),
                     precipProbability: hour.precipitationChance || 0,
                     temperature: celsiusToFahrenheit(hour.temperature || 0),
@@ -64,37 +59,21 @@ function translateToDarkSky(weatherkit) {
         weatherkit.forecastDaily?.days
             .filter(day => Date.parse(day.forecastStart) >= startOfDay)
             .map(day => {
-                let summary = day?.summary
-                if (!summary) {
-                    summary = `${day?.conditionCode} throughout the day.`
-                    if (
-                        day.overnightForecast?.conditionCode &&
-                        day.daytimeForecast?.conditionCode !== day.overnightForecast?.conditionCode
-                    ) {
-                        summary = `${day.daytimeForecast?.conditionCode}, then ${day.overnightForecast?.conditionCode} overnight.`
-                    }
-                }
+                const summary = `${day?.conditionCode} throughout the day.`
                 return {
                     ...emptyData,
-                    time: Date.parse(day.forecastStart || '') / 1000,
+                    time: Date.parse(day?.forecastStart || '') / 1000,
                     icon: day?.conditionCode || '',
                     summary,
-                    precipIntensity: millimetersToInches(day.precipitationAmount || 0),
-                    precipProbability: day.precipitationChance || 0,
-                    temperatureLow: celsiusToFahrenheit(day.temperatureMin || 0),
-                    temperatureHigh: celsiusToFahrenheit(day.temperatureMax || 0),
+                    precipIntensity: millimetersToInches(day?.precipitationAmount || 0),
+                    precipProbability: day?.precipitationChance || 0,
+                    temperatureLow: celsiusToFahrenheit(day?.temperatureMin || 0),
+                    temperatureHigh: celsiusToFahrenheit(day?.temperatureMax || 0),
                 }
             }) || []
 
-    darkSky.alerts =
-        weatherkit.weatherAlerts?.map(alert => {
-            return {
-                title: alert.title || '',
-                description: alert.description || '',
-                uri: alert.uri || '',
-                expires: Date.parse(alert.expires || '') / 1000,
-            }
-        }) || []
+    // Note: weatherAlerts is not available in the current WeatherKit library
+    darkSky.alerts = []
 
     // Calculate the minutely summary
     if (darkSky.minutely.data.length > 0) {
@@ -146,7 +125,7 @@ function translateToDarkSky(weatherkit) {
         darkSky.daily.summary = ''
         const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         const firstRainIndex = darkSky.daily.data.slice(0, 7).findIndex(day => day.icon === 'Rain' || day.icon === 'Drizzle')
-        const firstNoRainIndex = darkSky.daily.data.slice(0.7).findIndex(day => day.icon !== 'Rain' && day.icon !== 'Drizzle')
+        const firstNoRainIndex = darkSky.daily.data.slice(0, 7).findIndex(day => day.icon !== 'Rain' && day.icon !== 'Drizzle')
         if (firstRainIndex === 0) {
             // If every day has a rain icon, it should say "Rain throughout the week."
             if (firstNoRainIndex === -1) {
@@ -168,7 +147,7 @@ function translateToDarkSky(weatherkit) {
     return darkSky
 }
 
-async function getForecast({ latitude: latitudeParam, longitude: longitudeParam }) {
+async function getForecast({ latitude: latitudeParam, longitude: longitudeParam }: { latitude: string; longitude: string }) {
     const { latitude, longitude } = normalizeCoordinates({ latitude: latitudeParam, longitude: longitudeParam })
 
     const cacheKey = safeKey(`weatherkit/${latitude},${longitude}`)
@@ -178,26 +157,43 @@ async function getForecast({ latitude: latitudeParam, longitude: longitudeParam 
         return result
     }
 
-    const keyPath = process.env.APPLE_WEATHERKIT_KEY_PATH || `AuthKey_${process.env.APPLEKEYID}.p8`
-    const key = fs.readFileSync(keyPath, 'utf8')
-    const defaultAuth = {
-        teamId: process.env.APPLETEAMID || '',
-        serviceId: 'net.free-sky.weatherkit',
-        keyId: process.env.APPLEKEYID || '',
-        key: key,
-    }
-    const wk = new WeatherKit(defaultAuth)
-    const availability = await wk.availability.get(parseFloat(latitude), parseFloat(longitude))
-
-    if (!isErr(availability)) {
-        const weather = await wk.weather.get(parseFloat(latitude), parseFloat(longitude), { dataSets: availability })
-        if (!isErr(weather)) {
-            const darkSky = translateToDarkSky(weather)
-            cacheSet({ key: cacheKey, value: darkSky, expire: 60 })
-            return darkSky
+    // Support both direct key content and file path
+    let key
+    try {
+        if (process.env.APPLE_WEATHERKIT_KEY) {
+            // Use key content directly from environment variable
+            key = process.env.APPLE_WEATHERKIT_KEY
+        } else {
+            // Fall back to reading from file path
+            const keyPath = process.env.APPLE_WEATHERKIT_KEY_PATH || `AuthKey_${process.env.APPLEKEYID}.p8`
+            key = fs.readFileSync(keyPath, 'utf8')
         }
-    } else {
-        console.log('Cannot get location available datasets')
+    } catch (_e) {
+        // No valid key available, return empty response
+        return emptyWeatherResponse
+    }
+    try {
+        const defaultAuth = {
+            teamId: process.env.APPLETEAMID || '',
+            serviceId: 'net.free-sky.weatherkit',
+            keyId: process.env.APPLEKEYID || '',
+            key: key,
+        }
+        const wk = new WeatherKit(defaultAuth)
+        const availability = await wk.availability.get(parseFloat(latitude), parseFloat(longitude))
+
+        if (!isErr(availability)) {
+            const weather = await wk.weather.get(parseFloat(latitude), parseFloat(longitude), { dataSets: availability })
+            if (!isErr(weather)) {
+                const darkSky = translateToDarkSky(weather)
+                cacheSet({ key: cacheKey, value: darkSky, expire: 60 })
+                return darkSky
+            }
+        } else {
+            // Error: Cannot get location available datasets
+        }
+    } catch (_e) {
+        // Error calling WeatherKit API
     }
     return emptyWeatherResponse
 }

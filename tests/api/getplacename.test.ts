@@ -49,20 +49,40 @@ describe('/api/getplacename', () => {
         expect(JSON.parse(res._getData())).toBe('')
     })
 
+    it('should handle missing coordinates', async () => {
+        const { req, res } = createMocks({
+            method: 'GET',
+            query: {},
+        })
+
+        await handler(req, res)
+
+        expect(res._getStatusCode()).toBe(400)
+        expect(JSON.parse(res._getData())).toEqual({ error: 'Both latitude and longitude parameters are required' })
+    })
+
     it('should handle invalid coordinates', async () => {
         const { req, res } = createMocks({
             method: 'GET',
             query: { latitude: 'invalid', longitude: 'invalid' },
         })
 
-        mockNormalizeCoordinates.mockImplementation(() => {
-            throw new Error('Invalid coordinates')
+        await handler(req, res)
+
+        expect(res._getStatusCode()).toBe(400)
+        expect(JSON.parse(res._getData())).toEqual({ error: 'Latitude and longitude must be valid numbers' })
+    })
+
+    it('should handle out-of-range coordinates', async () => {
+        const { req, res } = createMocks({
+            method: 'GET',
+            query: { latitude: '91', longitude: '181' },
         })
 
         await handler(req, res)
 
-        expect(res._getStatusCode()).toBe(500)
-        expect(res._getData()).toBe('Invalid location coordinates')
+        expect(res._getStatusCode()).toBe(400)
+        expect(JSON.parse(res._getData())).toEqual({ error: 'Latitude must be between -90 and 90' })
     })
 
     it('should handle non-GET requests', async () => {
@@ -73,8 +93,8 @@ describe('/api/getplacename', () => {
 
         await handler(req, res)
 
-        expect(res._getStatusCode()).toBe(404)
-        expect(res._getData()).toBe('')
+        expect(res._getStatusCode()).toBe(405)
+        expect(JSON.parse(res._getData())).toEqual({ error: 'Method not allowed' })
     })
 
     it('should set cache control header', async () => {

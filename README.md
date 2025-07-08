@@ -27,6 +27,11 @@ Create a `.env.local` file in the root directory:
 # Apple WeatherKit Configuration
 APPLETEAMID=your_apple_team_id
 APPLEKEYID=your_apple_key_id
+
+# Option 1: Provide key content directly (recommended for production)
+APPLE_WEATHERKIT_KEY="-----BEGIN PRIVATE KEY-----\nYourKeyContentHere\n-----END PRIVATE KEY-----"
+
+# Option 2: Provide path to .p8 key file (for development)
 APPLE_WEATHERKIT_KEY_PATH=path_to_your_p8_key_file
 
 # MapBox Configuration
@@ -118,21 +123,47 @@ yarn dev:docker
 - `yarn prettier` - Check code formatting
 - `yarn prettier:fix` - Fix code formatting
 
-## API Endpoints
+## API Documentation
 
 ### Get Weather Forecast
-```
-GET /api/forecast?latitude={lat}&longitude={lon}
+**Endpoint**: `GET /api/forecast?latitude={lat}&longitude={lon}`
+
+**Parameters**:
+- `latitude` (required): Latitude coordinate (-90 to 90)
+- `longitude` (required): Longitude coordinate (-180 to 180)
+
+**Response**: Comprehensive weather data including current conditions, hourly forecasts, daily forecasts, and alerts.
+
+**Example**:
+```bash
+curl "https://free-sky.net/api/forecast?latitude=37.7749&longitude=-122.4194"
 ```
 
 ### Search Locations
-```
-GET /api/searchplace?place={query}
+**Endpoint**: `GET /api/searchplace?place={query}`
+
+**Parameters**:
+- `place` (required): Location search query (city name, address, etc.)
+
+**Response**: Array of matching locations with coordinates and place names.
+
+**Example**:
+```bash
+curl "https://free-sky.net/api/searchplace?place=San%20Francisco"
 ```
 
 ### Get Place Name
-```
-GET /api/getplacename?latitude={lat}&longitude={lon}
+**Endpoint**: `GET /api/getplacename?latitude={lat}&longitude={lon}`
+
+**Parameters**:
+- `latitude` (required): Latitude coordinate
+- `longitude` (required): Longitude coordinate
+
+**Response**: Human-readable place name for the given coordinates.
+
+**Example**:
+```bash
+curl "https://free-sky.net/api/getplacename?latitude=37.7749&longitude=-122.4194"
 ```
 
 ## Development
@@ -146,6 +177,61 @@ The application uses:
 - **Redis** for caching
 - **Sentry** for error tracking
 
+## Troubleshooting
+
+### Common Issues
+
+**"Weather data not loading"**
+- Verify your Apple WeatherKit API credentials are correct
+- Check that your Apple Developer account has WeatherKit enabled
+- Ensure the `.p8` key file path is correct in your environment variables
+
+**"Location search not working"**
+- Verify your MapBox access token is valid
+- Check that MapBox Geocoding API is enabled for your account
+
+**"Redis connection errors"**
+- For development: Use `yarn dev` instead of `yarn dev:with-redis`
+- For Docker: Try `yarn dev:docker:down` followed by `yarn dev:docker`
+- For local Redis: Ensure Redis server is running (`redis-server`)
+
+**"Build errors"**
+- Clear Next.js cache: `rm -rf .next`
+- Clear node_modules: `rm -rf node_modules && yarn install`
+- Check that all environment variables are properly set
+
+**"TypeScript errors"**
+- Run `yarn build` to see detailed TypeScript errors
+- Check that all dependencies are properly installed
+- Ensure your Node.js version is 18+ (`node --version`)
+
+### Debug Mode
+
+To enable debug logging, add to your `.env.local`:
+```env
+DEBUG=true
+NODE_ENV=development
+```
+
+### Performance Issues
+
+- Enable Redis caching for better performance
+- Check network requests in browser dev tools
+- Monitor bundle size with `yarn build`
+
+## Screenshots
+
+### Desktop View
+![Desktop Weather View](docs/images/desktop-weather.png)
+
+### Mobile View
+![Mobile Weather View](docs/images/mobile-weather.png)
+
+### Location Search
+![Location Search](docs/images/location-search.png)
+
+*Note: Screenshots can be added to a `docs/images/` directory*
+
 ## Deployment
 
 The application can be deployed to any platform supporting Next.js:
@@ -155,11 +241,18 @@ The application can be deployed to any platform supporting Next.js:
 vercel --prod
 ```
 
+Make sure to set all environment variables in your Vercel dashboard.
+
 ### Docker
 ```bash
 docker build -t free-sky .
 docker run -p 3000:3000 free-sky
 ```
+
+### Other Platforms
+- **Netlify**: Configure build command as `yarn build` and publish directory as `.next`
+- **Railway**: Connect your GitHub repository and set environment variables
+- **Heroku**: Add Node.js buildpack and configure environment variables
 
 ## Contributing
 
