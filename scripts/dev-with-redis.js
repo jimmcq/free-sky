@@ -2,20 +2,43 @@
 
 const { spawn } = require('child_process')
 const { Redis } = require('ioredis')
+const net = require('net')
 
 let redisProcess = null
 let nextProcess = null
 
-// Check if Redis is already running
+// Check if Redis is already running using a simple socket test
 async function checkRedis() {
-  try {
-    const redis = new Redis({ host: 'localhost', port: 6379, lazyConnect: true })
-    await redis.ping()
-    redis.disconnect()
-    return true
-  } catch (error) {
-    return false
-  }
+  return new Promise((resolve) => {
+    const socket = new net.Socket()
+    
+    const timeout = setTimeout(() => {
+      socket.destroy()
+      resolve(false)
+    }, 500) // 500ms timeout
+    
+    socket.setTimeout(500)
+    
+    socket.on('connect', () => {
+      clearTimeout(timeout)
+      socket.destroy()
+      resolve(true)
+    })
+    
+    socket.on('timeout', () => {
+      clearTimeout(timeout)
+      socket.destroy()
+      resolve(false)
+    })
+    
+    socket.on('error', () => {
+      clearTimeout(timeout)
+      socket.destroy()
+      resolve(false)
+    })
+    
+    socket.connect(6379, 'localhost')
+  })
 }
 
 // Start Redis server
