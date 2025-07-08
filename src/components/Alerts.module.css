@@ -1,0 +1,22 @@
+.rowContainer {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.linkButton {
+  background-color: #ffffc8;
+  margin: 8px;
+  padding: 4px;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.linkButton:hover {
+  background-color: #ffff9c;
+}

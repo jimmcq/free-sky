@@ -14,7 +14,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         ;({ latitude, longitude } = normalizeCoordinates({ latitude: queryLat.replace(/"/, ''), longitude: queryLon.replace(/"/, '') }))
     } catch (e) {
-        res.status(500).send('Invalid location coordinates')
+        return res.status(500).send('Invalid location coordinates')
     }
 
     if (req.method === 'GET') {

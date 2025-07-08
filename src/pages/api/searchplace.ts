@@ -8,7 +8,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const { place } = req.query as { place: string }
     if (!place) {
-        res.status(400).send('Error')
+        return res.status(400).send('Error')
     }
 
     let features: MapBoxPlace[] = []
@@ -17,23 +17,23 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         try {
             features = await searchPlace(place)
         } catch (e) {
-            res.status(500).send('Error')
+            return res.status(500).send('Error')
         }
 
         if (!features) {
-            res.status(500).send('Error')
+            return res.status(500).send('Error')
         }
 
         if (features?.length) {
             const result = features.map(place => {
                 return { place_name: place.place_name, center: place.center }
             })
-            res.status(200).send(result)
+            return res.status(200).json(result)
         } else {
-            res.status(200).send([])
+            return res.status(200).json([])
         }
     } else {
-        res.status(404).send([])
+        return res.status(404).json([])
     }
 }
 

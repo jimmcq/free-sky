@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TextInput } from 'react-native'
-import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import { useDebouncedCallback } from 'use-debounce'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { setCacheControl } from '../lib/cache-control'
 import { normalizeCoordinates } from '../lib/helpers'
+import { requestLocationPermission, getCurrentPosition } from '../lib/location'
+import { WebStorage } from '../lib/storage'
 import type { NextApiResponse } from 'next'
 import type { MapBoxPlace, Place } from '../lib/types'
+import styles from './index.module.css'
 
 export async function getServerSideProps({ res }: { res: NextApiResponse }) {
     setCacheControl({ res, maxAge: 3600 })
@@ -28,7 +28,7 @@ function IndexPage() {
             // Get from Storage
             let storedLocationList
             try {
-                storedLocationList = await AsyncStorage.getItem('locationList')
+                storedLocationList = await WebStorage.getItem('locationList')
             } catch (error) {
                 console.error('Error retrieving location list:', error)
                 storedLocationList = null
@@ -40,20 +40,20 @@ function IndexPage() {
                         const { latitude, longitude } = normalizeCoordinates({ latitude: place.latitude, longitude: place.longitude })
 
                         return (
-                            <Link style={styles.link} key={index} href={`/forecast/${latitude},${longitude}`}>
-                                <Text>{place.placeName}</Text>
+                            <Link key={index} href={`/forecast/${latitude},${longitude}`} className={styles.link}>
+                                {place.placeName}
                             </Link>
                         )
                     })
                 )
             } else {
                 // Get Location
-                const { status } = await requestForegroundPermissionsAsync()
-                if (status !== 'granted') {
+                const permission = await requestLocationPermission()
+                if (permission !== 'granted') {
                     return
                 }
 
-                const location = await getCurrentPositionAsync({})
+                const location = await getCurrentPosition()
 
                 let latitude, longitude
                 try {
@@ -70,8 +70,8 @@ function IndexPage() {
                 const placeName = await response.json()
 
                 setLinkList([
-                    <Link style={styles.link} key={0} href={`/forecast/${latitude},${longitude}`}>
-                        <Text>{placeName}</Text>
+                    <Link key={0} href={`/forecast/${latitude},${longitude}`} className={styles.link}>
+                        {placeName}
                     </Link>,
                 ])
             }
@@ -95,8 +95,8 @@ function IndexPage() {
                     })
 
                     return (
-                        <Link style={styles.link} key={index} href={`/forecast/${latitude},${longitude}`}>
-                            <Text>{place.place_name}</Text>
+                        <Link key={index} href={`/forecast/${latitude},${longitude}`} className={styles.link}>
+                            {place.place_name}
                         </Link>
                     )
                 })
@@ -105,39 +105,14 @@ function IndexPage() {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>When Dark Sky is gone, Free-Sky.Net remains</Text>
-            <TextInput style={styles.input} placeholder="Location Search" onChangeText={text => debounced(text)}></TextInput>
-            <Text>Enter an address above</Text>
-            <Text> {linkList && <Text>or select an address below</Text>} </Text>
-            <View style={styles.results}>{linkList}</View>
-        </View>
+        <div className={styles.container}>
+            <h1 className={styles.text}>When Dark Sky is gone, Free-Sky.Net remains</h1>
+            <input className={styles.input} placeholder="Location Search" onChange={e => debounced(e.target.value)} />
+            <p className={styles.instructionText}>Enter an address above</p>
+            {linkList.length > 0 && <p className={styles.instructionText}>or select an address below</p>}
+            <div className={styles.results}>{linkList}</div>
+        </div>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 16,
-    },
-    input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-    },
-    results: {
-        width: 361,
-        height: 361,
-        marginTop: 16,
-    },
-    link: {
-        marginBottom: 8,
-    },
-})
 
 export default IndexPage

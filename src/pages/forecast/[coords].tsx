@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { ScrollView, View, StyleSheet } from 'react-native'
 import Alerts from '../../components/Alerts'
 import CurrentWeather from '../../components/CurrentWeather'
 import DayWeather from '../../components/DayWeather'
@@ -7,12 +6,13 @@ import HourWeather from '../../components/HourWeather'
 import WeekWeather from '../../components/WeekWeather'
 import { getForecast } from '../../lib/weatherkit'
 import { getPlaceName } from '../../lib/mapbox'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { WebStorage } from '../../lib/storage'
 import { useRouter } from 'next/router'
 import { setCacheControl } from '../../lib/cache-control'
 import { normalizeCoordinates } from '../../lib/helpers'
 import type { NextApiResponse } from 'next'
 import { emptyWeatherResponse, Place, WeatherResponse } from '../../lib/types'
+import styles from './coords.module.css'
 
 export async function getServerSideProps({ res, query }: { res: NextApiResponse; query: { coords: string } }) {
     setCacheControl({ res, maxAge: 180 })
@@ -69,7 +69,7 @@ function ForecastPage({
 
     useEffect(() => {
         ;(async () => {
-            const storedLocationList = (await AsyncStorage.getItem('locationList')) || '[]'
+            const storedLocationList = (await WebStorage.getItem('locationList')) || '[]'
 
             const newList = JSON.parse(storedLocationList)
 
@@ -82,34 +82,30 @@ function ForecastPage({
 
             if (!found) {
                 newList.unshift({ placeName, latitude, longitude })
-                AsyncStorage.setItem('locationList', JSON.stringify(newList.slice(0, 5)))
+                WebStorage.setItem('locationList', JSON.stringify(newList.slice(0, 5)))
             }
         })()
     }, [])
 
     return (
-        <ScrollView style={styles.container}>
-            <View>
+        <div className={styles.container}>
+            <div>
                 <CurrentWeather placeName={placeName} currently={currently} hourly={hourly} daily={daily} />
-            </View>
-            <View>
+            </div>
+            <div>
                 <Alerts alerts={alerts} />
-            </View>
-            <View>
+            </div>
+            <div>
                 <HourWeather minutely={minutely} hourly={hourly} />
-            </View>
-            <View>
+            </div>
+            <div>
                 <DayWeather hourly={hourly} />
-            </View>
-            <View>
+            </div>
+            <div>
                 <WeekWeather daily={daily} />
-            </View>
-        </ScrollView>
+            </div>
+        </div>
     )
 }
-
-const styles = StyleSheet.create({
-    container: { margin: 8 },
-})
 
 export default ForecastPage

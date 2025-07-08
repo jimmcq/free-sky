@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.rowContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin: 20px 0;
+}
+
+.text {
+  font-size: 16px;
+}
+
+.w361 {
+  max-width: 361px;
+}
+
+.w300 {
+  max-width: 300px;
+}
+
+.weatherInfo {
+  display: flex;
+  flex-direction: column;
+  margin-left: 15px;
+}
+
+.summary {
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+
+.icon {
+  width: 80px;
+  height: 80px;
+}
+
+.label {
+  font-weight: 400;
+}
+
+.temperature {
+  font-weight: 400;
+}
+
+.temperatureArrow {
+  font-size: 24px;
+  margin-left: -2px;
+}
+
+.detailsText {
+  font-size: 16px;
+  text-align: left;
+  margin-bottom: 5px;
+}

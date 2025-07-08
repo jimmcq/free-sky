@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -14,6 +13,7 @@ import {
 import { Bar } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns'
 import type { WeatherInfo } from '../lib/types'
+import styles from './HourWeather.module.css'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, TimeScale)
 
@@ -117,35 +117,19 @@ function HourWeather({ minutely, hourly }: { minutely: WeatherInfo; hourly: Weat
     }
 
     return (
-        <View style={styles.container}>
+        <div className={styles.container}>
             {displaySummary && (
-                <Text style={styles.minutely_summary}>
+                <p className={styles.minutelySummary}>
                     {summaryPrefix} {minutelySummary}
-                </Text>
+                </p>
             )}
             {displayChart && (
-                <View style={styles.chart_container}>
+                <div className={styles.chartContainer}>
                     <Bar data={data} options={options} height={100} />
-                </View>
+                </div>
             )}
-        </View>
+        </div>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        marginTop: 16,
-    },
-    chart_container: { height: 100, width: '100%' },
-    minutely_summary: {
-        fontSize: 22,
-        fontWeight: '300',
-        maxWidth: 361,
-    },
-})
 
 export default HourWeather
