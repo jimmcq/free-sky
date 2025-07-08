@@ -67,6 +67,7 @@ yarn dev
 - `yarn test` - Run test suite
 - `yarn eslint` - Run ESLint code analysis
 - `yarn prettier` - Check code formatting
+- `yarn prettier:fix` - Fix code formatting
 
 ## API Endpoints
 

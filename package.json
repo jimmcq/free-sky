@@ -73,7 +73,8 @@
     "postbuild": "next-sitemap",
     "dev": "next dev",
     "eslint": "eslint src/pages/** src/lib/** src/components/** tests/**",
-    "prettier": "prettier -l src/pages/**/*.js src/lib/**/*.js src/components/**/*.js",
+    "prettier": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
+    "prettier:fix": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "test": "TZ=America/Los_Angeles yarn jest -c tests/config/jest.config.js",
     "postinstall": "husky install"
   },
