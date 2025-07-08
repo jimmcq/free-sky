@@ -16,7 +16,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET' && place) {
         try {
             features = await searchPlace(place)
-        } catch (e) {
+        } catch (_e) {
             return res.status(500).send('Error')
         }
 

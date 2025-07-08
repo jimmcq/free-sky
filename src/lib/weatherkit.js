@@ -125,7 +125,7 @@ function translateToDarkSky(weatherkit) {
 
     // If there is no minutely summary, use the hourly summary
     if (!darkSky.minutely.summary) {
-        darkSky.minutely.summary = `${normalizeSummary(darkSky.hourly.data[0]?.summary)} for the hour.` || ''
+        darkSky.minutely.summary = `${normalizeSummary(darkSky.hourly.data[0]?.summary) || ''} for the hour.`
     }
 
     // If there is no hourly summary, use the daily summary

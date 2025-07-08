@@ -29,8 +29,8 @@ function IndexPage() {
             let storedLocationList
             try {
                 storedLocationList = await WebStorage.getItem('locationList')
-            } catch (error) {
-                console.error('Error retrieving location list:', error)
+            } catch (_error) {
+                console.error('Error retrieving location list:', _error)
                 storedLocationList = null
             }
             if (storedLocationList) {
@@ -61,7 +61,7 @@ function IndexPage() {
                         latitude: location.coords.latitude.toString(),
                         longitude: location.coords.longitude.toString(),
                     }))
-                } catch (error) {
+                } catch (_error) {
                     return
                 }
 
