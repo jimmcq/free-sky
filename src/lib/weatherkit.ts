@@ -1,15 +1,9 @@
 import * as fs from 'fs'
 import WeatherKit, { isErr, WeatherKitResponse } from 'node-apple-weatherkit'
 import { cacheGet, cacheSet, safeKey } from './cache'
-import {
-    celsiusToFahrenheit,
-    kilometersToMiles,
-    millimetersToInches,
-    normalizeCoordinates,
-    normalizeIcon,
-    normalizeSummary,
-} from './helpers'
+import { celsiusToFahrenheit, kilometersToMiles, millimetersToInches, normalizeCoordinates, normalizeSummary } from './helpers'
 import { emptyData, emptyWeatherResponse } from './types'
+import { summaryGenerator } from './summaryGenerator'
 
 // Using the WeatherKit library's types directly
 
@@ -27,10 +21,15 @@ function translateToDarkSky(weatherkit: WeatherKitResponse) {
     darkSky.currently.icon = weatherkit.currentWeather?.conditionCode || ''
     darkSky.currently.summary = weatherkit.currentWeather?.conditionCode || ''
     darkSky.currently.precipIntensity = millimetersToInches(weatherkit.currentWeather?.precipitationIntensity || 0)
+    darkSky.currently.precipProbability = 0 // Not available in current weather
+    darkSky.currently.precipType = 'rain' // Not available in current weather
     darkSky.currently.temperature = celsiusToFahrenheit(weatherkit.currentWeather?.temperature || 0)
     darkSky.currently.apparentTemperature = celsiusToFahrenheit(weatherkit.currentWeather?.temperatureApparent || 0)
     darkSky.currently.windSpeed = kilometersToMiles(weatherkit.currentWeather?.windSpeed || 0)
     darkSky.currently.windBearing = weatherkit.currentWeather?.windDirection || 0
+    darkSky.currently.humidity = weatherkit.currentWeather?.humidity || 0
+    darkSky.currently.uvIndex = weatherkit.currentWeather?.uvIndex || 0
+    darkSky.currently.visibility = kilometersToMiles(weatherkit.currentWeather?.visibility || 10)
 
     // Note: forecastNextHour is not available in the current WeatherKit library
     darkSky.minutely.data = []
@@ -46,10 +45,18 @@ function translateToDarkSky(weatherkit: WeatherKitResponse) {
                 return {
                     ...emptyData,
                     time: Date.parse(hour.forecastStart || '') / 1000,
+                    icon: hour.conditionCode || '',
                     summary: hour.conditionCode || '',
                     precipIntensity: millimetersToInches(hour.precipitationIntensity || 0),
                     precipProbability: hour.precipitationChance || 0,
+                    precipType: 'rain', // Default precipType, not available in hourly forecast
                     temperature: celsiusToFahrenheit(hour.temperature || 0),
+                    apparentTemperature: celsiusToFahrenheit(hour.temperatureApparent || 0),
+                    windSpeed: kilometersToMiles(hour.windSpeed || 0),
+                    windBearing: hour.windDirection || 0,
+                    humidity: hour.humidity || 0,
+                    uvIndex: hour.uvIndex || 0,
+                    visibility: 10, // Default visibility
                 }
             }) || []
 
@@ -59,47 +66,67 @@ function translateToDarkSky(weatherkit: WeatherKitResponse) {
         weatherkit.forecastDaily?.days
             .filter(day => Date.parse(day.forecastStart) >= startOfDay)
             .map(day => {
-                const summary = `${day?.conditionCode} throughout the day.`
-                return {
+                const dayData = {
                     ...emptyData,
                     time: Date.parse(day?.forecastStart || '') / 1000,
                     icon: day?.conditionCode || '',
-                    summary,
+                    summary: day?.conditionCode || '',
                     precipIntensity: millimetersToInches(day?.precipitationAmount || 0),
                     precipProbability: day?.precipitationChance || 0,
+                    precipType: 'rain', // Default precipType, not available in daily forecast
                     temperatureLow: celsiusToFahrenheit(day?.temperatureMin || 0),
                     temperatureHigh: celsiusToFahrenheit(day?.temperatureMax || 0),
+                    temperature: celsiusToFahrenheit(day?.temperatureMax || 0),
+                    apparentTemperature: celsiusToFahrenheit(day?.temperatureMax || 0),
+                    humidity: 0.5, // Default humidity, not available in daily forecast
+                    windSpeed: 0, // Default windSpeed, not available in daily forecast
+                    windBearing: 0, // Default windBearing, not available in daily forecast
+                    uvIndex: 0, // Default uvIndex, not available in daily forecast
+                    visibility: 10,
                 }
+
+                // Generate enhanced daily summary for individual days
+                const currentContext = {
+                    temperature: dayData.temperatureHigh,
+                    precipProbability: dayData.precipProbability,
+                    precipType: dayData.precipType,
+                    windSpeed: dayData.windSpeed,
+                    humidity: dayData.humidity,
+                    uvIndex: 0,
+                    visibility: 10,
+                    icon: dayData.icon,
+                    time: dayData.time,
+                }
+
+                dayData.summary = summaryGenerator.generateDailySummary([dayData], currentContext)
+
+                return dayData
             }) || []
 
     // Note: weatherAlerts is not available in the current WeatherKit library
     darkSky.alerts = []
 
-    // Calculate the minutely summary
+    // Enhanced summary generation using the new summary generator
+    const currentWeatherContext = {
+        temperature: darkSky.currently.temperature,
+        precipProbability: darkSky.currently.precipProbability,
+        precipType: darkSky.currently.precipType,
+        windSpeed: darkSky.currently.windSpeed,
+        humidity: darkSky.currently.humidity,
+        uvIndex: darkSky.currently.uvIndex,
+        visibility: darkSky.currently.visibility,
+        icon: darkSky.currently.icon,
+        time: darkSky.currently.time,
+    }
+
+    // Generate enhanced minutely summary
     if (darkSky.minutely.data.length > 0) {
-        const rainStarts = darkSky.minutely.data.find(minute => minute.precipProbability > 0)
-        const rainStops = darkSky.minutely.data.find(minute => minute.precipProbability === 0)
-        let minutesUntilRainStarts = 0
-        let minutesUntilRainStops = 0
-        if (rainStarts) {
-            minutesUntilRainStarts = Math.round((rainStarts.time - now.getTime() / 1000) / 60)
-        }
-        if (rainStops) {
-            minutesUntilRainStops = Math.round((rainStops.time - now.getTime() / 1000) / 60)
-        }
-        if (minutesUntilRainStarts > 0 && minutesUntilRainStops > 0 && minutesUntilRainStarts < minutesUntilRainStops) {
-            darkSky.minutely.summary = `Rain starts in ${minutesUntilRainStarts} minutes and stops in ${minutesUntilRainStops} minute${
-                minutesUntilRainStops > 1 ? 's' : ''
-            }.`
-        } else if (minutesUntilRainStarts > 0 && minutesUntilRainStops > 0 && minutesUntilRainStarts > minutesUntilRainStops) {
-            darkSky.minutely.summary = `Rain stops in ${minutesUntilRainStops} minutes and starts in ${minutesUntilRainStarts} minute${
-                minutesUntilRainStarts > 1 ? 's' : ''
-            }.`
-        } else if (minutesUntilRainStarts > 0) {
-            darkSky.minutely.summary = `Rain starts in ${minutesUntilRainStarts} minute${minutesUntilRainStarts > 1 ? 's' : ''}.`
-        } else if (minutesUntilRainStops > 0) {
-            darkSky.minutely.summary = `Rain stops in ${minutesUntilRainStops} minute${minutesUntilRainStops > 1 ? 's' : ''}.`
-        }
+        darkSky.minutely.summary = summaryGenerator.generateMinutelySummary(darkSky.minutely, currentWeatherContext)
+    }
+
+    // Generate enhanced hourly summary
+    if (darkSky.hourly.data.length > 0) {
+        darkSky.hourly.summary = summaryGenerator.generateHourlySummary(darkSky.hourly.data, currentWeatherContext)
     }
 
     // If there is no minutely summary, use the hourly summary
@@ -107,41 +134,9 @@ function translateToDarkSky(weatherkit: WeatherKitResponse) {
         darkSky.minutely.summary = `${normalizeSummary(darkSky.hourly.data[0]?.summary) || ''} for the hour.`
     }
 
-    // If there is no hourly summary, use the daily summary
-    if (!darkSky.hourly.summary) {
-        darkSky.hourly.summary = normalizeSummary(darkSky.daily.data[0]?.summary) || ''
-    }
-
-    /*
-    Calculate darkSky.daily.summary
-  */
-
-    const firstDifferentIconIndex = darkSky.daily.data
-        .slice(0, 7)
-        .findIndex(day => normalizeIcon(day.icon) !== normalizeIcon(darkSky.daily.data[0].icon))
-    if (firstDifferentIconIndex === -1) {
-        darkSky.daily.summary = `${normalizeSummary(darkSky.daily.data[0]?.icon)} throughout the week.`
-    } else {
-        darkSky.daily.summary = ''
-        const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-        const firstRainIndex = darkSky.daily.data.slice(0, 7).findIndex(day => day.icon === 'Rain' || day.icon === 'Drizzle')
-        const firstNoRainIndex = darkSky.daily.data.slice(0, 7).findIndex(day => day.icon !== 'Rain' && day.icon !== 'Drizzle')
-        if (firstRainIndex === 0) {
-            // If every day has a rain icon, it should say "Rain throughout the week."
-            if (firstNoRainIndex === -1) {
-                darkSky.daily.summary = 'Rain throughout the week.'
-            } else {
-                const firstNoRainWeekday = weekday[new Date(darkSky.daily.data[firstNoRainIndex].time * 1000).getDay()]
-                darkSky.daily.summary = `Rain until ${firstNoRainWeekday}.`
-            }
-        } else if (firstNoRainIndex === 0) {
-            if (firstRainIndex === -1) {
-                darkSky.daily.summary = 'No precipitation throughout the week.'
-            } else {
-                const firstRainWeekday = weekday[new Date(darkSky.daily.data[firstRainIndex].time * 1000).getDay()]
-                darkSky.daily.summary = `Rain starting ${firstRainWeekday}.`
-            }
-        }
+    // Generate enhanced daily/weekly summary
+    if (darkSky.daily.data.length > 0) {
+        darkSky.daily.summary = summaryGenerator.generateWeeklySummary(darkSky.daily.data, currentWeatherContext)
     }
 
     return darkSky
