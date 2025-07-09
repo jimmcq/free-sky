@@ -65,7 +65,7 @@ function ForecastPage({
         return () => clearInterval(interval)
     }, [])
 
-    const { currently, minutely, hourly, daily, alerts } = forecast
+    const { currently, minutely, hourly, daily, alerts, timezone } = forecast
 
     useEffect(() => {
         ;(async () => {
@@ -96,10 +96,10 @@ function ForecastPage({
                 <Alerts alerts={alerts} />
             </div>
             <div>
-                <HourWeather minutely={minutely} hourly={hourly} />
+                <HourWeather minutely={minutely} hourly={hourly} timezone={timezone} />
             </div>
             <div>
-                <DayWeather hourly={hourly} />
+                <DayWeather hourly={hourly} timezone={timezone} />
             </div>
             <div>
                 <WeekWeather daily={daily} />

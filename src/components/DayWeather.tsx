@@ -4,12 +4,35 @@ import { Bar } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns'
 import type { WeatherInfo } from '../lib/types'
 import { normalizeSummary } from '../lib/helpers'
+import { getSafeTimezone } from '../lib/timezoneUtils'
 import styles from './DayWeather.module.css'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, TimeScale)
 
-function DayWeather({ hourly }: { hourly: WeatherInfo }) {
+function DayWeather({ hourly, timezone = 'UTC' }: { hourly: WeatherInfo; timezone?: string }) {
     const { summary: hourlySummary, data: hourData } = hourly
+
+    // Helper function to format time in the location's timezone
+    const formatTimeInTimezone = (timestamp: number) => {
+        const date = new Date(timestamp * 1000)
+        const validTimezone = getSafeTimezone(timezone, 'UTC')
+
+        const timeOptions: Intl.DateTimeFormatOptions = {
+            timeZone: validTimezone,
+            hour: 'numeric',
+            hour12: true,
+        }
+        const weekdayOptions: Intl.DateTimeFormatOptions = {
+            timeZone: validTimezone,
+            weekday: 'long',
+        }
+
+        const time = date.toLocaleString('en-US', timeOptions)
+        const weekday = date.toLocaleString('en-US', weekdayOptions)
+
+        return { weekday, time }
+    }
+
     const options: ChartOptions<'bar'> = {
         responsive: true,
         maintainAspectRatio: false,
@@ -19,10 +42,8 @@ function DayWeather({ hourly }: { hourly: WeatherInfo }) {
                 callbacks: {
                     title: function (context) {
                         const index = context[0].dataIndex
-                        const date = new Date(hourData[index].time * 1000)
-                        const hour = date.getHours()
-                        const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-                        return `${hour % 12 || 12}${hour >= 12 ? 'pm' : 'am'} ${weekday[date.getDay()]}`
+                        const { weekday, time } = formatTimeInTimezone(hourData[index].time)
+                        return `${time} ${weekday}`
                     },
                     label: function (context) {
                         const index = context.dataIndex
@@ -52,10 +73,25 @@ function DayWeather({ hourly }: { hourly: WeatherInfo }) {
                         hour: 'haaa',
                         day: 'E',
                     },
+                    unit: 'hour',
                 },
                 ticks: {
                     major: {
                         enabled: true,
+                    },
+                    maxTicksLimit: 24,
+                    callback: function (value, _index) {
+                        // Format the tick labels using the location's timezone
+                        const date = new Date(value as number)
+                        const validTimezone = getSafeTimezone(timezone, 'UTC')
+
+                        const timeOptions: Intl.DateTimeFormatOptions = {
+                            timeZone: validTimezone,
+                            hour: 'numeric',
+                            hour12: true,
+                        }
+
+                        return date.toLocaleString('en-US', timeOptions)
                     },
                 },
                 grid: {
@@ -136,7 +172,14 @@ function DayWeather({ hourly }: { hourly: WeatherInfo }) {
         }
     })
 
-    const datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor }]
+    const datasets = [
+        {
+            barPercentage: 1.25,
+            categoryPercentage: 1.0,
+            data: dataset,
+            backgroundColor,
+        },
+    ]
     const data: ChartData<'bar'> = { labels, datasets }
 
     if (hourlySummary === 'Clear throughout the day.') {

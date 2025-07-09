@@ -13,15 +13,30 @@ import {
 import { Bar } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns'
 import type { WeatherInfo } from '../lib/types'
+import { getSafeTimezone } from '../lib/timezoneUtils'
 import styles from './HourWeather.module.css'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, TimeScale)
 
-function HourWeather({ minutely, hourly }: { minutely: WeatherInfo; hourly: WeatherInfo }) {
+function HourWeather({ minutely, hourly, timezone = 'UTC' }: { minutely: WeatherInfo; hourly: WeatherInfo; timezone?: string }) {
     if (!minutely) {
         return null
     }
     const { summary: minutelySummary, data: minuteData } = minutely
+
+    // Helper function to format time in the location's timezone
+    const formatTimeInTimezone = (timestamp: number) => {
+        const date = new Date(timestamp * 1000)
+        const validTimezone = getSafeTimezone(timezone, 'UTC')
+
+        const options: Intl.DateTimeFormatOptions = {
+            timeZone: validTimezone,
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+        }
+        return date.toLocaleString('en-US', options)
+    }
 
     const options: ChartOptions<'bar'> = {
         responsive: true,
@@ -32,10 +47,7 @@ function HourWeather({ minutely, hourly }: { minutely: WeatherInfo; hourly: Weat
                 callbacks: {
                     title: function (context: Array<TooltipItem<'bar'>>): string {
                         const index = context[0].dataIndex
-                        const date = new Date(minuteData[index].time * 1000)
-                        const hour = date.getHours()
-                        const minute = date.getMinutes().toString()
-                        return `${hour % 12 || 12}:${minute.padStart(2, '0')}${hour >= 12 ? 'pm' : 'am'}`
+                        return formatTimeInTimezone(minuteData[index].time)
                     },
                     label: function (context: TooltipItem<'bar'>): string {
                         const index = context.dataIndex
@@ -54,10 +66,26 @@ function HourWeather({ minutely, hourly }: { minutely: WeatherInfo; hourly: Weat
                         minute: 'h:mm',
                         hour: 'h:mm',
                     },
+                    unit: 'minute',
                 },
                 ticks: {
                     major: {
                         enabled: true,
+                    },
+                    maxTicksLimit: 60,
+                    callback: function (value, _index) {
+                        // Format the tick labels using the location's timezone
+                        const date = new Date(value as number)
+                        const validTimezone = getSafeTimezone(timezone, 'UTC')
+
+                        const timeOptions: Intl.DateTimeFormatOptions = {
+                            timeZone: validTimezone,
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true,
+                        }
+
+                        return date.toLocaleString('en-US', timeOptions)
                     },
                 },
             },
@@ -101,7 +129,14 @@ function HourWeather({ minutely, hourly }: { minutely: WeatherInfo; hourly: Weat
         return minuteData.precipIntensity > 0.05 ? (minuteData.precipIntensity >= 0.1 ? '#305f9c' : '#4a80c7') : '#80a5d6'
     })
 
-    const datasets = [{ barPercentage: 1.25, data: dataset, backgroundColor }]
+    const datasets = [
+        {
+            barPercentage: 1.25,
+            categoryPercentage: 1.0,
+            data: dataset,
+            backgroundColor,
+        },
+    ]
     const data: ChartData<'bar'> = { labels, datasets }
 
     let displaySummary = true

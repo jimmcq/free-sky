@@ -224,13 +224,9 @@ NODE_ENV=development
 ### Desktop View
 ![Desktop Weather View](docs/images/desktop-weather.png)
 
-### Mobile View
-![Mobile Weather View](docs/images/mobile-weather.png)
-
 ### Location Search
 ![Location Search](docs/images/location-search.png)
 
-*Note: Screenshots can be added to a `docs/images/` directory*
 
 ## Deployment
 

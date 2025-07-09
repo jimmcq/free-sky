@@ -11,6 +11,9 @@ export type WeatherData = {
     apparentTemperature: number
     windSpeed: number
     windBearing: number
+    humidity: number
+    uvIndex: number
+    visibility: number
 }
 
 export type WeatherInfo = {
@@ -48,6 +51,9 @@ export const emptyData = {
     apparentTemperature: 0,
     windSpeed: 0,
     windBearing: 0,
+    humidity: 0,
+    uvIndex: 0,
+    visibility: 10,
 }
 
 export const emptyWeatherResponse: WeatherResponse = {
