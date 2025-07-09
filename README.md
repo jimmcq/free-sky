@@ -222,10 +222,10 @@ NODE_ENV=development
 ## Screenshots
 
 ### Desktop View
-![Desktop Weather View](docs/images/desktop-weather.png)
+<img src="docs/images/desktop-weather.png" width="320">
 
 ### Location Search
-![Location Search](docs/images/location-search.png)
+<img src="docs/images/location-search.png" width="320">
 
 
 ## Deployment
