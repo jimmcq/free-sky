@@ -4,6 +4,7 @@ import { cacheGet, cacheSet, safeKey } from './cache'
 import { celsiusToFahrenheit, kilometersToMiles, millimetersToInches, normalizeCoordinates, normalizeSummary } from './helpers'
 import { emptyData, emptyWeatherResponse } from './types'
 import { summaryGenerator } from './summaryGenerator'
+import { getTimezoneFromCoordinates } from './timezoneUtils'
 
 // Using the WeatherKit library's types directly
 
@@ -16,6 +17,8 @@ function translateToDarkSky(weatherkit: WeatherKitResponse) {
 
     darkSky.latitude = weatherkit.currentWeather?.metadata.latitude || 0
     darkSky.longitude = weatherkit.currentWeather?.metadata.longitude || 0
+    // WeatherKit doesn't provide timezone directly, so we'll determine it from coordinates
+    darkSky.timezone = getTimezoneFromCoordinates(darkSky.latitude, darkSky.longitude)
 
     darkSky.currently.time = Date.parse(weatherkit.currentWeather?.metadata.readTime || '') / 1000
     darkSky.currently.icon = weatherkit.currentWeather?.conditionCode || ''
