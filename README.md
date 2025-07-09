@@ -1,7 +1,7 @@
 
 # Free Sky Weather App
 
-A modern weather application built with Next.js and React Native Web, providing accurate weather forecasts using Apple's WeatherKit API. Free Sky serves as a replacement for the discontinued Dark Sky weather service.
+A modern weather application built with Next.js and React, providing accurate weather forecasts using Apple's WeatherKit API. Free Sky serves as a replacement for the discontinued Dark Sky weather service.
 
 ## Features
 
@@ -170,7 +170,7 @@ curl "https://free-sky.net/api/getplacename?latitude=37.7749&longitude=-122.4194
 
 The application uses:
 - **Next.js 15** for the React framework
-- **React Native Web** for cross-platform components
+- **React** for the user interface
 - **TypeScript** for type safety
 - **Apple WeatherKit** for weather data
 - **MapBox** for location services
