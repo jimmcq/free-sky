@@ -90,7 +90,7 @@ function ForecastPage({
     return (
         <div className={styles.container}>
             <div>
-                <CurrentWeather placeName={placeName} currently={currently} hourly={hourly} daily={daily} />
+                <CurrentWeather placeName={placeName} currently={currently} hourly={hourly} daily={daily} timezone={timezone} />
             </div>
             <div>
                 <Alerts alerts={alerts} />

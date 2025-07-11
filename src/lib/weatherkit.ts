@@ -100,6 +100,9 @@ function translateToDarkSky(weatherkit: WeatherKitResponse) {
                         : undefined,
                     daytimeForecast: day?.daytimeForecast,
                     overnightForecast: day?.overnightForecast,
+                    sunrise: day?.sunrise,
+                    sunset: day?.sunset,
+                    moonPhase: typeof day?.moonPhase === 'string' ? parseFloat(day.moonPhase) : day?.moonPhase,
                 }
 
                 // Generate enhanced daily summary for individual days

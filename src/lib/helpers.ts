@@ -58,6 +58,62 @@ function normalizeIcon(icon: string): keyof typeof ColorSkyconsType {
     }
 }
 
+function isNightTime(currentTime: number, timezone: string, sunrise?: string, sunset?: string): boolean {
+    if (!sunrise || !sunset) {
+        return false
+    }
+
+    // Convert all times to the location's timezone for comparison
+    const now = new Date(currentTime * 1000)
+    const sunriseDate = new Date(sunrise)
+    const sunsetDate = new Date(sunset)
+
+    // Get current time in location's timezone
+    const currentInLocation = new Date(now.toLocaleString('en-US', { timeZone: timezone }))
+
+    // Convert sunrise and sunset to location's timezone
+    const sunriseInLocation = new Date(sunriseDate.toLocaleString('en-US', { timeZone: timezone }))
+    const sunsetInLocation = new Date(sunsetDate.toLocaleString('en-US', { timeZone: timezone }))
+
+    // Get today's date in the location's timezone to compare same-day times
+    const todayInLocation = new Date(currentInLocation.getFullYear(), currentInLocation.getMonth(), currentInLocation.getDate())
+    const currentTimeOfDay = currentInLocation.getTime() - todayInLocation.getTime()
+    const sunriseTimeOfDay = sunriseInLocation.getHours() * 3600000 + sunriseInLocation.getMinutes() * 60000
+    const sunsetTimeOfDay = sunsetInLocation.getHours() * 3600000 + sunsetInLocation.getMinutes() * 60000
+
+    return currentTimeOfDay < sunriseTimeOfDay || currentTimeOfDay > sunsetTimeOfDay
+}
+
+function normalizeIconWithDayNight(
+    icon: string,
+    currentTime: number,
+    timezone: string,
+    sunrise?: string,
+    sunset?: string
+): keyof typeof ColorSkyconsType {
+    const baseIcon = normalizeIcon(icon)
+
+    if (!isNightTime(currentTime, timezone, sunrise, sunset)) {
+        return baseIcon
+    }
+
+    // Convert day icons to night variants when it's nighttime
+    switch (baseIcon) {
+        case 'CLEAR_DAY':
+            return 'CLEAR_NIGHT'
+        case 'PARTLY_CLOUDY_DAY':
+            return 'PARTLY_CLOUDY_NIGHT'
+        case 'RAIN':
+            return 'SHOWERS_NIGHT'
+        case 'SNOW':
+            return 'SNOW_SHOWERS_NIGHT'
+        case 'THUNDER':
+            return 'THUNDER_SHOWERS_NIGHT'
+        default:
+            return baseIcon
+    }
+}
+
 function normalizeSummary(summary: string): string {
     return summary
         .replace(/([^ ])([A-Z])/g, '$1 $2') // Add spaces
@@ -86,6 +142,7 @@ function millimetersToInches(millimeters: number): number {
 export {
     normalizeCoordinates,
     normalizeIcon,
+    normalizeIconWithDayNight,
     normalizeSummary,
     bearingToCardinal,
     celsiusToFahrenheit,

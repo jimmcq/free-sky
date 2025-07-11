@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { bearingToCardinal, normalizeIcon, normalizeSummary } from '../lib/helpers'
+import { bearingToCardinal, normalizeIconWithDayNight, normalizeSummary } from '../lib/helpers'
 import ColorSkycons, { ColorSkyconsType } from 'react-color-skycons'
 import type { WeatherData, WeatherInfo } from '../lib/types'
 import styles from './CurrentWeather.module.css'
@@ -9,18 +9,19 @@ interface CurrentWeatherProps {
     currently: WeatherData
     hourly: WeatherInfo
     daily: WeatherInfo
+    timezone: string
 }
 
-function CurrentWeather({ placeName, currently, hourly, daily }: CurrentWeatherProps) {
-    const { temperature, summary: currentSummary, apparentTemperature, icon, windSpeed, windBearing } = currently
+function CurrentWeather({ placeName, currently, hourly, daily, timezone }: CurrentWeatherProps) {
+    const { temperature, summary: currentSummary, apparentTemperature, icon, windSpeed, windBearing, time } = currently
     const today = daily.data[0]
-    const { temperatureLow, temperatureHigh } = today
+    const { temperatureLow, temperatureHigh, sunrise, sunset } = today
 
     const nameParts = placeName.split(',')
     const location = nameParts.length <= 2 ? placeName : `${nameParts[0]}, ${nameParts[1]}`
 
     const temperatureDirection = hourly.data[0].temperature < hourly.data[1].temperature ? '\u2191' : '\u2193'
-    const iconType = ColorSkyconsType[normalizeIcon(icon)]
+    const iconType = ColorSkyconsType[normalizeIconWithDayNight(icon, time, timezone, sunrise, sunset)]
 
     return (
         <div className={styles.container}>
