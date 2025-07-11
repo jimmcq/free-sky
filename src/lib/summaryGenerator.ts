@@ -1,5 +1,10 @@
 import { WeatherData, WeatherInfo } from './types'
 
+interface ForecastData {
+    conditionCode?: string
+    precipitationChance?: number
+}
+
 interface WeatherContext {
     temperature: number
     precipProbability: number
@@ -10,6 +15,10 @@ interface WeatherContext {
     visibility: number
     icon: string
     time: number
+    windGustSpeedMax?: number
+    sunrise?: string
+    sunset?: string
+    moonPhase?: string
 }
 
 interface TemperatureTrend {
@@ -72,10 +81,18 @@ export class SummaryGenerator {
         }
     }
 
-    private getWindDescription(windSpeed: number): string {
-        if (windSpeed < 5) return 'calm'
-        if (windSpeed < 15) return 'breezy'
-        if (windSpeed < 25) return 'windy'
+    private getWindDescription(windSpeed: number, gustSpeed?: number): string {
+        const hasGusts = gustSpeed && gustSpeed > windSpeed + 10
+
+        if (windSpeed < 5) {
+            return hasGusts && gustSpeed > 15 ? 'occasional gusts' : 'calm'
+        }
+        if (windSpeed < 15) {
+            return hasGusts ? 'gusty wind' : 'breezy'
+        }
+        if (windSpeed < 25) {
+            return hasGusts ? 'gusty wind' : 'windy'
+        }
         return 'very windy'
     }
 
@@ -89,6 +106,13 @@ export class SummaryGenerator {
             return humidity > 0.7 ? 'muggy' : 'warm'
         }
         return humidity > 0.6 ? 'sweltering' : 'hot'
+    }
+
+    private getUVWarning(uvIndex: number): string {
+        if (uvIndex >= 11) return 'Extreme UV - avoid sun exposure'
+        if (uvIndex >= 8) return 'Very high UV - seek shade midday'
+        if (uvIndex >= 6) return 'High UV - protection recommended'
+        return ''
     }
 
     private getCurrentSeason(): string {
@@ -106,6 +130,25 @@ export class SummaryGenerator {
         if (hour < 17) return 'afternoon'
         if (hour < 21) return 'evening'
         return 'night'
+    }
+
+    private getSolarContext(current: WeatherContext): string {
+        if (!current.sunrise || !current.sunset) return ''
+
+        const now = current.time * 1000
+        const sunrise = new Date(current.sunrise).getTime()
+        const sunset = new Date(current.sunset).getTime()
+
+        const sunsetHour = new Date(current.sunset).toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+        })
+
+        if (now < sunrise) return `before sunrise`
+        if (now > sunset) return `after sunset`
+        if (sunset - now < 2 * 60 * 60 * 1000) return `until sunset at ${sunsetHour}`
+        return ''
     }
 
     generateMinutelySummary(minutely: WeatherInfo, current: WeatherContext): string {
@@ -141,15 +184,24 @@ export class SummaryGenerator {
         }
 
         // Enhanced fallback with weather context
-        const windDesc = this.getWindDescription(current.windSpeed)
+        const windDesc = this.getWindDescription(current.windSpeed, current.windGustSpeedMax)
         const comfort = this.getComfortLevel(current.temperature, current.humidity, this.getCurrentSeason())
+        const solarContext = this.getSolarContext(current)
 
         if (windDesc !== 'calm' && comfort !== 'pleasant') {
-            return `${this.capitalize(comfort)} and ${windDesc} conditions continuing.`
+            if (windDesc.includes('gusts')) {
+                return `${this.capitalize(comfort)} with ${windDesc}${solarContext ? ` ${solarContext}` : ''}.`
+            } else {
+                return `${this.capitalize(comfort)} and ${windDesc} conditions${solarContext ? ` ${solarContext}` : ''}.`
+            }
         } else if (windDesc !== 'calm') {
-            return `${this.capitalize(windDesc)} conditions for the hour.`
+            if (windDesc.includes('gusts')) {
+                return `${this.capitalize(windDesc)} for the hour.`
+            } else {
+                return `${this.capitalize(windDesc)} conditions for the hour.`
+            }
         } else {
-            return `${this.capitalize(comfort)} conditions continuing.`
+            return `${this.capitalize(comfort)} conditions${solarContext ? ` ${solarContext}` : ''}.`
         }
     }
 
@@ -165,12 +217,12 @@ export class SummaryGenerator {
         // Temperature trend descriptions
         const tempTrendDesc = {
             rising: {
-                slight: 'gradually warming',
+                slight: 'gradual warming',
                 moderate: 'warming up',
                 significant: 'becoming much warmer',
             },
             falling: {
-                slight: 'gradually cooling',
+                slight: 'gradual cooling',
                 moderate: 'cooling off',
                 significant: 'becoming much cooler',
             },
@@ -192,7 +244,7 @@ export class SummaryGenerator {
         const avgTemp = next6Hours.reduce((sum, h) => sum + h.temperature, 0) / next6Hours.length
         const comfort = this.getComfortLevel(avgTemp, current.humidity, this.getCurrentSeason())
         const avgWind = next6Hours.reduce((sum, h) => sum + h.windSpeed, 0) / next6Hours.length
-        const windDesc = this.getWindDescription(avgWind)
+        const windDesc = this.getWindDescription(avgWind, current.windGustSpeedMax)
 
         if (trend.direction !== 'stable') {
             const tempDesc = tempTrendDesc[trend.direction][trend.magnitude]
@@ -200,7 +252,11 @@ export class SummaryGenerator {
         }
 
         if (windDesc !== 'calm') {
-            return `${this.capitalize(comfort)} and ${windDesc} conditions continuing.`
+            if (windDesc.includes('gusts')) {
+                return `${this.capitalize(comfort)} with ${windDesc} continuing.`
+            } else {
+                return `${this.capitalize(comfort)} and ${windDesc} conditions continuing.`
+            }
         }
 
         // Time-based context
@@ -227,15 +283,15 @@ export class SummaryGenerator {
         const precipProb = today.precipProbability
         const hasPrecip = precipProb > 0.2
 
-        // Multiple weather events detection (for future enhancement)
-        // const morningIcon = today.icon
-        // const afternoonIcon = today.icon // In a real implementation, you'd have hourly data
+        // Daytime/overnight analysis
+        const hasDaytimeData = today.daytimeForecast
+        const hasOvernightData = today.overnightForecast
 
         // Comfort and seasonal context
         const comfort = this.getComfortLevel(today.temperatureHigh, today.humidity, season)
-        const windDesc = this.getWindDescription(today.windSpeed)
+        const windDesc = this.getWindDescription(today.windSpeed, today.windGustSpeedMax)
 
-        // Enhanced daily summary logic
+        // Enhanced daily summary with day/night context
         if (hasPrecip) {
             const intensity = this.getPrecipitationIntensity(precipProb, today.precipType)
 
@@ -244,22 +300,46 @@ export class SummaryGenerator {
             } else if (precipProb > 0.5) {
                 return `Occasional ${intensity.descriptor} with ${comfort} temperatures.`
             } else {
+                // Check if rain is more likely day vs night
+                if (hasDaytimeData && hasOvernightData) {
+                    const dayRain = (today.daytimeForecast as ForecastData)?.precipitationChance || 0
+                    const nightRain = (today.overnightForecast as ForecastData)?.precipitationChance || 0
+                    if (dayRain > nightRain + 0.2) {
+                        return `Chance of ${intensity.descriptor} during the day, clearing overnight.`
+                    } else if (nightRain > dayRain + 0.2) {
+                        return `Clear during the day, ${intensity.descriptor} possible overnight.`
+                    }
+                }
                 return `Chance of ${intensity.descriptor} in a mostly ${comfort} day.`
             }
         }
 
-        // Clear weather with enhanced context
-        if (isWarmDay && season === 'spring') {
-            return `Unseasonably warm spring day.`
-        }
+        // Clear weather with enhanced day/night context
+        if (hasDaytimeData && hasOvernightData) {
+            const dayCondition = (today.daytimeForecast as ForecastData)?.conditionCode || ''
+            const nightCondition = (today.overnightForecast as ForecastData)?.conditionCode || ''
 
-        if (isColdDay && season === 'fall') {
-            return `Crisp fall day.`
+            if (dayCondition.includes('Clear') && nightCondition.includes('Clear')) {
+                const uvWarning = this.getUVWarning(today.uvIndex)
+                if (uvWarning) {
+                    return `Clear skies. ${uvWarning}.`
+                }
+                if (isWarmDay && season === 'spring') {
+                    return `Unseasonably warm and clear.`
+                }
+                if (isColdDay && season === 'fall') {
+                    return `Crisp and clear fall day.`
+                }
+            }
         }
 
         // Wind-focused summaries
-        if (windDesc === 'windy' || windDesc === 'very windy') {
-            return `${this.capitalize(comfort)} but ${windDesc} conditions throughout the day.`
+        if (windDesc.includes('gusty') || windDesc.includes('gusts') || windDesc === 'very windy') {
+            if (windDesc.includes('gusts')) {
+                return `${this.capitalize(comfort)} with ${windDesc}.`
+            } else {
+                return `${this.capitalize(comfort)} but ${windDesc} conditions.`
+            }
         }
 
         // Seasonal defaults
@@ -357,12 +437,12 @@ export class SummaryGenerator {
 
         const descriptions = {
             rising: {
-                slight: 'gradually warming trend',
+                slight: 'gradual warming trend',
                 moderate: 'warming trend',
                 significant: 'significant warming trend',
             },
             falling: {
-                slight: 'gradually cooling trend',
+                slight: 'gradual cooling trend',
                 moderate: 'cooling trend',
                 significant: 'significant cooling trend',
             },
