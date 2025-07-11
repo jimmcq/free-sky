@@ -59,7 +59,10 @@ function normalizeIcon(icon: string): keyof typeof ColorSkyconsType {
 }
 
 function normalizeSummary(summary: string): string {
-    return summary.replace(/([^ ])([A-Z])/g, '$1 $2').trim()
+    return summary
+        .replace(/([^ ])([A-Z])/g, '$1 $2') // Add spaces
+        .replace(/U V/g, 'UV') // Fix UV specifically
+        .trim()
 }
 
 function bearingToCardinal(bearing: number): string {

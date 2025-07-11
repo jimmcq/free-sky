@@ -1,5 +1,12 @@
 import * as fs from 'fs'
 import WeatherKit, { isErr, WeatherKitResponse } from 'node-apple-weatherkit'
+
+// Extend the Day type to include missing properties
+interface ExtendedDay {
+    windSpeedAvg?: number
+    windGustSpeedMax?: number
+    [key: string]: unknown
+}
 import { cacheGet, cacheSet, safeKey } from './cache'
 import { celsiusToFahrenheit, kilometersToMiles, millimetersToInches, normalizeCoordinates, normalizeSummary } from './helpers'
 import { emptyData, emptyWeatherResponse } from './types'
@@ -82,10 +89,17 @@ function translateToDarkSky(weatherkit: WeatherKitResponse) {
                     temperature: celsiusToFahrenheit(day?.temperatureMax || 0),
                     apparentTemperature: celsiusToFahrenheit(day?.temperatureMax || 0),
                     humidity: 0.5, // Default humidity, not available in daily forecast
-                    windSpeed: 0, // Default windSpeed, not available in daily forecast
+                    windSpeed: (day as unknown as ExtendedDay)?.windSpeedAvg
+                        ? kilometersToMiles((day as unknown as ExtendedDay).windSpeedAvg || 0)
+                        : 0,
                     windBearing: 0, // Default windBearing, not available in daily forecast
-                    uvIndex: 0, // Default uvIndex, not available in daily forecast
+                    uvIndex: day?.maxUvIndex || 0,
                     visibility: 10,
+                    windGustSpeedMax: (day as unknown as ExtendedDay)?.windGustSpeedMax
+                        ? kilometersToMiles((day as unknown as ExtendedDay).windGustSpeedMax || 0)
+                        : undefined,
+                    daytimeForecast: day?.daytimeForecast,
+                    overnightForecast: day?.overnightForecast,
                 }
 
                 // Generate enhanced daily summary for individual days
@@ -95,10 +109,14 @@ function translateToDarkSky(weatherkit: WeatherKitResponse) {
                     precipType: dayData.precipType,
                     windSpeed: dayData.windSpeed,
                     humidity: dayData.humidity,
-                    uvIndex: 0,
+                    uvIndex: dayData.uvIndex,
                     visibility: 10,
                     icon: dayData.icon,
                     time: dayData.time,
+                    windGustSpeedMax: dayData.windGustSpeedMax,
+                    sunrise: day?.sunrise,
+                    sunset: day?.sunset,
+                    moonPhase: day?.moonPhase,
                 }
 
                 dayData.summary = summaryGenerator.generateDailySummary([dayData], currentContext)
@@ -120,6 +138,10 @@ function translateToDarkSky(weatherkit: WeatherKitResponse) {
         visibility: darkSky.currently.visibility,
         icon: darkSky.currently.icon,
         time: darkSky.currently.time,
+        windGustSpeedMax: weatherkit.currentWeather?.windGust ? kilometersToMiles(weatherkit.currentWeather.windGust) : undefined,
+        sunrise: weatherkit.forecastDaily?.days?.[0]?.sunrise,
+        sunset: weatherkit.forecastDaily?.days?.[0]?.sunset,
+        moonPhase: weatherkit.forecastDaily?.days?.[0]?.moonPhase,
     }
 
     // Generate enhanced minutely summary

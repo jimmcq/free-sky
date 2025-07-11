@@ -14,6 +14,9 @@ export type WeatherData = {
     humidity: number
     uvIndex: number
     visibility: number
+    windGustSpeedMax?: number
+    daytimeForecast?: unknown
+    overnightForecast?: unknown
 }
 
 export type WeatherInfo = {
