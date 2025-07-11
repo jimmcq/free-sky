@@ -17,6 +17,9 @@ export type WeatherData = {
     windGustSpeedMax?: number
     daytimeForecast?: unknown
     overnightForecast?: unknown
+    sunrise?: string
+    sunset?: string
+    moonPhase?: number
 }
 
 export type WeatherInfo = {
