@@ -1,0 +1,15 @@
+{
+  "buildCommand": "yarn build",
+  "devCommand": "yarn dev",
+  "installCommand": "yarn install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "src/pages/api/**/*.ts": {
+      "maxDuration": 10
+    }
+  }
+}
