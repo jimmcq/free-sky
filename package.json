@@ -8,7 +8,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "@sentry/nextjs": "^9.35.0",
+    "@sentry/nextjs": "^10.20.0",
     "chart.js": "^4.5.0",
     "chartjs-adapter-date-fns": "^3.0.0",
     "crypto-js": "^4.2.0",
