@@ -954,10 +954,10 @@
   dependencies:
     fast-glob "3.3.1"
 
-"@next/eslint-plugin-next@^15.5.4":
-  version "15.5.4"
-  resolved "https://registry.yarnpkg.com/@next/eslint-plugin-next/-/eslint-plugin-next-15.5.4.tgz#e7af86b7197a26e8a9d3784d1e365a2eb9298f5b"
-  integrity sha512-SR1vhXNNg16T4zffhJ4TS7Xn7eq4NfKfcOsRwea7RIAHrjRpI9ALYbamqIJqkAhowLlERffiwk0FMvTLNdnVtw==
+"@next/eslint-plugin-next@^16.0.1":
+  version "16.0.1"
+  resolved "https://registry.yarnpkg.com/@next/eslint-plugin-next/-/eslint-plugin-next-16.0.1.tgz#d8fa3412bac027dd30b791386479fa8cc3a5b1a1"
+  integrity sha512-g4Cqmv/gyFEXNeVB2HkqDlYKfy+YrlM2k8AVIO/YQVEPfhVruH1VA99uT1zELLnPLIeOnx8IZ6Ddso0asfTIdw==
   dependencies:
     fast-glob "3.3.1"
 
