@@ -924,10 +924,17 @@
   resolved "https://registry.yarnpkg.com/@next/env/-/env-13.5.11.tgz#6712d907e2682199aa1e8229b5ce028ee5a8001b"
   integrity sha512-fbb2C7HChgM7CemdCY+y3N1n8pcTKdqtQLbC7/EQtPdLvlMUT9JX/dBYl8MMZAtYG4uVMyPFHXckb68q/NRwqg==
 
-"@next/eslint-plugin-next@15.5.6", "@next/eslint-plugin-next@^15.5.4":
+"@next/eslint-plugin-next@15.5.6":
   version "15.5.6"
   resolved "https://registry.yarnpkg.com/@next/eslint-plugin-next/-/eslint-plugin-next-15.5.6.tgz#8d08f11cb98a8401ff64746cb3035948ae1d1f61"
   integrity sha512-YxDvsT2fwy1j5gMqk3ppXlsgDopHnkM4BoxSVASbvvgh5zgsK8lvWerDzPip8k3WVzsTZ1O7A7si1KNfN4OZfQ==
+  dependencies:
+    fast-glob "3.3.1"
+
+"@next/eslint-plugin-next@^16.0.7":
+  version "16.0.7"
+  resolved "https://registry.yarnpkg.com/@next/eslint-plugin-next/-/eslint-plugin-next-16.0.7.tgz#f35558960ab7ca021db28f4a98c20cfd6fd33a54"
+  integrity sha512-hFrTNZcMEG+k7qxVxZJq3F32Kms130FAhG8lvw2zkKBgAcNOJIxlljNiCjGygvBshvaGBdf88q2CqWtnqezDHA==
   dependencies:
     fast-glob "3.3.1"
 
